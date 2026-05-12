@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeAll } from "vitest";
-import { computeMultiplier, getHandicapTable, getMultiplier, updateMultiplier } from "@/lib/handicap";
+import { computeMultiplier } from "@/lib/handicap-utils";
+import { getHandicapTable, getMultiplier, updateMultiplier } from "@/lib/handicap";
 
 // Seed the table before any DB tests run.
 beforeAll(async () => {
