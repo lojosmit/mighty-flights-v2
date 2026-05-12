@@ -26,12 +26,12 @@ describe("players CRUD", () => {
   it("creates a player", async () => {
     const [player] = await db
       .insert(players)
-      .values({ name: `${TEST_PREFIX}Alice`, seasonRank: 3 })
+      .values({ name: `${TEST_PREFIX}Alice` })
       .returning();
 
     expect(player.id).toBeTruthy();
     expect(player.name).toBe(`${TEST_PREFIX}Alice`);
-    expect(player.seasonRank).toBe(3);
+    expect(player.seasonRank).toBeGreaterThanOrEqual(1);
     expect(player.wins).toBe(0);
     expect(player.losses).toBe(0);
     expect(player.doves).toBe(0);

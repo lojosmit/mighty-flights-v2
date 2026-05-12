@@ -5,7 +5,6 @@ import { createPlayer } from "@/lib/players";
 
 export function AddPlayerForm() {
   const [name, setName] = useState("");
-  const [rank, setRank] = useState("1");
   const [isPending, startTransition] = useTransition();
 
   function handleSubmit(e: React.FormEvent) {
@@ -13,9 +12,8 @@ export function AddPlayerForm() {
     const trimmed = name.trim();
     if (!trimmed) return;
     startTransition(async () => {
-      await createPlayer({ name: trimmed, seasonRank: parseInt(rank, 10) });
+      await createPlayer({ name: trimmed });
       setName("");
-      setRank("1");
     });
   }
 
@@ -38,28 +36,6 @@ export function AddPlayerForm() {
           style={{
             borderColor: "var(--border-hairline)",
             color: "var(--ink-primary)",
-          }}
-        />
-      </div>
-
-      <div className="flex flex-col gap-1.5">
-        <label
-          className="text-meta uppercase tracking-widest"
-          style={{ color: "var(--ink-tertiary)" }}
-        >
-          Rank
-        </label>
-        <input
-          type="number"
-          value={rank}
-          onChange={(e) => setRank(e.target.value)}
-          min={1}
-          required
-          className="border-b bg-transparent pb-1.5 text-body outline-none focus:border-b-2 w-16"
-          style={{
-            borderColor: "var(--border-hairline)",
-            color: "var(--ink-primary)",
-            fontFamily: "var(--font-jetbrains-mono)",
           }}
         />
       </div>
