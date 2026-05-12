@@ -1,4 +1,4 @@
-import { integer, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { integer, numeric, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 
 export const players = pgTable("players", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -14,3 +14,12 @@ export const players = pgTable("players", {
 
 export type Player = typeof players.$inferSelect;
 export type NewPlayer = typeof players.$inferInsert;
+
+export const handicapSettings = pgTable("handicap_settings", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  rankFrom: integer("rank_from").notNull(),
+  rankTo: integer("rank_to").notNull(),
+  multiplier: numeric("multiplier", { precision: 4, scale: 2 }).notNull(),
+});
+
+export type HandicapSetting = typeof handicapSettings.$inferSelect;
