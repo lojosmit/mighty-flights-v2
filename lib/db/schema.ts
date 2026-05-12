@@ -42,11 +42,18 @@ export type NewLeagueNight = typeof leagueNights.$inferInsert;
 
 // ── Round ─────────────────────────────────────────────────────────────────────
 
+export type OverrideLog = {
+  swappedA: string;
+  swappedB: string;
+  timestamp: string;
+};
+
 export const rounds = pgTable("rounds", {
   id: uuid("id").primaryKey().defaultRandom(),
   leagueNightId: uuid("league_night_id").notNull().references(() => leagueNights.id),
   roundNumber: integer("round_number").notNull(),
   bench: jsonb("bench").$type<string[]>().notNull().default([]),
+  overrides: jsonb("overrides").$type<OverrideLog[]>().notNull().default([]),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
