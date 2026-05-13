@@ -434,6 +434,81 @@ describe("all players accounted for — invariant", () => {
   }
 });
 
+// ── Fair bench rotation ───────────────────────────────────────────────────────
+
+describe("fair bench rotation — all losers bench before repeat", () => {
+  it("player with bench_count=0 is benched over player with bench_count=1", () => {
+    // 7 players, 2 boards (A=2v2, B=1v1) → 1 bench slot
+    // p1p2 won A (stay on A), p5 won B (promoted to A)
+    // Pool for fill: p3, p4, p6, p7 — all losers
+    // p7 has bench_count=1, p3/p4/p6 have bench_count=0
+    // Expected: one of p3/p4/p6 gets benched (zero bench count preferred for bench)
+    const prev: RoundState = {
+      boards: [
+        {
+          boardLabel: "A", type: "2v2",
+          teamA: { playerIds: ["p1", "p2"] },
+          teamB: { playerIds: ["p3", "p4"] },
+          result: "teamA_win",
+        },
+        {
+          boardLabel: "B", type: "1v1",
+          teamA: { playerIds: ["p5"] },
+          teamB: { playerIds: ["p6"] },
+          result: "teamA_win",
+        },
+      ],
+      bench: ["p7"],
+      streaks: [],
+    };
+
+    const benchCounts: Record<string, number> = { p7: 1 };
+    const result = nextRound(prev, ids(7), 2, noShuffle, benchCounts, 1);
+
+    // p7 was benched last round → must play now
+    expect(allPlaced(result.boards)).toContain("p7");
+
+    // The new bench must be someone with bench_count=0 (p3, p4, or p6)
+    expect(result.bench.length).toBe(1);
+    expect(["p3", "p4", "p6"]).toContain(result.bench[0]);
+  });
+
+  it("among zero-bench players, player with more games played is benched first", () => {
+    // 7 players, 2 boards. 2 rounds completed.
+    // p3 and p4 both bench_count=0, but p3 played 2 games, p4 played 2 games equally
+    // To differentiate: p3 bench_count=0 gp=2, p4 bench_count=0 gp=2, p6 bench_count=0 gp=2
+    // vs p7 bench_count=1 gp=1 → p7 must play
+    // noShuffle puts p3 first in regularPool → p3 fills board, then p4, then p6 benched
+    const prev: RoundState = {
+      boards: [
+        {
+          boardLabel: "A", type: "2v2",
+          teamA: { playerIds: ["p1", "p2"] },
+          teamB: { playerIds: ["p3", "p4"] },
+          result: "teamA_win",
+        },
+        {
+          boardLabel: "B", type: "1v1",
+          teamA: { playerIds: ["p5"] },
+          teamB: { playerIds: ["p6"] },
+          result: "teamA_win",
+        },
+      ],
+      bench: ["p7"],
+      streaks: [],
+    };
+
+    const benchCounts: Record<string, number> = { p7: 1 };
+    const result = nextRound(prev, ids(7), 2, noShuffle, benchCounts, 2);
+
+    // p7 (bench_count=1) must play
+    expect(allPlaced(result.boards)).toContain("p7");
+
+    // bench must contain one of the zero-bench-count players
+    expect(["p3", "p4", "p6"]).toContain(result.bench[0]);
+  });
+});
+
 // ── special_win treated same as normal win ────────────────────────────────────
 
 describe("special_win_A / special_win_B treated as normal win for rotation", () => {

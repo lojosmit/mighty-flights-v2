@@ -1,14 +1,15 @@
-import { integer, jsonb, numeric, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { integer, jsonb, numeric, pgTable, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
 
 export const players = pgTable("players", {
   id: uuid("id").primaryKey().defaultRandom(),
   name: text("name").notNull(),
   seasonRank: integer("season_rank").notNull().default(1),
-  // stats — per DESIGN.md Section 2
+  // stats — per DESIGN.md Section 8
   wins: integer("wins").notNull().default(0),
   losses: integer("losses").notNull().default(0),
   doves: integer("doves").notNull().default(0),
   doveWins: integer("dove_wins").notNull().default(0),
+  forfeits: integer("forfeits").notNull().default(0),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -91,3 +92,37 @@ export const fixtures = pgTable("fixtures", {
 });
 
 export type Fixture = typeof fixtures.$inferSelect;
+
+// ── Pair Stats (DESIGN.md §8) ─────────────────────────────────────────────────
+// Tracks stats for any two players who have ever played on the same team.
+
+export const pairStats = pgTable(
+  "pair_stats",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    playerIdA: text("player_id_a").notNull(), // alphabetically first
+    playerIdB: text("player_id_b").notNull(), // alphabetically second
+    gamesPlayed: integer("games_played").notNull().default(0),
+    wins: integer("wins").notNull().default(0),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (t) => [uniqueIndex("pair_stats_unique_pair").on(t.playerIdA, t.playerIdB)]
+);
+
+export type PairStat = typeof pairStats.$inferSelect;
+
+// ── Matchup History (DESIGN.md §8) ───────────────────────────────────────────
+// Tracks head-to-head history between two teams (pair vs pair or solo vs solo).
+
+export const matchupHistory = pgTable("matchup_history", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  matchupKey: text("matchup_key").notNull().unique(),
+  teamAPlayerIds: jsonb("team_a_player_ids").$type<string[]>().notNull(),
+  teamBPlayerIds: jsonb("team_b_player_ids").$type<string[]>().notNull(),
+  gamesPlayed: integer("games_played").notNull().default(0),
+  // "A" = canonical teamA won, "B" = canonical teamB won, "X" = double forfeit
+  winnerHistory: jsonb("winner_history").$type<string[]>().notNull().default([]),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export type MatchupHistoryRecord = typeof matchupHistory.$inferSelect;

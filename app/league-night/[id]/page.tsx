@@ -111,6 +111,8 @@ export default async function LeagueNightPage({
   const currentRound = allRounds[allRounds.length - 1];
   const pastRounds = allRounds.slice(0, -1);
 
+  const allPlayersList = allPlayers.map((p) => ({ id: p.id, name: p.name }));
+
   return (
     <main
       className="max-w-[1280px] mx-auto px-20 py-16"
@@ -121,6 +123,8 @@ export default async function LeagueNightPage({
         playerMap={playerMap}
         leagueNightId={id}
         nightStatus={night.status}
+        allPlayers={allPlayersList}
+        boardCount={night.boardCount}
       />
 
       <RoundHistory rounds={pastRounds} playerMap={playerMap} />

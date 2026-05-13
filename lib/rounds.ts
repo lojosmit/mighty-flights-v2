@@ -11,6 +11,7 @@ import { allocateFixtures, swapPlayers, type AllocationResult } from "./fixture-
 import { nextRound, type RoundState } from "./rotation-engine";
 import { getPlayers } from "./players";
 import { getMultiplier } from "./handicap";
+import { applyFixtureStats } from "./stats";
 
 export type RoundWithFixtures = Round & { fixtures: Fixture[] };
 
@@ -127,10 +128,20 @@ export async function recordResult(
   leagueNightId: string,
   forfeitReason?: string
 ): Promise<void> {
+  // Fetch first so we can (a) guard against double-recording and (b) get team data.
+  const [current] = await db
+    .select()
+    .from(fixtures)
+    .where(eq(fixtures.id, fixtureId));
+  if (!current || current.result !== "in_progress") return;
+
   await db
     .update(fixtures)
     .set({ result, ...(forfeitReason ? { forfeitReason } : {}) })
     .where(eq(fixtures.id, fixtureId));
+
+  await applyFixtureStats(current.teamA.playerIds, current.teamB.playerIds, result);
+
   revalidatePath(`/league-night/${leagueNightId}`);
 }
 
@@ -166,7 +177,21 @@ export async function generateNextRound(
     streaks: prevRecord.streaks,
   };
 
-  const allocation = nextRound(prevState, attending.map((p) => p.id), night.boardCount);
+  const benchCounts: Record<string, number> = {};
+  for (const r of allRoundsRaw) {
+    for (const id of r.bench) {
+      benchCounts[id] = (benchCounts[id] ?? 0) + 1;
+    }
+  }
+
+  const allocation = nextRound(
+    prevState,
+    attending.map((p) => p.id),
+    night.boardCount,
+    Math.random,
+    benchCounts,
+    allRoundsRaw.length
+  );
 
   const [newRound] = await db
     .insert(rounds)

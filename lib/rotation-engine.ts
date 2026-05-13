@@ -78,13 +78,17 @@ function fisherYates<T>(arr: T[], rng: () => number): T[] {
  * Pure rotation function. Takes the completed previous round and returns
  * the next round's board assignments, bench, and updated streaks.
  *
- * @param rng  Optional deterministic RNG — used for tests. Defaults to Math.random.
+ * @param rng             Optional deterministic RNG — used for tests. Defaults to Math.random.
+ * @param benchCounts     Per-player count of how many times they've been benched so far.
+ * @param roundsCompleted Number of rounds already completed (used to derive games played).
  */
 export function nextRound(
   prev: RoundState,
   allPlayerIds: string[],
   boardCount: number,
-  rng: () => number = Math.random
+  rng: () => number = Math.random,
+  benchCounts: Record<string, number> = {},
+  roundsCompleted: number = 0
 ): NextRoundResult {
   const specs = allocateBoardSpecs(allPlayerIds.length, boardCount);
   const specMap = new Map(specs.map((s) => [s.boardLabel, s]));
@@ -96,10 +100,11 @@ export function nextRound(
 
   // ── Step 1: Resolve Board A ──────────────────────────────────────────────
 
+  const activeSet = new Set(allPlayerIds);
   const boardA = prev.boards.find((b) => b.boardLabel === "A");
 
   if (boardA && boardA.result !== "double_forfeit") {
-    const winners = getWinners(boardA);
+    const winners = getWinners(boardA).filter((id) => activeSet.has(id));
     if (winners.length === 2) {
       const prevStreak = getPairStreak(prev.streaks, winners);
       const newStreak = prevStreak + 1;
@@ -126,7 +131,7 @@ export function nextRound(
   for (const board of lowerBoards) {
     if (board.result === "double_forfeit") continue;
 
-    const winners = getWinners(board);
+    const winners = getWinners(board).filter((id) => activeSet.has(id));
     if (winners.length === 0) continue;
 
     const target = prevLabel(board.boardLabel);
@@ -167,10 +172,22 @@ export function nextRound(
   // Fill order: lowest board first (C → B → A).
 
   const benchedInPool = prev.bench.filter((id) => pool.includes(id));
+
+  // Fair bench rotation: shuffle first (randomness), then stable-sort so players
+  // with higher bench counts play first (they've sat more), and among equal bench
+  // counts, players with fewer games played also get priority.
   const regularPool = fisherYates(
     pool.filter((id) => !prev.bench.includes(id)),
     rng
-  );
+  ).sort((a, b) => {
+    const bcA = benchCounts[a] ?? 0;
+    const bcB = benchCounts[b] ?? 0;
+    if (bcB !== bcA) return bcB - bcA; // more bench time → play first
+    const gpA = roundsCompleted - bcA;
+    const gpB = roundsCompleted - bcB;
+    return gpA - gpB; // fewer games played → play first
+  });
+
   const fillQueue = [...benchedInPool, ...regularPool];
 
   const fillOrder = [...specs].sort(

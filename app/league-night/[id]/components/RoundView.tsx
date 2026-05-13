@@ -11,12 +11,15 @@ import {
 import type { FixtureResult, LeagueNightStatus } from "@/lib/db/schema";
 import FixtureBoard from "./FixtureBoard";
 import BenchDisplay from "./BenchDisplay";
+import PlayerChangesPanel from "./PlayerChangesPanel";
 
 interface Props {
   round: RoundWithFixtures;
   playerMap: Record<string, string>;
   leagueNightId: string;
   nightStatus: LeagueNightStatus;
+  allPlayers: { id: string; name: string }[];
+  boardCount: number;
 }
 
 export default function RoundView({
@@ -24,6 +27,8 @@ export default function RoundView({
   playerMap,
   leagueNightId,
   nightStatus,
+  allPlayers,
+  boardCount,
 }: Props) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [confirmEnd, setConfirmEnd] = useState(false);
@@ -211,6 +216,18 @@ export default function RoundView({
           selectedPlayerId={selectedId}
           onPlayerClick={handlePlayerClick}
         />
+
+        {/* Player changes */}
+        {isActive && (
+          <PlayerChangesPanel
+            leagueNightId={leagueNightId}
+            attendees={allPlayers.filter((p) => playerMap[p.id] !== undefined)}
+            nonAttendees={allPlayers.filter((p) => playerMap[p.id] === undefined)}
+            currentBench={round.bench}
+            currentFixtures={round.fixtures}
+            boardCount={boardCount}
+          />
+        )}
 
         {/* Footer actions */}
         {isActive && (
