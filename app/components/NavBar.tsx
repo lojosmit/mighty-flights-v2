@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import ThemeToggle from "./ThemeToggle";
 
 const NAV_LINKS = [
@@ -27,19 +28,36 @@ export default function NavBar() {
     >
       {/* Wordmark */}
       <Link
-        href="/leaderboard"
+        href="/"
         style={{
-          fontFamily: "var(--font-cormorant)",
-          fontSize: "24px",
-          fontWeight: 400,
-          color: "var(--ink-primary)",
+          display: "flex",
+          alignItems: "center",
+          gap: "10px",
           textDecoration: "none",
-          letterSpacing: "0.02em",
           marginRight: "48px",
           flexShrink: 0,
         }}
       >
-        Mighty Flights
+        <div style={{ background: "white", lineHeight: 0, flexShrink: 0 }}>
+          <Image
+            src="/mighty-flights-logo.png"
+            alt=""
+            width={36}
+            height={36}
+            style={{ display: "block", objectFit: "contain" }}
+          />
+        </div>
+        <span
+          style={{
+            fontFamily: "var(--font-cormorant)",
+            fontSize: "24px",
+            fontWeight: 400,
+            color: "var(--ink-primary)",
+            letterSpacing: "0.02em",
+          }}
+        >
+          Mighty Flights
+        </span>
       </Link>
 
       {/* Nav links */}
