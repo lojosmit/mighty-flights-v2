@@ -1,12 +1,16 @@
 "use client";
 
-import type { Fixture } from "@/lib/db/schema";
+import type { Fixture, FixtureResult } from "@/lib/db/schema";
+import FixtureResultButtons from "./FixtureResultButtons";
 
 interface Props {
   fixture: Fixture;
   playerMap: Record<string, string>;
   selectedPlayerId: string | null;
   onPlayerClick: (id: string) => void;
+  isActive?: boolean;
+  onRecordResult?: (result: FixtureResult) => void;
+  isPendingResult?: boolean;
 }
 
 export default function FixtureBoard({
@@ -14,7 +18,17 @@ export default function FixtureBoard({
   playerMap,
   selectedPlayerId,
   onPlayerClick,
+  isActive = false,
+  onRecordResult,
+  isPendingResult = false,
 }: Props) {
+  const teamALabel = fixture.teamA.playerIds
+    .map((id) => playerMap[id] ?? "—")
+    .join(" & ");
+  const teamBLabel = fixture.teamB.playerIds
+    .map((id) => playerMap[id] ?? "—")
+    .join(" & ");
+
   return (
     <div
       style={{
@@ -75,8 +89,8 @@ export default function FixtureBoard({
           playerIds={fixture.teamA.playerIds}
           handicap={fixture.teamA.handicapApplied}
           playerMap={playerMap}
-          selectedPlayerId={selectedPlayerId}
-          onPlayerClick={onPlayerClick}
+          selectedPlayerId={isActive && fixture.result === "in_progress" ? selectedPlayerId : null}
+          onPlayerClick={isActive && fixture.result === "in_progress" ? onPlayerClick : () => {}}
         />
 
         <div
@@ -98,10 +112,24 @@ export default function FixtureBoard({
           playerIds={fixture.teamB.playerIds}
           handicap={fixture.teamB.handicapApplied}
           playerMap={playerMap}
-          selectedPlayerId={selectedPlayerId}
-          onPlayerClick={onPlayerClick}
+          selectedPlayerId={isActive && fixture.result === "in_progress" ? selectedPlayerId : null}
+          onPlayerClick={isActive && fixture.result === "in_progress" ? onPlayerClick : () => {}}
         />
       </div>
+
+      {/* Result section */}
+      {fixture.result !== "in_progress" && (
+        <ResultBadge result={fixture.result} teamALabel={teamALabel} teamBLabel={teamBLabel} />
+      )}
+
+      {fixture.result === "in_progress" && isActive && onRecordResult && (
+        <FixtureResultButtons
+          teamALabel="Team A"
+          teamBLabel="Team B"
+          onResult={onRecordResult}
+          isPending={isPendingResult}
+        />
+      )}
     </div>
   );
 }
@@ -159,6 +187,50 @@ function TeamBlock({
         }}
       >
         ×{handicap}
+      </p>
+    </div>
+  );
+}
+
+function ResultBadge({
+  result,
+  teamALabel,
+  teamBLabel,
+}: {
+  result: FixtureResult;
+  teamALabel: string;
+  teamBLabel: string;
+}) {
+  const map: Record<FixtureResult, { label: string; color: string }> = {
+    teamA_win:      { label: `${teamALabel} wins`,       color: "var(--win)" },
+    teamB_win:      { label: `${teamBLabel} wins`,       color: "var(--win)" },
+    special_win_A:  { label: `${teamALabel} — dove`,     color: "var(--accent-gold)" },
+    special_win_B:  { label: `${teamBLabel} — dove`,     color: "var(--accent-gold)" },
+    double_forfeit: { label: "Double forfeit",           color: "var(--forfeit)" },
+    in_progress:    { label: "In progress",              color: "var(--ink-tertiary)" },
+  };
+
+  const { label, color } = map[result];
+
+  return (
+    <div
+      style={{
+        borderTop: "1px solid var(--border-hairline)",
+        marginTop: "24px",
+        paddingTop: "16px",
+      }}
+    >
+      <p
+        style={{
+          fontFamily: "var(--font-body)",
+          fontSize: "12px",
+          fontWeight: 500,
+          letterSpacing: "0.08em",
+          textTransform: "uppercase",
+          color,
+        }}
+      >
+        {label}
       </p>
     </div>
   );

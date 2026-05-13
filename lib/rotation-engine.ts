@@ -2,12 +2,9 @@
 
 import { allocateBoardSpecs } from "./fixture-utils";
 import type { AssignedBoard } from "./fixture-utils";
-import type { FixtureResult } from "./db/schema";
+import type { FixtureResult, PairStreakRecord } from "./db/schema";
 
-export type PairStreak = {
-  playerIds: [string, string];
-  count: number;
-};
+export type PairStreak = PairStreakRecord;
 
 export type CompletedBoard = {
   boardLabel: string;

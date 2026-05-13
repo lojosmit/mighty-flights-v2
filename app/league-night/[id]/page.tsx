@@ -1,8 +1,9 @@
 import { notFound } from "next/navigation";
 import { getLeagueNight } from "@/lib/league-nights";
-import { getLatestRound, createRound1 } from "@/lib/rounds";
+import { getRoundsForNight, createRound1 } from "@/lib/rounds";
 import { getPlayers } from "@/lib/players";
 import RoundView from "./components/RoundView";
+import RoundHistory from "./components/RoundHistory";
 
 export default async function LeagueNightPage({
   params,
@@ -11,9 +12,9 @@ export default async function LeagueNightPage({
 }) {
   const { id } = await params;
 
-  const [night, round, allPlayers] = await Promise.all([
+  const [night, allRounds, allPlayers] = await Promise.all([
     getLeagueNight(id),
-    getLatestRound(id),
+    getRoundsForNight(id),
     getPlayers(),
   ]);
 
@@ -31,7 +32,9 @@ export default async function LeagueNightPage({
     await createRound1(id);
   }
 
-  if (!round) {
+  // ── no rounds yet: pre-start screen ──────────────────────────────────────
+
+  if (allRounds.length === 0) {
     const nightDate = new Date(night.date).toLocaleDateString("en-GB", {
       day: "2-digit",
       month: "long",
@@ -77,12 +80,7 @@ export default async function LeagueNightPage({
             {night.attendingPlayerIds.length} players attending ·{" "}
             {night.boardCount} {night.boardCount === 1 ? "board" : "boards"}
           </p>
-          <div
-            style={{
-              height: "1px",
-              backgroundColor: "var(--border-hairline)",
-            }}
-          />
+          <div style={{ height: "1px", backgroundColor: "var(--border-hairline)" }} />
         </header>
 
         <form action={startRound1}>
@@ -108,12 +106,24 @@ export default async function LeagueNightPage({
     );
   }
 
+  // ── rounds exist ──────────────────────────────────────────────────────────
+
+  const currentRound = allRounds[allRounds.length - 1];
+  const pastRounds = allRounds.slice(0, -1);
+
   return (
     <main
       className="max-w-[1280px] mx-auto px-20 py-16"
       style={{ position: "relative", overflow: "hidden" }}
     >
-      <RoundView round={round} playerMap={playerMap} leagueNightId={id} />
+      <RoundView
+        round={currentRound}
+        playerMap={playerMap}
+        leagueNightId={id}
+        nightStatus={night.status}
+      />
+
+      <RoundHistory rounds={pastRounds} playerMap={playerMap} />
     </main>
   );
 }

@@ -1,17 +1,20 @@
 "use server";
 
-import { eq, and } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { db } from "./db/index";
 import {
   rounds, fixtures, leagueNights,
-  type Round, type Fixture, type OverrideLog,
+  type Round, type Fixture, type OverrideLog, type FixtureResult,
 } from "./db/schema";
 import { allocateFixtures, swapPlayers, type AllocationResult } from "./fixture-utils";
+import { nextRound, type RoundState } from "./rotation-engine";
 import { getPlayers } from "./players";
 import { getMultiplier } from "./handicap";
 
 export type RoundWithFixtures = Round & { fixtures: Fixture[] };
+
+// ── reads ─────────────────────────────────────────────────────────────────────
 
 export async function getRoundWithFixtures(
   roundId: string
@@ -36,9 +39,28 @@ export async function getLatestRound(
   return getRoundWithFixtures(latest.id);
 }
 
+export async function getRoundsForNight(
+  leagueNightId: string
+): Promise<RoundWithFixtures[]> {
+  const nightRounds = await db
+    .select()
+    .from(rounds)
+    .where(eq(rounds.leagueNightId, leagueNightId))
+    .orderBy(rounds.roundNumber);
+
+  const result: RoundWithFixtures[] = [];
+  for (const r of nightRounds) {
+    const fx = await db.select().from(fixtures).where(eq(fixtures.roundId, r.id));
+    result.push({ ...r, fixtures: fx });
+  }
+  return result;
+}
+
+// ── shared ────────────────────────────────────────────────────────────────────
+
 async function buildFixtureValues(
   roundId: string,
-  allocation: AllocationResult,
+  allocation: { boards: AllocationResult["boards"] },
   playerRankMap: Map<string, number>
 ) {
   const values = [];
@@ -60,6 +82,8 @@ async function buildFixtureValues(
   }
   return values;
 }
+
+// ── mutations ─────────────────────────────────────────────────────────────────
 
 export async function createRound1(
   leagueNightId: string
@@ -97,6 +121,78 @@ export async function createRound1(
   return { ...round, fixtures: fx };
 }
 
+export async function recordResult(
+  fixtureId: string,
+  result: FixtureResult,
+  leagueNightId: string,
+  forfeitReason?: string
+): Promise<void> {
+  await db
+    .update(fixtures)
+    .set({ result, ...(forfeitReason ? { forfeitReason } : {}) })
+    .where(eq(fixtures.id, fixtureId));
+  revalidatePath(`/league-night/${leagueNightId}`);
+}
+
+export async function generateNextRound(
+  leagueNightId: string
+): Promise<RoundWithFixtures> {
+  const [night, allRoundsRaw, allPlayers] = await Promise.all([
+    db.select().from(leagueNights).where(eq(leagueNights.id, leagueNightId)).then((r) => r[0]),
+    db.select().from(rounds).where(eq(rounds.leagueNightId, leagueNightId)).orderBy(rounds.roundNumber),
+    getPlayers(),
+  ]);
+
+  const attending = allPlayers.filter((p) =>
+    night.attendingPlayerIds.includes(p.id)
+  );
+  const playerRankMap = new Map(attending.map((p) => [p.id, p.seasonRank]));
+
+  const prevRecord = allRoundsRaw[allRoundsRaw.length - 1];
+  const prevFixtures = await db
+    .select()
+    .from(fixtures)
+    .where(eq(fixtures.roundId, prevRecord.id));
+
+  const prevState: RoundState = {
+    boards: prevFixtures.map((f) => ({
+      boardLabel: f.boardLabel,
+      type: f.type,
+      teamA: { playerIds: f.teamA.playerIds },
+      teamB: { playerIds: f.teamB.playerIds },
+      result: f.result,
+    })),
+    bench: prevRecord.bench,
+    streaks: prevRecord.streaks,
+  };
+
+  const allocation = nextRound(prevState, attending.map((p) => p.id), night.boardCount);
+
+  const [newRound] = await db
+    .insert(rounds)
+    .values({
+      leagueNightId,
+      roundNumber: prevRecord.roundNumber + 1,
+      bench: allocation.bench,
+      streaks: allocation.streaks,
+    })
+    .returning();
+
+  const fixtureValues = await buildFixtureValues(newRound.id, allocation, playerRankMap);
+  const fx = await db.insert(fixtures).values(fixtureValues).returning();
+
+  revalidatePath(`/league-night/${leagueNightId}`);
+  return { ...newRound, fixtures: fx };
+}
+
+export async function endLeagueNight(leagueNightId: string): Promise<void> {
+  await db
+    .update(leagueNights)
+    .set({ status: "completed" })
+    .where(eq(leagueNights.id, leagueNightId));
+  revalidatePath(`/league-night/${leagueNightId}`);
+}
+
 export async function applyOverride(
   roundId: string,
   leagueNightId: string,
@@ -106,7 +202,6 @@ export async function applyOverride(
   const round = await getRoundWithFixtures(roundId);
   if (!round) return;
 
-  // Build current allocation from DB state
   const current: AllocationResult = {
     bench: round.bench,
     boards: round.fixtures.map((f) => ({
@@ -119,7 +214,6 @@ export async function applyOverride(
 
   const updated = swapPlayers(current, playerA, playerB);
 
-  // Update bench on round
   const log: OverrideLog = {
     swappedA: playerA,
     swappedB: playerB,
@@ -134,7 +228,6 @@ export async function applyOverride(
     })
     .where(eq(rounds.id, roundId));
 
-  // Update each fixture's team assignments
   for (const updatedBoard of updated.boards) {
     const dbFixture = round.fixtures.find(
       (f) => f.boardLabel === updatedBoard.boardLabel

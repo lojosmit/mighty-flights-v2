@@ -48,12 +48,18 @@ export type OverrideLog = {
   timestamp: string;
 };
 
+export type PairStreakRecord = {
+  playerIds: [string, string];
+  count: number;
+};
+
 export const rounds = pgTable("rounds", {
   id: uuid("id").primaryKey().defaultRandom(),
   leagueNightId: uuid("league_night_id").notNull().references(() => leagueNights.id),
   roundNumber: integer("round_number").notNull(),
   bench: jsonb("bench").$type<string[]>().notNull().default([]),
   overrides: jsonb("overrides").$type<OverrideLog[]>().notNull().default([]),
+  streaks: jsonb("streaks").$type<PairStreakRecord[]>().notNull().default([]),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
