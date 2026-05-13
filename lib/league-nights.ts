@@ -1,6 +1,6 @@
 "use server";
 
-import { eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { db } from "./db/index";
 import { leagueNights, type LeagueNight } from "./db/schema";
@@ -31,4 +31,11 @@ export async function getActiveLeagueNight(): Promise<LeagueNight | null> {
     .from(leagueNights)
     .where(eq(leagueNights.status, "in_progress"));
   return night ?? null;
+}
+
+export async function getAllLeagueNights(): Promise<LeagueNight[]> {
+  return db
+    .select()
+    .from(leagueNights)
+    .orderBy(desc(leagueNights.createdAt));
 }
