@@ -1,6 +1,6 @@
 import { connection } from "next/server";
-import Image from "next/image";
 import Link from "next/link";
+import LogoMark from "./components/LogoMark";
 import { getLeaderboard, sortLeaderboard } from "@/lib/leaderboard";
 import { getActiveLeagueNight, getAllLeagueNights } from "@/lib/league-nights";
 
@@ -54,23 +54,14 @@ export default async function HomePage() {
           borderBottom: "1px solid var(--border-hairline)",
         }}
       >
-        <div
+        <LogoMark
           style={{
-            background: "white",
-            padding: "16px",
-            marginBottom: "32px",
-            lineHeight: 0,
+            width: "220px",
+            height: "110px",
+            marginBottom: "24px",
+            color: "var(--ink-primary)",
           }}
-        >
-          <Image
-            src="/mighty-flights-logo.png"
-            alt="Mighty Flights"
-            width={200}
-            height={200}
-            priority
-            style={{ display: "block", objectFit: "contain" }}
-          />
-        </div>
+        />
 
         <p
           style={{
