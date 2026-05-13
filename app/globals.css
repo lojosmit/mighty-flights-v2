@@ -202,3 +202,14 @@
     @apply bg-background text-foreground font-body;
   }
 }
+
+/* Theme crossfade — only active during the toggle (400ms per UIUX.md §6) */
+.theme-transitioning,
+.theme-transitioning *,
+.theme-transitioning *::before,
+.theme-transitioning *::after {
+  transition:
+    background-color 400ms ease,
+    color 400ms ease,
+    border-color 400ms ease !important;
+}
