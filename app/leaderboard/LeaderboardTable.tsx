@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import Link from "next/link";
-import { sortLeaderboard, type LeaderboardEntry, type SortKey } from "@/lib/leaderboard";
+import { sortLeaderboard, type LeaderboardEntry, type SortKey } from "@/lib/leaderboard-utils";
 
 interface Props {
   entries: LeaderboardEntry[];

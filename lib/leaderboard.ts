@@ -3,21 +3,10 @@
 import { eq, or, sql } from "drizzle-orm";
 import { db } from "./db/index";
 import { players, pairStats, matchupHistory, type Player } from "./db/schema";
+import type { LeaderboardEntry } from "./leaderboard-utils";
 
-export type LeaderboardEntry = {
-  id: string;
-  name: string;
-  seasonRank: number;
-  wins: number;
-  losses: number;
-  doves: number;
-  doveWins: number;
-  forfeits: number;
-  gamesPlayed: number;
-  winRatio: number;
-};
-
-export type SortKey = "wins" | "winRatio" | "doveWins" | "doves" | "gamesPlayed";
+export type { LeaderboardEntry, SortKey } from "./leaderboard-utils";
+export { sortLeaderboard } from "./leaderboard-utils";
 
 function toEntry(p: Player): LeaderboardEntry {
   const gamesPlayed = p.wins + p.losses;
@@ -38,16 +27,6 @@ function toEntry(p: Player): LeaderboardEntry {
 export async function getLeaderboard(): Promise<LeaderboardEntry[]> {
   const all = await db.select().from(players);
   return all.map(toEntry);
-}
-
-// Pure sort — safe to import on client too.
-export function sortLeaderboard(
-  entries: LeaderboardEntry[],
-  key: SortKey,
-  dir: "asc" | "desc" = "desc"
-): LeaderboardEntry[] {
-  const factor = dir === "desc" ? -1 : 1;
-  return [...entries].sort((a, b) => factor * (a[key] - b[key]));
 }
 
 // ── Player profile ────────────────────────────────────────────────────────────
