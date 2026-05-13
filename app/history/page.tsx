@@ -1,3 +1,4 @@
+import { connection } from "next/server";
 import Link from "next/link";
 import { getAllLeagueNights } from "@/lib/league-nights";
 import type { LeagueNightStatus } from "@/lib/db/schema";
@@ -34,6 +35,7 @@ const thStyle: React.CSSProperties = {
 };
 
 export default async function HistoryPage() {
+  await connection();
   const nights = await getAllLeagueNights();
 
   return (

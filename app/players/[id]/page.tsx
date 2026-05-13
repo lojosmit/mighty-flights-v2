@@ -1,6 +1,8 @@
+import { connection } from "next/server";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getPlayerProfile } from "@/lib/leaderboard";
+import CopyLinkButton from "./CopyLinkButton";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -11,6 +13,7 @@ const TABS = ["stats", "partners", "head-to-head"] as const;
 type Tab = (typeof TABS)[number];
 
 export default async function PlayerProfilePage({ params, searchParams }: Props) {
+  await connection();
   const { id } = await params;
   const { tab: tabParam } = await searchParams;
   const tab: Tab = TABS.includes(tabParam as Tab) ? (tabParam as Tab) : "stats";
@@ -42,22 +45,23 @@ export default async function PlayerProfilePage({ params, searchParams }: Props)
 
   return (
     <main style={{ maxWidth: "1280px", margin: "0 auto", padding: "64px 80px" }}>
-      {/* Back link */}
-      <Link
-        href="/leaderboard"
-        style={{
-          fontFamily: "var(--font-body)",
-          fontSize: "11px",
-          letterSpacing: "0.08em",
-          textTransform: "uppercase",
-          color: "var(--ink-tertiary)",
-          textDecoration: "none",
-          display: "inline-block",
-          marginBottom: "40px",
-        }}
-      >
-        ← Standings
-      </Link>
+      {/* Back link + copy */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "40px" }}>
+        <Link
+          href="/leaderboard"
+          style={{
+            fontFamily: "var(--font-body)",
+            fontSize: "11px",
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+            color: "var(--ink-tertiary)",
+            textDecoration: "none",
+          }}
+        >
+          ← Standings
+        </Link>
+        <CopyLinkButton />
+      </div>
 
       {/* Hero block */}
       <header style={{ marginBottom: "48px" }}>

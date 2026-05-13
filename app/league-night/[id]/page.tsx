@@ -1,3 +1,4 @@
+import { connection } from "next/server";
 import { notFound } from "next/navigation";
 import { getLeagueNight } from "@/lib/league-nights";
 import { getRoundsForNight, createRound1 } from "@/lib/rounds";
@@ -11,6 +12,7 @@ export default async function LeagueNightPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  await connection();
   const { id } = await params;
 
   const [night, allRounds, allPlayers] = await Promise.all([

@@ -1,7 +1,9 @@
+import { connection } from "next/server";
 import { getPlayers } from "@/lib/players";
 import { LeagueNightSetup } from "./components/LeagueNightSetup";
 
 export default async function NewLeagueNightPage() {
+  await connection();
   const players = await getPlayers();
 
   return (

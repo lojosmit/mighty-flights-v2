@@ -1,7 +1,9 @@
+import { connection } from "next/server";
 import { getPlayers } from "@/lib/players";
 import { PlayerList } from "./components/PlayerList";
 
 export default async function PlayersPage() {
+  await connection();
   const players = await getPlayers();
 
   return (

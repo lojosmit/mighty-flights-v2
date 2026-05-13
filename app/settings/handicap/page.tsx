@@ -1,7 +1,9 @@
+import { connection } from "next/server";
 import { getHandicapTable } from "@/lib/handicap";
 import { HandicapTable } from "./components/HandicapTable";
 
 export default async function HandicapSettingsPage() {
+  await connection();
   const rows = await getHandicapTable();
 
   return (

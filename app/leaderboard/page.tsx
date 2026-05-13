@@ -1,7 +1,9 @@
+import { connection } from "next/server";
 import { getLeaderboard } from "@/lib/leaderboard";
 import LeaderboardTable from "./LeaderboardTable";
 
 export default async function LeaderboardPage() {
+  await connection();
   const entries = await getLeaderboard();
 
   return (
@@ -31,7 +33,32 @@ export default async function LeaderboardPage() {
         >
           Season Standings
         </h1>
-        <div style={{ height: "1px", backgroundColor: "var(--border-hairline)" }} />
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <div style={{ height: "1px", backgroundColor: "var(--border-hairline)", flex: 1 }} />
+          <a
+            href="/api/export/stats"
+            download
+            style={{
+              marginLeft: "24px",
+              fontFamily: "var(--font-body)",
+              fontSize: "11px",
+              fontWeight: 500,
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              color: "var(--ink-tertiary)",
+              textDecoration: "none",
+              flexShrink: 0,
+            }}
+          >
+            Export CSV
+          </a>
+        </div>
       </header>
 
       <LeaderboardTable entries={entries} />
