@@ -5,6 +5,7 @@ import {
   Cormorant_Garamond,
   Oswald,
 } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import NavBar from "./components/NavBar";
 
@@ -46,17 +47,17 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${inter.variable} ${jetbrainsMono.variable} ${cormorantGaramond.variable} ${oswald.variable} h-full antialiased`}
     >
-      <head>
-        {/* Apply saved theme before first paint to prevent flash */}
-        <script
+      <body className="min-h-full flex flex-col">
+        <Script
+          id="theme-init"
+          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
             __html: `(function(){try{var t=localStorage.getItem('mf-theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme: dark)').matches)){document.documentElement.classList.add('dark')}}catch(e){}})()`,
           }}
         />
-      </head>
-      <body className="min-h-full flex flex-col">
         <NavBar />
         {children}
       </body>
