@@ -11,6 +11,7 @@ interface Props {
   isActive?: boolean;
   onRecordResult?: (result: FixtureResult) => void;
   isPendingResult?: boolean;
+  prediction?: { probA: number; probB: number } | null;
 }
 
 export default function FixtureBoard({
@@ -21,6 +22,7 @@ export default function FixtureBoard({
   isActive = false,
   onRecordResult,
   isPendingResult = false,
+  prediction,
 }: Props) {
   const teamALabel = fixture.teamA.playerIds
     .map((id) => playerMap[id] ?? "—")
@@ -116,6 +118,75 @@ export default function FixtureBoard({
           onPlayerClick={isActive && fixture.result === "in_progress" ? onPlayerClick : () => {}}
         />
       </div>
+
+      {/* Prediction odds — shown only while fixture is in progress */}
+      {fixture.result === "in_progress" && (
+        <div
+          style={{
+            marginTop: "24px",
+            paddingTop: "16px",
+            borderTop: "1px solid var(--border-hairline)",
+            display: "flex",
+            alignItems: "center",
+            gap: "16px",
+          }}
+        >
+          <p
+            style={{
+              fontFamily: "var(--font-body)",
+              fontSize: "10px",
+              fontWeight: 500,
+              letterSpacing: "0.1em",
+              textTransform: "uppercase",
+              color: "var(--ink-tertiary)",
+              flexShrink: 0,
+            }}
+          >
+            Odds
+          </p>
+          {prediction ? (
+            <p
+              style={{
+                fontFamily: "var(--font-mono)",
+                fontSize: "12px",
+                color: "var(--ink-secondary)",
+                letterSpacing: "0.04em",
+              }}
+            >
+              <span
+                style={{
+                  color: prediction.probA >= prediction.probB
+                    ? "var(--accent-gold)"
+                    : "var(--ink-secondary)",
+                }}
+              >
+                A {Math.round(prediction.probA * 100)}%
+              </span>
+              <span style={{ color: "var(--ink-tertiary)", margin: "0 8px" }}>·</span>
+              <span
+                style={{
+                  color: prediction.probB > prediction.probA
+                    ? "var(--accent-gold)"
+                    : "var(--ink-secondary)",
+                }}
+              >
+                B {Math.round(prediction.probB * 100)}%
+              </span>
+            </p>
+          ) : (
+            <p
+              style={{
+                fontFamily: "var(--font-body)",
+                fontSize: "11px",
+                color: "var(--ink-tertiary)",
+                letterSpacing: "0.04em",
+              }}
+            >
+              No history
+            </p>
+          )}
+        </div>
+      )}
 
       {/* Result section */}
       {fixture.result !== "in_progress" && (

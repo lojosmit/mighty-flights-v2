@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { getLeagueNight } from "@/lib/league-nights";
 import { getRoundsForNight, createRound1 } from "@/lib/rounds";
 import { getPlayers } from "@/lib/players";
+import { getFixturePredictions } from "@/lib/predictions";
 import RoundView from "./components/RoundView";
 import RoundHistory from "./components/RoundHistory";
 
@@ -112,6 +113,7 @@ export default async function LeagueNightPage({
   const pastRounds = allRounds.slice(0, -1);
 
   const allPlayersList = allPlayers.map((p) => ({ id: p.id, name: p.name }));
+  const predictions = await getFixturePredictions(currentRound.fixtures);
 
   return (
     <main
@@ -125,6 +127,7 @@ export default async function LeagueNightPage({
         nightStatus={night.status}
         allPlayers={allPlayersList}
         boardCount={night.boardCount}
+        predictions={predictions}
       />
 
       <RoundHistory rounds={pastRounds} playerMap={playerMap} />

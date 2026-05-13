@@ -20,6 +20,7 @@ interface Props {
   nightStatus: LeagueNightStatus;
   allPlayers: { id: string; name: string }[];
   boardCount: number;
+  predictions: Record<string, { probA: number; probB: number } | null>;
 }
 
 export default function RoundView({
@@ -29,6 +30,7 @@ export default function RoundView({
   nightStatus,
   allPlayers,
   boardCount,
+  predictions,
 }: Props) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [confirmEnd, setConfirmEnd] = useState(false);
@@ -205,6 +207,7 @@ export default function RoundView({
               isActive={isActive}
               onRecordResult={isActive ? (r) => handleResult(fixture.id, r) : undefined}
               isPendingResult={isPending}
+              prediction={predictions[fixture.id]}
             />
           ))}
         </div>
