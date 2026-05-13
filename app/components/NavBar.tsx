@@ -1,5 +1,5 @@
 import Link from "next/link";
-import LogoMark from "./LogoMark";
+import Image from "next/image";
 import ThemeToggle from "./ThemeToggle";
 
 const NAV_LINKS = [
@@ -38,7 +38,13 @@ export default function NavBar() {
           flexShrink: 0,
         }}
       >
-        <LogoMark style={{ width: "44px", height: "22px", flexShrink: 0, color: "var(--ink-primary)" }} />
+        <Image
+          src="/mighty-flights-logo.png"
+          alt=""
+          width={40}
+          height={40}
+          style={{ display: "block", flexShrink: 0 }}
+        />
         <span
           style={{
             fontFamily: "var(--font-cormorant)",
