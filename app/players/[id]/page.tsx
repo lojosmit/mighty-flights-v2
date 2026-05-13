@@ -1,0 +1,260 @@
+import { notFound } from "next/navigation";
+import Link from "next/link";
+import { getPlayerProfile } from "@/lib/leaderboard";
+
+interface Props {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ tab?: string }>;
+}
+
+const TABS = ["stats", "partners", "head-to-head"] as const;
+type Tab = (typeof TABS)[number];
+
+export default async function PlayerProfilePage({ params, searchParams }: Props) {
+  const { id } = await params;
+  const { tab: tabParam } = await searchParams;
+  const tab: Tab = TABS.includes(tabParam as Tab) ? (tabParam as Tab) : "stats";
+
+  const profile = await getPlayerProfile(id);
+  if (!profile) notFound();
+
+  const { player, partners, headToHeads } = profile;
+
+  const statBlocks = [
+    { label: "Games Played", value: String(player.gamesPlayed) },
+    { label: "Wins",         value: String(player.wins) },
+    { label: "Losses",       value: String(player.losses) },
+    { label: "Win Ratio",    value: player.winRatio.toFixed(3) },
+    { label: "Doves",        value: String(player.doves) },
+    { label: "Dove Wins",    value: String(player.doveWins) },
+  ];
+
+  const thStyle: React.CSSProperties = {
+    fontFamily: "var(--font-body)",
+    fontSize: "11px",
+    fontWeight: 500,
+    letterSpacing: "0.08em",
+    textTransform: "uppercase",
+    color: "var(--ink-tertiary)",
+    paddingBottom: "12px",
+    whiteSpace: "nowrap",
+  };
+
+  return (
+    <main style={{ maxWidth: "1280px", margin: "0 auto", padding: "64px 80px" }}>
+      {/* Back link */}
+      <Link
+        href="/leaderboard"
+        style={{
+          fontFamily: "var(--font-body)",
+          fontSize: "11px",
+          letterSpacing: "0.08em",
+          textTransform: "uppercase",
+          color: "var(--ink-tertiary)",
+          textDecoration: "none",
+          display: "inline-block",
+          marginBottom: "40px",
+        }}
+      >
+        ← Standings
+      </Link>
+
+      {/* Hero block */}
+      <header style={{ marginBottom: "48px" }}>
+        <p
+          style={{
+            fontFamily: "var(--font-body)",
+            fontSize: "11px",
+            letterSpacing: "0.12em",
+            textTransform: "uppercase",
+            color: "var(--accent-gold)",
+            marginBottom: "8px",
+          }}
+        >
+          Rank {player.seasonRank}
+        </p>
+        <h1
+          style={{
+            fontFamily: "var(--font-cormorant)",
+            fontSize: "clamp(52px, 7vw, 84px)",
+            fontWeight: 400,
+            color: "var(--ink-primary)",
+            lineHeight: 1,
+            marginBottom: "24px",
+          }}
+        >
+          {player.name}
+        </h1>
+        <div style={{ height: "1px", backgroundColor: "var(--border-hairline)" }} />
+      </header>
+
+      {/* Tab nav */}
+      <nav style={{ display: "flex", gap: "32px", marginBottom: "48px", borderBottom: "1px solid var(--border-hairline)" }}>
+        {TABS.map((t) => (
+          <Link
+            key={t}
+            href={`/players/${id}?tab=${t}`}
+            style={{
+              fontFamily: "var(--font-body)",
+              fontSize: "11px",
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              color: t === tab ? "var(--ink-primary)" : "var(--ink-tertiary)",
+              textDecoration: "none",
+              paddingBottom: "12px",
+              borderBottom: t === tab ? "2px solid var(--accent-gold)" : "2px solid transparent",
+              marginBottom: "-1px",
+            }}
+          >
+            {t === "head-to-head" ? "Head-to-Head" : t.charAt(0).toUpperCase() + t.slice(1)}
+          </Link>
+        ))}
+      </nav>
+
+      {/* Stats tab */}
+      {tab === "stats" && (
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))",
+            gap: "32px",
+          }}
+        >
+          {statBlocks.map(({ label, value }) => (
+            <div key={label}>
+              <p
+                style={{
+                  fontFamily: "var(--font-mono)",
+                  fontSize: "36px",
+                  fontWeight: 400,
+                  color: "var(--ink-primary)",
+                  lineHeight: 1,
+                  marginBottom: "8px",
+                }}
+              >
+                {value}
+              </p>
+              <p
+                style={{
+                  fontFamily: "var(--font-body)",
+                  fontSize: "10px",
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase",
+                  color: "var(--ink-tertiary)",
+                }}
+              >
+                {label}
+              </p>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Partners tab */}
+      {tab === "partners" && (
+        partners.length === 0 ? (
+          <p style={{ fontFamily: "var(--font-body)", fontSize: "13px", color: "var(--ink-tertiary)" }}>
+            No partner history yet.
+          </p>
+        ) : (
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <thead>
+              <tr style={{ borderBottom: "1px solid var(--border-hairline)" }}>
+                <th style={{ ...thStyle, textAlign: "left" }}>Partner</th>
+                <th style={{ ...thStyle, textAlign: "right" }}>GP</th>
+                <th style={{ ...thStyle, textAlign: "right" }}>W</th>
+                <th style={{ ...thStyle, textAlign: "right" }}>Ratio</th>
+              </tr>
+            </thead>
+            <tbody>
+              {partners.map((row) => (
+                <tr
+                  key={row.partnerId}
+                  style={{
+                    height: "52px",
+                    borderBottom: "1px solid var(--border-hairline)",
+                  }}
+                >
+                  <td>
+                    <Link
+                      href={`/players/${row.partnerId}`}
+                      style={{
+                        fontFamily: "var(--font-cormorant)",
+                        fontSize: "20px",
+                        fontWeight: 400,
+                        color: "var(--ink-primary)",
+                        textDecoration: "none",
+                      }}
+                    >
+                      {row.partnerName}
+                    </Link>
+                  </td>
+                  <td style={{ textAlign: "right", fontFamily: "var(--font-mono)", fontSize: "13px", color: "var(--ink-secondary)" }}>
+                    {row.gamesPlayed}
+                  </td>
+                  <td style={{ textAlign: "right", fontFamily: "var(--font-mono)", fontSize: "13px", color: "var(--ink-secondary)" }}>
+                    {row.wins}
+                  </td>
+                  <td style={{ textAlign: "right", fontFamily: "var(--font-mono)", fontSize: "13px", color: "var(--ink-secondary)" }}>
+                    {row.winRatio.toFixed(3)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )
+      )}
+
+      {/* Head-to-Head tab */}
+      {tab === "head-to-head" && (
+        headToHeads.length === 0 ? (
+          <p style={{ fontFamily: "var(--font-body)", fontSize: "13px", color: "var(--ink-tertiary)" }}>
+            No head-to-head history yet.
+          </p>
+        ) : (
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <thead>
+              <tr style={{ borderBottom: "1px solid var(--border-hairline)" }}>
+                <th style={{ ...thStyle, textAlign: "left" }}>Opponents</th>
+                <th style={{ ...thStyle, textAlign: "right" }}>GP</th>
+                <th style={{ ...thStyle, textAlign: "right" }}>W</th>
+                <th style={{ ...thStyle, textAlign: "right" }}>Ratio</th>
+              </tr>
+            </thead>
+            <tbody>
+              {headToHeads.map((row) => (
+                <tr
+                  key={row.matchupKey}
+                  style={{
+                    height: "52px",
+                    borderBottom: "1px solid var(--border-hairline)",
+                  }}
+                >
+                  <td
+                    style={{
+                      fontFamily: "var(--font-cormorant)",
+                      fontSize: "20px",
+                      fontWeight: 400,
+                      color: "var(--ink-primary)",
+                    }}
+                  >
+                    {row.opponentNames.join(" & ")}
+                  </td>
+                  <td style={{ textAlign: "right", fontFamily: "var(--font-mono)", fontSize: "13px", color: "var(--ink-secondary)" }}>
+                    {row.gamesPlayed}
+                  </td>
+                  <td style={{ textAlign: "right", fontFamily: "var(--font-mono)", fontSize: "13px", color: "var(--ink-secondary)" }}>
+                    {row.playerWins}
+                  </td>
+                  <td style={{ textAlign: "right", fontFamily: "var(--font-mono)", fontSize: "13px", color: "var(--ink-secondary)" }}>
+                    {row.winRatio.toFixed(3)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )
+      )}
+    </main>
+  );
+}

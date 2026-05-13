@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import type { Player } from "@/lib/db/schema";
 import { AddPlayerForm } from "./AddPlayerForm";
 import { EditPlayerDialog } from "./EditPlayerDialog";
@@ -72,7 +73,12 @@ export function PlayerList({ players }: Props) {
                   className="py-3 text-h3"
                   style={{ fontFamily: "var(--font-cormorant)", fontSize: "1.25rem" }}
                 >
-                  {player.name}
+                  <Link
+                    href={`/players/${player.id}`}
+                    style={{ color: "var(--ink-primary)", textDecoration: "none" }}
+                  >
+                    {player.name}
+                  </Link>
                 </td>
                 <td className="text-right py-3 font-mono text-small" style={{ fontFamily: "var(--font-jetbrains-mono)", color: "var(--ink-secondary)" }}>
                   {player.wins}
