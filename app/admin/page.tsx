@@ -5,6 +5,7 @@ import { getAllClubs } from "@/lib/clubs";
 import { getPendingRegistrationRequests } from "@/lib/registration-requests";
 import CreateClubForm from "./CreateClubForm";
 import ResetPasswordForm from "./ResetPasswordForm";
+import QuickInvite from "./QuickInvite";
 import Link from "next/link";
 
 export default async function AdminPage() {
@@ -63,11 +64,11 @@ export default async function AdminPage() {
           </p>
           <div style={{ height: "1px", backgroundColor: "var(--loss)", marginBottom: "24px" }} />
           <div className="mf-table-wrap">
-          <table style={{ width: "100%", borderCollapse: "collapse", maxWidth: "640px" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
               <tr style={{ borderBottom: "1px solid var(--border-hairline)" }}>
-                {["Name", "Email", "Requested"].map((h, i) => (
-                  <th key={h} style={{ fontFamily: "var(--font-body)", fontSize: "10px", fontWeight: 500, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--ink-tertiary)", paddingBottom: "10px", textAlign: i === 2 ? "right" : "left" }}>
+                {["Name", "Email", "Club", "Requested", ""].map((h, i) => (
+                  <th key={i} style={{ fontFamily: "var(--font-body)", fontSize: "10px", fontWeight: 500, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--ink-tertiary)", paddingBottom: "10px", textAlign: i >= 3 ? "right" : "left", whiteSpace: "nowrap" }}>
                     {h}
                   </th>
                 ))}
@@ -75,11 +76,15 @@ export default async function AdminPage() {
             </thead>
             <tbody>
               {pendingRequests.map((r) => (
-                <tr key={r.id} style={{ height: "48px", borderBottom: "1px solid var(--border-hairline)" }}>
-                  <td style={{ fontFamily: "var(--font-cormorant)", fontSize: "18px", color: "var(--ink-primary)" }}>{r.name}</td>
-                  <td style={{ fontFamily: "var(--font-body)", fontSize: "12px", color: "var(--ink-tertiary)" }}>{r.email}</td>
-                  <td style={{ textAlign: "right", fontFamily: "var(--font-mono)", fontSize: "11px", color: "var(--ink-tertiary)" }}>
+                <tr key={r.id} style={{ borderBottom: "1px solid var(--border-hairline)" }}>
+                  <td style={{ fontFamily: "var(--font-cormorant)", fontSize: "18px", color: "var(--ink-primary)", paddingTop: "12px", paddingBottom: "12px", paddingRight: "16px", verticalAlign: "top" }}>{r.name}</td>
+                  <td style={{ fontFamily: "var(--font-body)", fontSize: "12px", color: "var(--ink-tertiary)", paddingRight: "16px", verticalAlign: "top", paddingTop: "14px" }}>{r.email}</td>
+                  <td style={{ fontFamily: "var(--font-body)", fontSize: "12px", color: "var(--ink-tertiary)", paddingRight: "16px", verticalAlign: "top", paddingTop: "14px" }}>{r.clubName ?? "—"}</td>
+                  <td style={{ textAlign: "right", fontFamily: "var(--font-mono)", fontSize: "11px", color: "var(--ink-tertiary)", verticalAlign: "top", paddingTop: "14px", whiteSpace: "nowrap", paddingRight: "16px" }}>
                     {new Date(r.createdAt).toLocaleDateString("en-AU")}
+                  </td>
+                  <td style={{ textAlign: "right", verticalAlign: "top", paddingTop: "10px" }}>
+                    {r.clubId && <QuickInvite clubId={r.clubId} />}
                   </td>
                 </tr>
               ))}

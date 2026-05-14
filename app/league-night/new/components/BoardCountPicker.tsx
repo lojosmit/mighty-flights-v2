@@ -6,12 +6,18 @@ interface Props {
   playerCount: number;
   selected: number;
   onSelect: (count: number) => void;
+  fixedOptions?: number[];
+  heading?: string;
+  note?: string;
 }
 
 const BOARD_LABELS = ["A", "B", "C", "D", "E"];
 
-export function BoardCountPicker({ playerCount, selected, onSelect }: Props) {
-  const options = validBoardCounts(playerCount);
+export function BoardCountPicker({ playerCount, selected, onSelect, fixedOptions, heading, note }: Props) {
+  const options = fixedOptions ?? validBoardCounts(playerCount);
+  const defaultNote = fixedOptions
+    ? note ?? "Adjust once players confirm via RSVP."
+    : `${playerCount} players — up to ${options.length} board${options.length !== 1 ? "s" : ""} valid.`;
 
   return (
     <div>
@@ -23,10 +29,10 @@ export function BoardCountPicker({ playerCount, selected, onSelect }: Props) {
           color: "var(--ink-primary)",
         }}
       >
-        How many boards tonight?
+        {heading ?? "How many boards tonight?"}
       </h2>
       <p className="text-small mb-8" style={{ color: "var(--ink-tertiary)" }}>
-        {playerCount} players — up to {options.length} board{options.length !== 1 ? "s" : ""} valid.
+        {defaultNote}
       </p>
 
       <div className="flex gap-3">

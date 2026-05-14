@@ -4,10 +4,12 @@ import { auth } from "@/auth";
 import { getLeagueNight } from "@/lib/league-nights";
 import { getRoundsForNight, createRound1 } from "@/lib/rounds";
 import { getPlayers } from "@/lib/players";
+import { getUsersByClub } from "@/lib/users";
 import { getFixturePredictions } from "@/lib/predictions";
 import { appUrl } from "@/lib/app-url";
 import RoundView from "./components/RoundView";
 import RoundHistory from "./components/RoundHistory";
+import EditScheduledNight from "./components/EditScheduledNight";
 
 export default async function LeagueNightPage({
   params,
@@ -23,6 +25,8 @@ export default async function LeagueNightPage({
     getRoundsForNight(id),
     getPlayers(),
   ]);
+
+  const members = night?.clubId ? await getUsersByClub(night.clubId) : [];
 
   if (!night) notFound();
 
@@ -63,7 +67,7 @@ export default async function LeagueNightPage({
     const tooEarly = minutesUntil > 15;
 
     const rsvpLink = night.rsvpToken
-      ? appUrl(`/rsvp/${night.rsvpToken}`)
+      ? await appUrl(`/rsvp/${night.rsvpToken}`)
       : null;
 
     const metaStyle: React.CSSProperties = {
@@ -102,6 +106,19 @@ export default async function LeagueNightPage({
           )}
           <div style={{ height: "1px", backgroundColor: "var(--border-hairline)", marginTop: "24px" }} />
         </header>
+
+        {/* Edit controls — managers only */}
+        {canManageSchedule && (
+          <div style={{ marginBottom: "40px" }}>
+            <EditScheduledNight
+              leagueNightId={id}
+              initialDate={new Date(night.date).toISOString()}
+              initialBoardCount={night.boardCount}
+              initialHostUserId={night.hostUserId ?? null}
+              members={members}
+            />
+          </div>
+        )}
 
         {/* RSVP link */}
         {rsvpLink && (

@@ -1,8 +1,8 @@
 "use server";
 
+import { getTableColumns, eq, and } from "drizzle-orm";
 import { db } from "./db";
-import * as schema from "./db/schema";
-import { eq, isNull, or } from "drizzle-orm";
+import { registrationRequests, clubs } from "./db/schema";
 
 export async function createRegistrationRequest(data: {
   name: string;
@@ -11,7 +11,7 @@ export async function createRegistrationRequest(data: {
   clubId?: string;
 }) {
   const [req] = await db
-    .insert(schema.registrationRequests)
+    .insert(registrationRequests)
     .values({
       name: data.name,
       email: data.email,
@@ -23,23 +23,22 @@ export async function createRegistrationRequest(data: {
 }
 
 export async function getPendingRegistrationRequests(clubId?: string) {
-  const rows = await db
-    .select()
-    .from(schema.registrationRequests)
+  const cols = getTableColumns(registrationRequests);
+  const q = db
+    .select({ ...cols, clubName: clubs.name })
+    .from(registrationRequests)
+    .leftJoin(clubs, eq(registrationRequests.clubId, clubs.id))
     .where(
       clubId
-        ? eq(schema.registrationRequests.clubId, clubId)
-        : or(
-            isNull(schema.registrationRequests.clubId),
-            eq(schema.registrationRequests.fulfilled, false)
-          )
+        ? and(eq(registrationRequests.clubId, clubId), eq(registrationRequests.fulfilled, false))
+        : eq(registrationRequests.fulfilled, false)
     );
-  return rows.filter((r) => !r.fulfilled);
+  return q;
 }
 
 export async function fulfillRegistrationRequest(id: string) {
   await db
-    .update(schema.registrationRequests)
+    .update(registrationRequests)
     .set({ fulfilled: true })
-    .where(eq(schema.registrationRequests.id, id));
+    .where(eq(registrationRequests.id, id));
 }

@@ -12,6 +12,7 @@ export async function createLeagueNight({
   boardCount,
   clubId,
   date,
+  enableRsvp,
   rsvpDeadline,
   hostUserId,
 }: {
@@ -19,10 +20,11 @@ export async function createLeagueNight({
   boardCount: number;
   clubId?: string | null;
   date?: Date;
+  enableRsvp?: boolean;
   rsvpDeadline?: Date;
   hostUserId?: string | null;
 }): Promise<LeagueNight> {
-  const rsvpToken = rsvpDeadline ? crypto.randomUUID() : undefined;
+  const rsvpToken = (enableRsvp || rsvpDeadline) ? crypto.randomUUID() : undefined;
 
   const [night] = await db
     .insert(leagueNights)
@@ -39,6 +41,25 @@ export async function createLeagueNight({
     .returning();
   revalidatePath("/league-night");
   return night;
+}
+
+export async function updateLeagueNight(
+  id: string,
+  data: {
+    date?: Date;
+    boardCount?: number;
+    hostUserId?: string | null;
+  }
+): Promise<void> {
+  await db
+    .update(leagueNights)
+    .set({
+      ...(data.date !== undefined ? { date: data.date } : {}),
+      ...(data.boardCount !== undefined ? { boardCount: data.boardCount } : {}),
+      ...(data.hostUserId !== undefined ? { hostUserId: data.hostUserId } : {}),
+    })
+    .where(eq(leagueNights.id, id));
+  revalidatePath(`/league-night/${id}`);
 }
 
 export async function getLeagueNight(id: string): Promise<LeagueNight | null> {
