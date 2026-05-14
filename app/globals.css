@@ -407,7 +407,7 @@
 .mf-fixture-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 24px;
+  gap: 32px;
 }
 .mf-fixture-board {
   position: relative;
@@ -447,10 +447,6 @@
   max-width: 100%;
 }
 
-/* 3 columns only on very wide screens */
-@media (min-width: 1400px) {
-  .mf-fixture-grid { grid-template-columns: repeat(3, 1fr); }
-}
 @media (max-width: 640px) {
   .mf-fixture-grid   { grid-template-columns: 1fr; }
   .mf-fixture-board  { padding: 24px 24px; }
