@@ -27,8 +27,7 @@ export default function LoginForm() {
       if (result?.error) {
         setError("Incorrect email or password.");
       } else {
-        router.push(callbackUrl);
-        router.refresh();
+        window.location.href = callbackUrl;
       }
     });
   }

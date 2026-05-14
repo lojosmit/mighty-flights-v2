@@ -23,6 +23,16 @@ export default async function NavBar() {
   const isManager = role === "super_admin" || role === "club_manager" || role === "host";
   const navLinks = isManager ? MANAGER_LINKS : PLAYER_LINKS;
 
+  const linkStyle: React.CSSProperties = {
+    fontFamily: "var(--font-body)",
+    fontSize: "11px",
+    fontWeight: 500,
+    letterSpacing: "0.08em",
+    textTransform: "uppercase",
+    color: "var(--ink-tertiary)",
+    textDecoration: "none",
+  };
+
   return (
     <header
       style={{
@@ -71,44 +81,24 @@ export default async function NavBar() {
         </span>
       </Link>
 
-      {/* Nav links */}
+      {/* Nav links — only shown when authenticated */}
       <nav style={{ display: "flex", gap: "32px", flex: 1 }}>
-        {navLinks.map(({ href, label }) => (
-          <Link
-            key={href}
-            href={href}
-            style={{
-              fontFamily: "var(--font-body)",
-              fontSize: "11px",
-              fontWeight: 500,
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
-              color: "var(--ink-tertiary)",
-              textDecoration: "none",
-            }}
-          >
+        {session && navLinks.map(({ href, label }) => (
+          <Link key={href} href={href} style={linkStyle}>
             {label}
           </Link>
         ))}
         {role === "super_admin" && (
           <Link
             href="/admin"
-            style={{
-              fontFamily: "var(--font-body)",
-              fontSize: "11px",
-              fontWeight: 500,
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
-              color: "var(--accent-gold)",
-              textDecoration: "none",
-            }}
+            style={{ ...linkStyle, color: "var(--accent-gold)" }}
           >
             Admin
           </Link>
         )}
       </nav>
 
-      {/* Right: user + theme + sign-out */}
+      {/* Right: user + theme + sign-in/sign-out */}
       <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
         {session?.user.name && (
           <span
@@ -123,7 +113,13 @@ export default async function NavBar() {
           </span>
         )}
         <ThemeToggle />
-        {session && <NavSignOut />}
+        {session ? (
+          <NavSignOut />
+        ) : (
+          <Link href="/login" style={linkStyle}>
+            Sign in
+          </Link>
+        )}
       </div>
     </header>
   );
