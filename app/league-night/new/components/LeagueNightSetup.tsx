@@ -81,7 +81,7 @@ export function LeagueNightSetup({ players, members, clubId, clubs }: Props) {
 
   function handleConfirm() {
     startTransition(async () => {
-      const night = await createLeagueNight({
+      await createLeagueNight({
         attendingPlayerIds: Array.from(selected),
         boardCount,
         clubId: effectiveClubId || null,
@@ -89,7 +89,7 @@ export function LeagueNightSetup({ players, members, clubId, clubs }: Props) {
         rsvpDeadline: enableRsvp && rsvpDeadline ? new Date(rsvpDeadline) : undefined,
         hostUserId: hostId || null,
       });
-      router.push(`/league-night/${night.id}`);
+      router.push("/history");
     });
   }
 
@@ -304,7 +304,7 @@ export function LeagueNightSetup({ players, members, clubId, clubs }: Props) {
             className="mb-8"
             style={{ fontFamily: "var(--font-cormorant)", fontSize: "1.75rem", color: "var(--ink-primary)" }}
           >
-            Confirm and start
+            Confirm and schedule
           </h2>
 
           <div
@@ -344,7 +344,7 @@ export function LeagueNightSetup({ players, members, clubId, clubs }: Props) {
               className="px-8 py-3 text-small uppercase tracking-widest font-medium cursor-pointer disabled:opacity-50"
               style={{ backgroundColor: "var(--accent-primary)", color: "#FFFFFF" }}
             >
-              {isPending ? "Creating…" : "Start League Night"}
+              {isPending ? "Scheduling…" : "Schedule Night"}
             </button>
             <button
               onClick={() => setStep(2)}
