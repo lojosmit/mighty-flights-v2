@@ -7,30 +7,30 @@
 /* ─── Mighty Flights color tokens (UIUX.md § 1) ─────────────────────────── */
 :root {
   /* Backgrounds */
-  --bg-primary:        #F5F2EB;
+  --bg-primary:        #EDF1F5;
   --bg-secondary:      #FFFFFF;
-  --bg-elevated:       #FAF8F3;
+  --bg-elevated:       #F4F7FA;
 
   /* Ink */
-  --ink-primary:       #1A2E1A;
-  --ink-secondary:     #4A5A4A;
-  --ink-tertiary:      #8A9A8A;
+  --ink-primary:       #0D1E2B;
+  --ink-secondary:     #3A5268;
+  --ink-tertiary:      #7A90A2;
 
   /* Accents */
-  --accent-primary:    #1E4A2E;
-  --accent-deep:       #0F2D1A;
+  --accent-primary:    #1E394E;
+  --accent-deep:       #0F2233;
   --accent-gold:       #B8985A;
   --accent-gold-soft:  #D4B97E;
 
   /* Status */
-  --win:               #1E4A2E;
+  --win:               #1E394E;
   --loss:              #6B6B6B;
   --dove:              #B8985A;
   --forfeit:           #4A4A4A;
 
   /* Borders */
-  --border-hairline:   #D8D2C4;
-  --border-strong:     #1A2E1A;
+  --border-hairline:   #C8D4DC;
+  --border-strong:     #1E394E;
 
   /* Radius — UIUX.md: max 4px on buttons, 0 otherwise */
   --radius: 0.25rem;
@@ -66,30 +66,30 @@
 
 .dark {
   /* Backgrounds */
-  --bg-primary:        #0E1A12;
-  --bg-secondary:      #15241A;
-  --bg-elevated:       #1B2D20;
+  --bg-primary:        #0D1E2B;
+  --bg-secondary:      #152535;
+  --bg-elevated:       #1A2E40;
 
   /* Ink */
-  --ink-primary:       #F0EBDC;
-  --ink-secondary:     #B8B0A0;
-  --ink-tertiary:      #7A7568;
+  --ink-primary:       #E8EEF3;
+  --ink-secondary:     #A8C0D0;
+  --ink-tertiary:      #6A8A9A;
 
   /* Accents */
-  --accent-primary:    #3A7A4E;
-  --accent-deep:       #5A9A6E;
+  --accent-primary:    #3A6A8E;
+  --accent-deep:       #5A90B8;
   --accent-gold:       #D4B97E;
   --accent-gold-soft:  #E8D49E;
 
   /* Status */
-  --win:               #5A9A6E;
+  --win:               #5A90B8;
   --loss:              #7A7568;
   --dove:              #D4B97E;
   --forfeit:           #5A5A5A;
 
   /* Borders */
-  --border-hairline:   #2A3A30;
-  --border-strong:     #F0EBDC;
+  --border-hairline:   #1E3448;
+  --border-strong:     #E8EEF3;
 
   /* ── shadcn semantic tokens (dark) ── */
   --background:           var(--bg-primary);
