@@ -12,6 +12,7 @@ import type { FixtureResult, LeagueNightStatus } from "@/lib/db/schema";
 import FixtureBoard from "./FixtureBoard";
 import BenchDisplay from "./BenchDisplay";
 import PlayerChangesPanel from "./PlayerChangesPanel";
+import RoundTimer from "./RoundTimer";
 
 interface Props {
   round: RoundWithFixtures;
@@ -114,33 +115,38 @@ export default function RoundView({
       </span>
 
       <div style={{ position: "relative", zIndex: 1 }}>
-        {/* Round heading */}
-        <p
-          style={{
-            fontFamily: "var(--font-body)",
-            fontSize: "12px",
-            fontWeight: 500,
-            letterSpacing: "0.08em",
-            textTransform: "uppercase",
-            color: "var(--ink-tertiary)",
-            marginBottom: "8px",
-          }}
-        >
-          {nightStatus === "completed" ? "League Night — Completed" : "League Night — In Progress"}
-        </p>
+        {/* Round heading row */}
+        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: "24px" }}>
+          <div>
+            <p
+              style={{
+                fontFamily: "var(--font-body)",
+                fontSize: "12px",
+                fontWeight: 500,
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                color: "var(--ink-tertiary)",
+                marginBottom: "8px",
+              }}
+            >
+              {nightStatus === "completed" ? "League Night — Completed" : "League Night — In Progress"}
+            </p>
 
-        <h1
-          style={{
-            fontFamily: "var(--font-cormorant)",
-            fontSize: "48px",
-            fontWeight: 400,
-            lineHeight: 1.05,
-            color: "var(--ink-primary)",
-            marginBottom: "24px",
-          }}
-        >
-          Round {round.roundNumber}
-        </h1>
+            <h1
+              style={{
+                fontFamily: "var(--font-cormorant)",
+                fontSize: "48px",
+                fontWeight: 400,
+                lineHeight: 1.05,
+                color: "var(--ink-primary)",
+              }}
+            >
+              Round {round.roundNumber}
+            </h1>
+          </div>
+
+          {isActive && <RoundTimer roundNumber={round.roundNumber} />}
+        </div>
 
         <div style={{ height: "1px", backgroundColor: "var(--border-hairline)", marginBottom: "40px" }} />
 
