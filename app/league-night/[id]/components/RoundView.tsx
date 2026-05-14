@@ -191,10 +191,8 @@ export default function RoundView({
 
         {/* Fixture boards */}
         <div
+          className="mf-fixture-grid"
           style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))",
-            gap: "24px",
             opacity: isPending ? 0.55 : 1,
             transition: "opacity 200ms ease",
           }}

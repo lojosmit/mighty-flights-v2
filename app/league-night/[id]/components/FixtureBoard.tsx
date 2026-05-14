@@ -32,16 +32,7 @@ export default function FixtureBoard({
     .join(" & ");
 
   return (
-    <div
-      style={{
-        position: "relative",
-        overflow: "hidden",
-        background: "var(--bg-secondary)",
-        border: "1px solid var(--border-hairline)",
-        padding: "40px 48px",
-        minHeight: "240px",
-      }}
-    >
+    <div className="mf-fixture-board">
       {/* Board letter watermark */}
       <span
         aria-hidden
@@ -79,14 +70,7 @@ export default function FixtureBoard({
       </p>
 
       {/* Teams */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "flex-start",
-          gap: "40px",
-          position: "relative",
-        }}
-      >
+      <div className="mf-fixture-teams" style={{ position: "relative" }}>
         <TeamBlock
           playerIds={fixture.teamA.playerIds}
           handicap={fixture.teamA.handicapApplied}
@@ -219,7 +203,7 @@ function TeamBlock({
   onPlayerClick: (id: string) => void;
 }) {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "2px", minWidth: "180px" }}>
+    <div className="mf-fixture-team">
       {playerIds.map((id) => {
         const isSelected = selectedPlayerId === id;
         return (
@@ -227,20 +211,11 @@ function TeamBlock({
             key={id}
             onClick={() => onPlayerClick(id)}
             aria-pressed={isSelected}
+            className="mf-fixture-player-btn"
             style={{
-              display: "block",
-              textAlign: "left",
-              background: "none",
               border: `2px solid ${isSelected ? "var(--accent-gold)" : "transparent"}`,
-              padding: "2px 8px",
-              cursor: "pointer",
-              fontFamily: "var(--font-cormorant)",
-              fontSize: "30px",
-              fontWeight: 400,
-              lineHeight: 1.2,
               color: isSelected ? "var(--accent-gold)" : "var(--ink-primary)",
               transition: "color 150ms ease, border-color 150ms ease",
-              outline: "none",
             }}
           >
             {playerMap[id] ?? "—"}
