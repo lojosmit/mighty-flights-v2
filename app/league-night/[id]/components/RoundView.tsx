@@ -12,7 +12,7 @@ import type { FixtureResult, LeagueNightStatus } from "@/lib/db/schema";
 import FixtureBoard from "./FixtureBoard";
 import BenchDisplay from "./BenchDisplay";
 import PlayerChangesPanel from "./PlayerChangesPanel";
-import RoundTimer from "./RoundTimer";
+import TimerOverlay from "./TimerOverlay";
 
 interface Props {
   round: RoundWithFixtures;
@@ -39,6 +39,7 @@ export default function RoundView({
   const [confirmEnd, setConfirmEnd] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [pendingFixtureId, setPendingFixtureId] = useState<string | null>(null);
+  const [overlayOpen, setOverlayOpen] = useState(false);
 
   const allDone = round.fixtures.every((f) => f.result !== "in_progress");
   const doneCount = round.fixtures.filter((f) => f.result !== "in_progress").length;
@@ -92,6 +93,27 @@ export default function RoundView({
 
   return (
     <div style={{ position: "relative" }}>
+      {/* Always-mounted overlay — keeps timer running when dismissed */}
+      <TimerOverlay
+        open={overlayOpen}
+        onClose={() => setOverlayOpen(false)}
+        round={round}
+        playerMap={playerMap}
+        leagueNightId={leagueNightId}
+        nightStatus={nightStatus}
+        allDone={allDone}
+        doneCount={doneCount}
+        isPending={isPending}
+        canEdit={canEdit}
+        selectedPlayerId={selectedId}
+        pendingFixtureId={pendingFixtureId}
+        predictions={predictions}
+        onPlayerClick={handlePlayerClick}
+        onRecordResult={handleResult}
+        onNextRound={handleGenerate}
+        onEnd={handleEnd}
+      />
+
       {/* Round number watermark */}
       <span
         aria-hidden
@@ -116,7 +138,14 @@ export default function RoundView({
 
       <div style={{ position: "relative", zIndex: 1 }}>
         {/* Round heading row */}
-        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: "24px" }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "flex-start",
+            justifyContent: "space-between",
+            marginBottom: "24px",
+          }}
+        >
           <div>
             <p
               style={{
@@ -145,12 +174,33 @@ export default function RoundView({
             </h1>
           </div>
 
-          {isActive && <RoundTimer roundNumber={round.roundNumber} />}
+          {/* Timer button */}
+          {isActive && (
+            <button
+              onClick={() => setOverlayOpen(true)}
+              style={{
+                fontFamily: "var(--font-body)",
+                fontSize: "11px",
+                fontWeight: 500,
+                letterSpacing: "0.1em",
+                textTransform: "uppercase",
+                padding: "10px 20px",
+                background: "transparent",
+                color: "var(--ink-tertiary)",
+                border: "1px solid var(--border-hairline)",
+                cursor: "pointer",
+                flexShrink: 0,
+                marginTop: "8px",
+              }}
+            >
+              ⏱ Timer
+            </button>
+          )}
         </div>
 
         <div style={{ height: "1px", backgroundColor: "var(--border-hairline)", marginBottom: "40px" }} />
 
-        {/* Override banner — only when no results recorded yet, and only for host/manager */}
+        {/* Override banner */}
         {isActive && !allDone && canEdit && (
           <div
             style={{
@@ -233,7 +283,7 @@ export default function RoundView({
           onPlayerClick={handlePlayerClick}
         />
 
-        {/* Player changes — host/manager only */}
+        {/* Player changes */}
         {isActive && canEdit && (
           <PlayerChangesPanel
             leagueNightId={leagueNightId}
@@ -245,7 +295,7 @@ export default function RoundView({
           />
         )}
 
-        {/* Footer actions — host/manager only */}
+        {/* Footer actions */}
         {isActive && canEdit && (
           <div
             style={{
@@ -259,7 +309,6 @@ export default function RoundView({
               gap: "16px",
             }}
           >
-            {/* Progress */}
             <p
               style={{
                 fontFamily: "var(--font-body)",
@@ -273,7 +322,6 @@ export default function RoundView({
                 : `${doneCount} of ${round.fixtures.length} boards complete`}
             </p>
 
-            {/* Action buttons */}
             <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
               {allDone && !confirmEnd && (
                 <button
