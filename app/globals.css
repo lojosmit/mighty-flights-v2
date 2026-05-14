@@ -406,7 +406,7 @@
 /* ─── Fixture grid & boards ──────────────────────────────────────────────── */
 .mf-fixture-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 24px;
 }
 .mf-fixture-board {
@@ -414,20 +414,21 @@
   overflow: hidden;
   background: var(--bg-secondary);
   border: 1px solid var(--border-hairline);
-  padding: 32px 40px;
+  padding: 32px 36px;
   min-height: 200px;
 }
 .mf-fixture-teams {
   display: flex;
   align-items: flex-start;
-  gap: 32px;
+  gap: 20px;
 }
 .mf-fixture-team {
   display: flex;
   flex-direction: column;
   gap: 2px;
   flex: 1;
-  min-width: 0;
+  min-width: 120px;
+  overflow: hidden;
 }
 .mf-fixture-player-btn {
   display: block;
@@ -436,21 +437,24 @@
   padding: 2px 8px;
   cursor: pointer;
   font-family: var(--font-cormorant);
-  font-size: 28px;
+  font-size: 26px;
   font-weight: 400;
-  line-height: 1.2;
+  line-height: 1.15;
   outline: none;
-  white-space: normal;
-  word-break: break-word;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 
-@media (max-width: 1100px) {
-  .mf-fixture-grid { grid-template-columns: repeat(2, 1fr); }
+/* 3 columns only on very wide screens */
+@media (min-width: 1400px) {
+  .mf-fixture-grid { grid-template-columns: repeat(3, 1fr); }
 }
 @media (max-width: 640px) {
   .mf-fixture-grid   { grid-template-columns: 1fr; }
-  .mf-fixture-board  { padding: 20px 16px; }
-  .mf-fixture-teams  { gap: 16px; }
+  .mf-fixture-board  { padding: 20px 20px; }
+  .mf-fixture-teams  { gap: 12px; }
   .mf-fixture-player-btn { font-size: 22px; }
 }
 
