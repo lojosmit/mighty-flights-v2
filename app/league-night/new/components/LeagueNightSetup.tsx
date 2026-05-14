@@ -72,6 +72,9 @@ export function LeagueNightSetup({ players, members, clubId, clubs }: Props) {
   const [isPending, startTransition] = useTransition();
 
   const effectiveClubId = clubId ?? selectedClubId;
+  const visiblePlayers = effectiveClubId
+    ? players.filter((p) => p.clubId === effectiveClubId)
+    : players;
   const stepLabels = mode === "schedule" ? SCHEDULE_STEPS : START_STEPS;
 
   function switchMode(m: Mode) {
@@ -391,7 +394,7 @@ export function LeagueNightSetup({ players, members, clubId, clubs }: Props) {
                     <label style={labelStyle}>Club</label>
                     <select
                       value={selectedClubId}
-                      onChange={(e) => setSelectedClubId(e.target.value)}
+                      onChange={(e) => { setSelectedClubId(e.target.value); setSelected(new Set()); }}
                       style={{ ...inputStyle, cursor: "pointer" }}
                     >
                       <option value="">— select club —</option>
@@ -401,7 +404,7 @@ export function LeagueNightSetup({ players, members, clubId, clubs }: Props) {
                     </select>
                   </div>
                 )}
-                <AttendeeSelector players={players} selected={selected} onToggle={togglePlayer} />
+                <AttendeeSelector players={visiblePlayers} selected={selected} onToggle={togglePlayer} />
                 <div className="mt-10 flex items-center gap-6">
                   <button
                     onClick={() => { setBoardCount(1); setStep(1); }}
@@ -466,7 +469,7 @@ export function LeagueNightSetup({ players, members, clubId, clubs }: Props) {
                     Attending
                   </span>
                   <div className="mt-3 flex flex-wrap gap-2">
-                    {players
+                    {visiblePlayers
                       .filter((p) => selected.has(p.id))
                       .map((p) => (
                         <span
