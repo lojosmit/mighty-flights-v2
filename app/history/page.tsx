@@ -2,7 +2,9 @@ import { connection } from "next/server";
 import Link from "next/link";
 import { auth } from "@/auth";
 import { getAllLeagueNights } from "@/lib/league-nights";
+import { getAllClubs } from "@/lib/clubs";
 import type { LeagueNightStatus } from "@/lib/db/schema";
+import ClubFilter from "@/app/components/ClubFilter";
 
 const STATUS_LABEL: Record<LeagueNightStatus, string> = {
   setup:       "Scheduled",
@@ -55,12 +57,22 @@ const sectionLabelStyle: React.CSSProperties = {
   marginBottom: "8px",
 };
 
-export default async function HistoryPage() {
+interface Props {
+  searchParams: Promise<{ club?: string }>;
+}
+
+export default async function HistoryPage({ searchParams }: Props) {
   await connection();
   const session = await auth();
+  const isSuperAdmin = session?.user.role === "super_admin";
   const clubId = session?.user.clubId ?? null;
-  const nights = await getAllLeagueNights(clubId);
-  const showClub = !clubId;
+  const effectiveClubId = isSuperAdmin ? ((await searchParams).club ?? null) : clubId;
+
+  const [nights, clubs] = await Promise.all([
+    getAllLeagueNights(effectiveClubId),
+    isSuperAdmin ? getAllClubs() : Promise.resolve([]),
+  ]);
+  const showClub = isSuperAdmin && !effectiveClubId;
 
   const upcoming = nights.filter((n) => n.status === "setup");
   const history  = nights.filter((n) => n.status !== "setup");
@@ -142,6 +154,10 @@ export default async function HistoryPage() {
         </h1>
         <div style={{ height: "1px", backgroundColor: "var(--border-hairline)" }} />
       </header>
+
+      {isSuperAdmin && (
+        <ClubFilter clubs={clubs} selected={effectiveClubId} />
+      )}
 
       {nights.length === 0 ? (
         <p style={{ fontFamily: "var(--font-body)", fontSize: "13px", letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--ink-tertiary)", textAlign: "center", paddingTop: "48px" }}>

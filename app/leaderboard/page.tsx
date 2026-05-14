@@ -3,22 +3,26 @@ import { auth } from "@/auth";
 import { getLeaderboard } from "@/lib/leaderboard";
 import { getAllClubs } from "@/lib/clubs";
 import LeaderboardTable from "./LeaderboardTable";
+import ClubFilter from "@/app/components/ClubFilter";
 
-const sectionLabelStyle: React.CSSProperties = {
-  fontFamily: "var(--font-body)",
-  fontSize: "10px",
-  fontWeight: 500,
-  letterSpacing: "0.14em",
-  textTransform: "uppercase",
-  color: "var(--ink-tertiary)",
-  marginBottom: "8px",
-};
+interface Props {
+  searchParams: Promise<{ club?: string }>;
+}
 
-export default async function LeaderboardPage() {
+export default async function LeaderboardPage({ searchParams }: Props) {
   await connection();
   const session = await auth();
   const isSuperAdmin = session?.user.role === "super_admin";
   const clubId = session?.user.clubId ?? null;
+
+  const effectiveClubId = isSuperAdmin
+    ? ((await searchParams).club ?? null)
+    : clubId;
+
+  const [entries, clubs] = await Promise.all([
+    getLeaderboard(effectiveClubId),
+    isSuperAdmin ? getAllClubs() : Promise.resolve([]),
+  ]);
 
   return (
     <main className="mf-page">
@@ -69,41 +73,16 @@ export default async function LeaderboardPage() {
         </div>
       </header>
 
-      {isSuperAdmin ? (
-        // ── Super admin: one section per club ────────────────────────────────
-        await (async () => {
-          const clubs = await getAllClubs();
-          if (clubs.length === 0) {
-            return (
-              <p style={{ fontFamily: "var(--font-body)", fontSize: "13px", color: "var(--ink-tertiary)" }}>
-                No clubs yet.
-              </p>
-            );
-          }
-          const clubData = await Promise.all(
-            clubs.map(async (club) => ({ club, entries: await getLeaderboard(club.id) }))
-          );
-          return (
-            <>
-              {clubData.map(({ club, entries }) => (
-                <section key={club.id} style={{ marginBottom: "64px" }}>
-                  <p style={sectionLabelStyle}>{club.name}</p>
-                  <div style={{ height: "1px", backgroundColor: "var(--accent-gold)", marginBottom: "24px" }} />
-                  {entries.length === 0 ? (
-                    <p style={{ fontFamily: "var(--font-body)", fontSize: "13px", color: "var(--ink-tertiary)" }}>
-                      No players yet.
-                    </p>
-                  ) : (
-                    <LeaderboardTable entries={entries} />
-                  )}
-                </section>
-              ))}
-            </>
-          );
-        })()
+      {isSuperAdmin && (
+        <ClubFilter clubs={clubs} selected={effectiveClubId} />
+      )}
+
+      {entries.length === 0 ? (
+        <p style={{ fontFamily: "var(--font-body)", fontSize: "13px", color: "var(--ink-tertiary)" }}>
+          {effectiveClubId ? "No players in this club yet." : "Select a club to view standings."}
+        </p>
       ) : (
-        // ── Player / club manager: single club ───────────────────────────────
-        <LeaderboardTable entries={await getLeaderboard(clubId)} />
+        <LeaderboardTable entries={entries} />
       )}
     </main>
   );
