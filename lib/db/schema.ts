@@ -97,6 +97,7 @@ export const leagueNights = pgTable("league_nights", {
   status: text("status").$type<LeagueNightStatus>().notNull().default("setup"),
   rsvpDeadline: timestamp("rsvp_deadline"),
   rsvpToken: text("rsvp_token"),
+  hostUserId: uuid("host_user_id").references(() => users.id),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

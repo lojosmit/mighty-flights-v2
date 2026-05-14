@@ -21,6 +21,7 @@ interface Props {
   allPlayers: { id: string; name: string }[];
   boardCount: number;
   predictions: Record<string, { probA: number; probB: number } | null>;
+  canEdit: boolean;
 }
 
 export default function RoundView({
@@ -31,6 +32,7 @@ export default function RoundView({
   allPlayers,
   boardCount,
   predictions,
+  canEdit,
 }: Props) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [confirmEnd, setConfirmEnd] = useState(false);
@@ -43,7 +45,7 @@ export default function RoundView({
   // ── override swap ──────────────────────────────────────────────────────────
 
   function handlePlayerClick(id: string) {
-    if (isPending || !isActive || allDone) return;
+    if (isPending || !isActive || allDone || !canEdit) return;
 
     if (!selectedId) { setSelectedId(id); return; }
     if (selectedId === id) { setSelectedId(null); return; }
@@ -135,8 +137,8 @@ export default function RoundView({
 
         <div style={{ height: "1px", backgroundColor: "var(--border-hairline)", marginBottom: "40px" }} />
 
-        {/* Override banner — only when no results recorded yet */}
-        {isActive && !allDone && (
+        {/* Override banner — only when no results recorded yet, and only for host/manager */}
+        {isActive && !allDone && canEdit && (
           <div
             style={{
               display: "flex",
@@ -205,7 +207,7 @@ export default function RoundView({
               selectedPlayerId={selectedId}
               onPlayerClick={handlePlayerClick}
               isActive={isActive}
-              onRecordResult={isActive ? (r) => handleResult(fixture.id, r) : undefined}
+              onRecordResult={isActive && canEdit ? (r) => handleResult(fixture.id, r) : undefined}
               isPendingResult={isPending}
               prediction={predictions[fixture.id]}
             />
@@ -220,8 +222,8 @@ export default function RoundView({
           onPlayerClick={handlePlayerClick}
         />
 
-        {/* Player changes */}
-        {isActive && (
+        {/* Player changes — host/manager only */}
+        {isActive && canEdit && (
           <PlayerChangesPanel
             leagueNightId={leagueNightId}
             attendees={allPlayers.filter((p) => playerMap[p.id] !== undefined)}
@@ -232,8 +234,8 @@ export default function RoundView({
           />
         )}
 
-        {/* Footer actions */}
-        {isActive && (
+        {/* Footer actions — host/manager only */}
+        {isActive && canEdit && (
           <div
             style={{
               marginTop: "56px",

@@ -1,5 +1,6 @@
 import { connection } from "next/server";
 import { notFound } from "next/navigation";
+import { auth } from "@/auth";
 import { getLeagueNight } from "@/lib/league-nights";
 import { getRoundsForNight, createRound1 } from "@/lib/rounds";
 import { getPlayers } from "@/lib/players";
@@ -14,6 +15,7 @@ export default async function LeagueNightPage({
 }) {
   await connection();
   const { id } = await params;
+  const session = await auth();
 
   const [night, allRounds, allPlayers] = await Promise.all([
     getLeagueNight(id),
@@ -22,6 +24,10 @@ export default async function LeagueNightPage({
   ]);
 
   if (!night) notFound();
+
+  const isManager = ["super_admin", "club_manager"].includes(session?.user.role ?? "");
+  const isNightHost = !!session && night.hostUserId === session.user.id;
+  const canEdit = isManager || isNightHost;
 
   const playerMap: Record<string, string> = {};
   for (const p of allPlayers) {
@@ -86,25 +92,31 @@ export default async function LeagueNightPage({
           <div style={{ height: "1px", backgroundColor: "var(--border-hairline)" }} />
         </header>
 
-        <form action={startRound1}>
-          <button
-            type="submit"
-            style={{
-              fontFamily: "var(--font-body)",
-              fontSize: "14px",
-              fontWeight: 500,
-              letterSpacing: "0.04em",
-              textTransform: "uppercase",
-              padding: "14px 28px",
-              background: "var(--accent-primary)",
-              color: "#ffffff",
-              border: "none",
-              cursor: "pointer",
-            }}
-          >
-            Start Round 1
-          </button>
-        </form>
+        {canEdit ? (
+          <form action={startRound1}>
+            <button
+              type="submit"
+              style={{
+                fontFamily: "var(--font-body)",
+                fontSize: "14px",
+                fontWeight: 500,
+                letterSpacing: "0.04em",
+                textTransform: "uppercase",
+                padding: "14px 28px",
+                background: "var(--accent-primary)",
+                color: "#ffffff",
+                border: "none",
+                cursor: "pointer",
+              }}
+            >
+              Start Round 1
+            </button>
+          </form>
+        ) : (
+          <p style={{ fontFamily: "var(--font-body)", fontSize: "14px", color: "var(--ink-tertiary)" }}>
+            Waiting for the host to start the night.
+          </p>
+        )}
       </main>
     );
   }
@@ -130,6 +142,7 @@ export default async function LeagueNightPage({
         allPlayers={allPlayersList}
         boardCount={night.boardCount}
         predictions={predictions}
+        canEdit={canEdit}
       />
 
       <RoundHistory rounds={pastRounds} playerMap={playerMap} />

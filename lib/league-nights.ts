@@ -5,13 +5,35 @@ import { revalidatePath } from "next/cache";
 import { db } from "./db/index";
 import { leagueNights, type LeagueNight } from "./db/schema";
 
-export async function createLeagueNight(
-  attendingPlayerIds: string[],
-  boardCount: number
-): Promise<LeagueNight> {
+export async function createLeagueNight({
+  attendingPlayerIds,
+  boardCount,
+  clubId,
+  date,
+  rsvpDeadline,
+  hostUserId,
+}: {
+  attendingPlayerIds: string[];
+  boardCount: number;
+  clubId?: string | null;
+  date?: Date;
+  rsvpDeadline?: Date;
+  hostUserId?: string | null;
+}): Promise<LeagueNight> {
+  const rsvpToken = rsvpDeadline ? crypto.randomUUID() : undefined;
+
   const [night] = await db
     .insert(leagueNights)
-    .values({ attendingPlayerIds, boardCount, status: "setup" })
+    .values({
+      attendingPlayerIds,
+      boardCount,
+      status: "setup",
+      clubId: clubId ?? undefined,
+      date: date ?? new Date(),
+      rsvpDeadline: rsvpDeadline ?? undefined,
+      rsvpToken: rsvpToken ?? undefined,
+      hostUserId: hostUserId ?? undefined,
+    })
     .returning();
   revalidatePath("/league-night");
   return night;

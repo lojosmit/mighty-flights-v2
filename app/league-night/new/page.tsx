@@ -1,10 +1,25 @@
 import { connection } from "next/server";
+import { auth } from "@/auth";
 import { getPlayers } from "@/lib/players";
+import { getUsersByClub } from "@/lib/users";
+import { getAllClubs } from "@/lib/clubs";
 import { LeagueNightSetup } from "./components/LeagueNightSetup";
+import type { User, Club } from "@/lib/db/schema";
 
 export default async function NewLeagueNightPage() {
   await connection();
-  const players = await getPlayers();
+  const session = await auth();
+  const clubId = session?.user.clubId ?? null;
+
+  const [players, members, clubs]: [
+    Awaited<ReturnType<typeof getPlayers>>,
+    User[],
+    Club[],
+  ] = await Promise.all([
+    getPlayers(clubId),
+    clubId ? getUsersByClub(clubId) : Promise.resolve([]),
+    !clubId ? getAllClubs() : Promise.resolve([]),
+  ]);
 
   return (
     <main className="max-w-[1280px] mx-auto px-20 py-16">
@@ -31,7 +46,12 @@ export default async function NewLeagueNightPage() {
         />
       </header>
 
-      <LeagueNightSetup players={players} />
+      <LeagueNightSetup
+        players={players}
+        members={members}
+        clubId={clubId}
+        clubs={clubs}
+      />
     </main>
   );
 }
