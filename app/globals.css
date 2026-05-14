@@ -414,20 +414,20 @@
   overflow: hidden;
   background: var(--bg-secondary);
   border: 1px solid var(--border-hairline);
-  padding: 32px 36px;
-  min-height: 200px;
+  padding: 40px 48px;
+  min-height: 240px;
 }
 .mf-fixture-teams {
   display: flex;
   align-items: flex-start;
-  gap: 20px;
+  gap: 24px;
 }
 .mf-fixture-team {
   display: flex;
   flex-direction: column;
   gap: 2px;
   flex: 1;
-  min-width: 120px;
+  min-width: 140px;
   overflow: hidden;
 }
 .mf-fixture-player-btn {
@@ -437,7 +437,7 @@
   padding: 2px 8px;
   cursor: pointer;
   font-family: var(--font-cormorant);
-  font-size: 26px;
+  font-size: 30px;
   font-weight: 400;
   line-height: 1.15;
   outline: none;
@@ -453,9 +453,9 @@
 }
 @media (max-width: 640px) {
   .mf-fixture-grid   { grid-template-columns: 1fr; }
-  .mf-fixture-board  { padding: 20px 20px; }
+  .mf-fixture-board  { padding: 24px 24px; }
   .mf-fixture-teams  { gap: 12px; }
-  .mf-fixture-player-btn { font-size: 22px; }
+  .mf-fixture-player-btn { font-size: 26px; }
 }
 
 /* ─── Stepper ─────────────────────────────────────────────────────────────── */
