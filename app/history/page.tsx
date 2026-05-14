@@ -38,7 +38,9 @@ const thStyle: React.CSSProperties = {
 export default async function HistoryPage() {
   await connection();
   const session = await auth();
-  const nights = await getAllLeagueNights(session?.user.clubId);
+  const clubId = session?.user.clubId ?? null;
+  const nights = await getAllLeagueNights(clubId);
+  const showClub = !clubId;
 
   return (
     <main className="mf-page">
@@ -90,6 +92,7 @@ export default async function HistoryPage() {
           <thead>
             <tr style={{ borderBottom: "1px solid var(--border-hairline)" }}>
               <th style={{ ...thStyle, textAlign: "left" }}>Date</th>
+              {showClub && <th style={{ ...thStyle, textAlign: "left" }}>Club</th>}
               <th style={{ ...thStyle, textAlign: "right" }}>Players</th>
               <th style={{ ...thStyle, textAlign: "right" }}>Boards</th>
               <th style={{ ...thStyle, textAlign: "right" }}>Status</th>
@@ -119,6 +122,11 @@ export default async function HistoryPage() {
                     {formatDate(night.date)}
                   </Link>
                 </td>
+                {showClub && (
+                  <td style={{ paddingRight: "24px", fontFamily: "var(--font-body)", fontSize: "12px", color: "var(--ink-tertiary)" }}>
+                    {night.clubName ?? "—"}
+                  </td>
+                )}
 
                 <td
                   style={{

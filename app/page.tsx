@@ -34,6 +34,7 @@ export default async function HomePage() {
 
   const top5 = sortLeaderboard(leaderboard, "wins", "desc").slice(0, 5);
   const recentNights = allNights.slice(0, 5);
+  const showClub = !clubId;
 
   const thStyle: React.CSSProperties = {
     fontFamily: "var(--font-body)",
@@ -304,16 +305,32 @@ export default async function HomePage() {
                       textDecoration: "none",
                     }}
                   >
-                    <span
-                      style={{
-                        fontFamily: "var(--font-cormorant)",
-                        fontSize: "20px",
-                        fontWeight: 400,
-                        color: "var(--ink-primary)",
-                      }}
-                    >
-                      {formatDate(night.date)}
-                    </span>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+                      <span
+                        style={{
+                          fontFamily: "var(--font-cormorant)",
+                          fontSize: "20px",
+                          fontWeight: 400,
+                          color: "var(--ink-primary)",
+                        }}
+                      >
+                        {formatDate(night.date)}
+                      </span>
+                      {showClub && night.clubName && (
+                        <span
+                          style={{
+                            fontFamily: "var(--font-body)",
+                            fontSize: "10px",
+                            fontWeight: 500,
+                            letterSpacing: "0.1em",
+                            textTransform: "uppercase",
+                            color: "var(--ink-tertiary)",
+                          }}
+                        >
+                          {night.clubName}
+                        </span>
+                      )}
+                    </div>
                     <span
                       style={{
                         fontFamily: "var(--font-body)",

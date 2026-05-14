@@ -1,9 +1,11 @@
 "use server";
 
-import { desc, eq } from "drizzle-orm";
+import { desc, eq, getTableColumns } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { db } from "./db/index";
-import { leagueNights, type LeagueNight } from "./db/schema";
+import { clubs, leagueNights, type LeagueNight } from "./db/schema";
+
+export type LeagueNightWithClub = LeagueNight & { clubName: string | null };
 
 export async function createLeagueNight({
   attendingPlayerIds,
@@ -55,16 +57,16 @@ export async function getActiveLeagueNight(): Promise<LeagueNight | null> {
   return night ?? null;
 }
 
-export async function getAllLeagueNights(clubId?: string | null): Promise<LeagueNight[]> {
-  if (clubId) {
-    return db
-      .select()
-      .from(leagueNights)
-      .where(eq(leagueNights.clubId, clubId))
-      .orderBy(desc(leagueNights.createdAt));
-  }
-  return db
-    .select()
+export async function getAllLeagueNights(clubId?: string | null): Promise<LeagueNightWithClub[]> {
+  const cols = getTableColumns(leagueNights);
+  const q = db
+    .select({ ...cols, clubName: clubs.name })
     .from(leagueNights)
+    .leftJoin(clubs, eq(leagueNights.clubId, clubs.id))
     .orderBy(desc(leagueNights.createdAt));
+
+  if (clubId) {
+    return q.where(eq(leagueNights.clubId, clubId));
+  }
+  return q;
 }
