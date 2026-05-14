@@ -57,6 +57,11 @@ export default function FixtureResultButtons({
         gap: "10px",
       }}
     >
+      {isPending && (
+        <p style={{ fontFamily: "var(--font-body)", fontSize: "11px", fontWeight: 500, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--ink-tertiary)" }}>
+          Saving…
+        </p>
+      )}
       {/* Win buttons */}
       <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
         <button

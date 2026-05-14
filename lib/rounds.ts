@@ -140,9 +140,13 @@ export async function recordResult(
     .set({ result, ...(forfeitReason ? { forfeitReason } : {}) })
     .where(eq(fixtures.id, fixtureId));
 
-  await applyFixtureStats(current.teamA.playerIds, current.teamB.playerIds, result);
-
   revalidatePath(`/league-night/${leagueNightId}`);
+
+  try {
+    await applyFixtureStats(current.teamA.playerIds, current.teamB.playerIds, result);
+  } catch (err) {
+    console.error("[recordResult] stats update failed — result saved, stats skipped:", err);
+  }
 }
 
 export async function generateNextRound(

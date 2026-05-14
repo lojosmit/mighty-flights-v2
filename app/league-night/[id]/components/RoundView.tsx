@@ -37,6 +37,7 @@ export default function RoundView({
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [confirmEnd, setConfirmEnd] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const [pendingFixtureId, setPendingFixtureId] = useState<string | null>(null);
 
   const allDone = round.fixtures.every((f) => f.result !== "in_progress");
   const doneCount = round.fixtures.filter((f) => f.result !== "in_progress").length;
@@ -60,10 +61,16 @@ export default function RoundView({
 
   // ── result recording ───────────────────────────────────────────────────────
 
-  function handleResult(fixtureId: string, result: FixtureResult) {
-    startTransition(async () => {
+  async function handleResult(fixtureId: string, result: FixtureResult) {
+    if (pendingFixtureId) return;
+    setPendingFixtureId(fixtureId);
+    try {
       await recordResult(fixtureId, result, leagueNightId);
-    });
+    } catch (err) {
+      console.error("Failed to record result:", err);
+    } finally {
+      setPendingFixtureId(null);
+    }
   }
 
   // ── generate / end ─────────────────────────────────────────────────────────
@@ -206,7 +213,7 @@ export default function RoundView({
               onPlayerClick={handlePlayerClick}
               isActive={isActive}
               onRecordResult={isActive && canEdit ? (r) => handleResult(fixture.id, r) : undefined}
-              isPendingResult={isPending}
+              isPendingResult={pendingFixtureId === fixture.id}
               prediction={predictions[fixture.id]}
             />
           ))}
