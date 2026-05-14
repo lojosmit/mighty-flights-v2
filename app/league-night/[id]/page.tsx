@@ -5,6 +5,7 @@ import { getLeagueNight } from "@/lib/league-nights";
 import { getRoundsForNight, createRound1 } from "@/lib/rounds";
 import { getPlayers } from "@/lib/players";
 import { getFixturePredictions } from "@/lib/predictions";
+import { appUrl } from "@/lib/app-url";
 import RoundView from "./components/RoundView";
 import RoundHistory from "./components/RoundHistory";
 
@@ -27,7 +28,9 @@ export default async function LeagueNightPage({
 
   const isManager = ["super_admin", "club_manager"].includes(session?.user.role ?? "");
   const isNightHost = !!session && night.hostUserId === session.user.id;
-  const canEdit = isManager || isNightHost;
+  const canManageSchedule = isManager;                  // edit attendees / details before start
+  const canStartNight = isManager || isNightHost;       // start round 1 (within 15-min window)
+  const canEdit = isManager || isNightHost;             // in-game edits
 
   const playerMap: Record<string, string> = {};
   for (const p of allPlayers) {
@@ -44,74 +47,128 @@ export default async function LeagueNightPage({
   // ── no rounds yet: pre-start screen ──────────────────────────────────────
 
   if (allRounds.length === 0) {
-    const nightDate = new Date(night.date).toLocaleDateString("en-GB", {
+    const nightDateLabel = new Date(night.date).toLocaleDateString("en-GB", {
+      weekday: "long",
       day: "2-digit",
       month: "long",
       year: "numeric",
     });
+    const nightTimeLabel = new Date(night.date).toLocaleTimeString("en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+
+    const now = new Date();
+    const minutesUntil = (new Date(night.date).getTime() - now.getTime()) / 60_000;
+    const tooEarly = minutesUntil > 15;
+
+    const rsvpLink = night.rsvpToken
+      ? appUrl(`/rsvp/${night.rsvpToken}`)
+      : null;
+
+    const metaStyle: React.CSSProperties = {
+      fontFamily: "var(--font-body)",
+      fontSize: "11px",
+      fontWeight: 500,
+      letterSpacing: "0.1em",
+      textTransform: "uppercase",
+      color: "var(--ink-tertiary)",
+    };
 
     return (
       <main className="mf-page">
-        <header style={{ marginBottom: "64px" }}>
-          <p
-            style={{
-              fontFamily: "var(--font-body)",
-              fontSize: "12px",
-              fontWeight: 500,
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
-              color: "var(--ink-tertiary)",
-              marginBottom: "12px",
-            }}
-          >
-            League Night
-          </p>
+        <header style={{ marginBottom: "48px" }}>
+          <p style={{ ...metaStyle, marginBottom: "12px" }}>League Night · Scheduled</p>
           <h1
             style={{
               fontFamily: "var(--font-cormorant)",
-              fontSize: "48px",
+              fontSize: "clamp(36px, 5vw, 56px)",
               fontWeight: 400,
               lineHeight: 1.05,
               color: "var(--ink-primary)",
-              marginBottom: "16px",
+              marginBottom: "12px",
             }}
           >
-            {nightDate}
+            {nightDateLabel}
           </h1>
-          <p
-            style={{
-              fontFamily: "var(--font-body)",
-              fontSize: "15px",
-              color: "var(--ink-secondary)",
-              marginBottom: "32px",
-            }}
-          >
-            {night.attendingPlayerIds.length} players attending ·{" "}
-            {night.boardCount} {night.boardCount === 1 ? "board" : "boards"}
+          <p style={{ fontFamily: "var(--font-body)", fontSize: "15px", color: "var(--ink-secondary)", marginBottom: "8px" }}>
+            {nightTimeLabel} · {night.attendingPlayerIds.length} players · {night.boardCount}{" "}
+            {night.boardCount === 1 ? "board" : "boards"}
           </p>
-          <div style={{ height: "1px", backgroundColor: "var(--border-hairline)" }} />
+          {night.hostUserId && (
+            <p style={{ fontFamily: "var(--font-body)", fontSize: "12px", color: "var(--ink-tertiary)" }}>
+              Host assigned
+            </p>
+          )}
+          <div style={{ height: "1px", backgroundColor: "var(--border-hairline)", marginTop: "24px" }} />
         </header>
 
-        {canEdit ? (
-          <form action={startRound1}>
-            <button
-              type="submit"
-              style={{
-                fontFamily: "var(--font-body)",
-                fontSize: "14px",
-                fontWeight: 500,
-                letterSpacing: "0.04em",
-                textTransform: "uppercase",
-                padding: "14px 28px",
-                background: "var(--accent-primary)",
-                color: "#ffffff",
-                border: "none",
-                cursor: "pointer",
-              }}
-            >
-              Start Round 1
-            </button>
-          </form>
+        {/* RSVP link */}
+        {rsvpLink && (
+          <div
+            style={{
+              marginBottom: "40px",
+              padding: "16px 20px",
+              border: "1px solid var(--border-hairline)",
+              background: "var(--bg-elevated)",
+            }}
+          >
+            <p style={{ ...metaStyle, marginBottom: "10px" }}>RSVP Link</p>
+            <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", alignItems: "center" }}>
+              <code
+                style={{
+                  fontFamily: "var(--font-mono)",
+                  fontSize: "12px",
+                  color: "var(--ink-secondary)",
+                  wordBreak: "break-all",
+                  flex: 1,
+                }}
+              >
+                {rsvpLink}
+              </code>
+            </div>
+            {night.rsvpDeadline && (
+              <p style={{ fontFamily: "var(--font-body)", fontSize: "11px", color: "var(--ink-tertiary)", marginTop: "6px" }}>
+                Deadline: {new Date(night.rsvpDeadline).toLocaleString("en-GB", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" })}
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* Start action */}
+        {canStartNight ? (
+          tooEarly ? (
+            <div>
+              <p style={{ fontFamily: "var(--font-body)", fontSize: "14px", color: "var(--ink-tertiary)", marginBottom: "8px" }}>
+                Game starts at {nightTimeLabel}. You can start up to 15 minutes before.
+              </p>
+              <p style={{ fontFamily: "var(--font-mono)", fontSize: "12px", color: "var(--ink-tertiary)" }}>
+                {minutesUntil > 60
+                  ? `${Math.round(minutesUntil / 60)}h ${Math.round(minutesUntil % 60)}m away`
+                  : `${Math.ceil(minutesUntil)} minutes away`}
+              </p>
+            </div>
+          ) : (
+            <form action={startRound1}>
+              <button
+                type="submit"
+                style={{
+                  fontFamily: "var(--font-body)",
+                  fontSize: "14px",
+                  fontWeight: 500,
+                  letterSpacing: "0.04em",
+                  textTransform: "uppercase",
+                  padding: "14px 28px",
+                  background: "var(--accent-primary)",
+                  color: "#ffffff",
+                  border: "none",
+                  cursor: "pointer",
+                }}
+              >
+                Start Round 1
+              </button>
+            </form>
+          )
         ) : (
           <p style={{ fontFamily: "var(--font-body)", fontSize: "14px", color: "var(--ink-tertiary)" }}>
             Waiting for the host to start the night.

@@ -16,7 +16,8 @@ export default function InviteForm({ clubId }: { clubId: string }) {
     setLink("");
     startTransition(async () => {
       const invite = await createInviteToken({ clubId, role, ttlHours: ttl });
-      const url = `${window.location.origin}/register/${invite.token}`;
+      const base = process.env.NEXT_PUBLIC_APP_URL ?? window.location.origin;
+      const url = `${base}/register/${invite.token}`;
       setLink(url);
     });
   }

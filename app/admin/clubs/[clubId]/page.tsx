@@ -5,6 +5,7 @@ import Link from "next/link";
 import { getClubById } from "@/lib/clubs";
 import { getInvitesByClub } from "@/lib/invites";
 import { getUsersByClub } from "@/lib/users";
+import { getPlayers } from "@/lib/players";
 import { getPendingRegistrationRequests } from "@/lib/registration-requests";
 import InviteForm from "@/app/admin/InviteForm";
 import SearchableMembers from "./SearchableMembers";
@@ -20,9 +21,10 @@ export default async function ClubPage({ params }: Props) {
 
   const { clubId } = await params;
 
-  const [club, members, invites, pendingRequests] = await Promise.all([
+  const [club, members, players, invites, pendingRequests] = await Promise.all([
     getClubById(clubId),
     getUsersByClub(clubId),
+    getPlayers(clubId),
     getInvitesByClub(clubId),
     getPendingRegistrationRequests(clubId),
   ]);
@@ -100,6 +102,49 @@ export default async function ClubPage({ params }: Props) {
               ))}
             </tbody>
           </table>
+          </div>
+        </section>
+      )}
+
+      {/* Player Roster */}
+      {players.length > 0 && (
+        <section style={{ marginBottom: "64px" }}>
+          <p style={sectionLabel}>Player Roster ({players.length})</p>
+          <div style={{ height: "1px", backgroundColor: "var(--accent-gold)", marginBottom: "24px" }} />
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            {players.map((p) => (
+              <div
+                key={p.id}
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  padding: "12px 0",
+                  borderBottom: "1px solid var(--border-hairline)",
+                }}
+              >
+                <div>
+                  <span style={{ fontFamily: "var(--font-cormorant)", fontSize: "20px", color: "var(--ink-primary)" }}>
+                    {p.name}
+                  </span>
+                  {p.email && (
+                    <span style={{ fontFamily: "var(--font-body)", fontSize: "11px", color: "var(--ink-tertiary)", marginLeft: "12px" }}>
+                      {p.email}
+                    </span>
+                  )}
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+                  <span style={{ fontFamily: "var(--font-mono)", fontSize: "11px", color: "var(--ink-tertiary)" }}>
+                    Rank {p.seasonRank}
+                  </span>
+                  {!p.userId && (
+                    <span style={{ fontFamily: "var(--font-body)", fontSize: "10px", fontWeight: 500, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--accent-gold)" }}>
+                      No account
+                    </span>
+                  )}
+                </div>
+              </div>
+            ))}
           </div>
         </section>
       )}
