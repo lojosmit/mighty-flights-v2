@@ -1,15 +1,38 @@
 "use client";
 
-import { useState } from "react";
-import type { User } from "@/lib/db/schema";
+import { useState, useTransition } from "react";
+import type { User, UserRole } from "@/lib/db/schema";
 import ResetPasswordForm from "@/app/admin/ResetPasswordForm";
+import { deleteUser, updateUserRole } from "@/lib/users";
 
 interface Props {
   members: User[];
 }
 
-export default function SearchableMembers({ members }: Props) {
+const ASSIGNABLE_ROLES: { value: Exclude<UserRole, "super_admin">; label: string }[] = [
+  { value: "club_manager", label: "Club Manager" },
+  { value: "host",         label: "Host" },
+  { value: "player",       label: "Player" },
+];
+
+const inputStyle: React.CSSProperties = {
+  fontFamily: "var(--font-body)",
+  fontSize: "11px",
+  fontWeight: 500,
+  letterSpacing: "0.06em",
+  textTransform: "uppercase",
+  color: "var(--ink-primary)",
+  backgroundColor: "var(--bg-secondary)",
+  border: "1px solid var(--border-hairline)",
+  padding: "4px 8px",
+  cursor: "pointer",
+  outline: "none",
+};
+
+export default function SearchableMembers({ members: initialMembers }: Props) {
+  const [members, setMembers] = useState(initialMembers);
   const [query, setQuery] = useState("");
+  const [pending, startTransition] = useTransition();
 
   const filtered = members.filter(
     (m) =>
@@ -17,19 +40,23 @@ export default function SearchableMembers({ members }: Props) {
       m.email.toLowerCase().includes(query.toLowerCase())
   );
 
-  const thStyle: React.CSSProperties = {
-    fontFamily: "var(--font-body)",
-    fontSize: "10px",
-    fontWeight: 500,
-    letterSpacing: "0.1em",
-    textTransform: "uppercase",
-    color: "var(--ink-tertiary)",
-    paddingBottom: "10px",
-    textAlign: "left",
-  };
+  function handleRoleChange(userId: string, newRole: UserRole) {
+    startTransition(async () => {
+      await updateUserRole(userId, newRole);
+      setMembers((prev) => prev.map((m) => (m.id === userId ? { ...m, role: newRole } : m)));
+    });
+  }
+
+  function handleDelete(userId: string, name: string) {
+    if (!confirm(`Remove ${name}? Their game history will be preserved, but their login account will be deleted.`)) return;
+    startTransition(async () => {
+      await deleteUser(userId);
+      setMembers((prev) => prev.filter((m) => m.id !== userId));
+    });
+  }
 
   return (
-    <div>
+    <div style={{ opacity: pending ? 0.6 : 1, transition: "opacity 150ms" }}>
       <input
         type="text"
         value={query}
@@ -37,7 +64,6 @@ export default function SearchableMembers({ members }: Props) {
         placeholder="Search by name or email…"
         style={{
           width: "100%",
-          maxWidth: "360px",
           padding: "10px 14px",
           fontFamily: "var(--font-body)",
           fontSize: "13px",
@@ -55,35 +81,77 @@ export default function SearchableMembers({ members }: Props) {
           {query ? "No members match your search." : "No members yet."}
         </p>
       ) : (
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
-          <thead>
-            <tr style={{ borderBottom: "1px solid var(--border-hairline)" }}>
-              <th style={thStyle}>Name</th>
-              <th style={{ ...thStyle, textAlign: "right" }}>Role</th>
-              <th style={{ ...thStyle, textAlign: "right" }}>Reset Password</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.map((m) => (
-              <tr key={m.id} style={{ height: "52px", borderBottom: "1px solid var(--border-hairline)" }}>
-                <td>
-                  <div style={{ fontFamily: "var(--font-cormorant)", fontSize: "18px", color: "var(--ink-primary)" }}>
-                    {m.name}
-                  </div>
-                  <div style={{ fontFamily: "var(--font-body)", fontSize: "11px", color: "var(--ink-tertiary)" }}>
-                    {m.email}
-                  </div>
-                </td>
-                <td style={{ textAlign: "right", fontFamily: "var(--font-mono)", fontSize: "11px", color: "var(--ink-secondary)" }}>
-                  {m.role}
-                </td>
-                <td style={{ textAlign: "right" }}>
-                  <ResetPasswordForm userId={m.id} />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          {filtered.map((m) => (
+            <div
+              key={m.id}
+              style={{
+                padding: "16px 0",
+                borderBottom: "1px solid var(--border-hairline)",
+                display: "flex",
+                flexDirection: "column",
+                gap: "10px",
+              }}
+            >
+              {/* Name + email */}
+              <div>
+                <div style={{ fontFamily: "var(--font-cormorant)", fontSize: "20px", color: "var(--ink-primary)", lineHeight: 1.2 }}>
+                  {m.name}
+                </div>
+                <div style={{ fontFamily: "var(--font-body)", fontSize: "11px", color: "var(--ink-tertiary)", marginTop: "2px" }}>
+                  {m.email}
+                </div>
+              </div>
+
+              {/* Controls row */}
+              <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
+                {/* Role selector */}
+                {m.role !== "super_admin" ? (
+                  <select
+                    value={m.role}
+                    onChange={(e) => handleRoleChange(m.id, e.target.value as UserRole)}
+                    style={inputStyle}
+                    disabled={pending}
+                  >
+                    {ASSIGNABLE_ROLES.map(({ value, label }) => (
+                      <option key={value} value={value}>{label}</option>
+                    ))}
+                  </select>
+                ) : (
+                  <span style={{ fontFamily: "var(--font-mono)", fontSize: "11px", color: "var(--accent-gold)" }}>
+                    super_admin
+                  </span>
+                )}
+
+                {/* Reset password */}
+                <ResetPasswordForm userId={m.id} />
+
+                {/* Delete */}
+                {m.role !== "super_admin" && (
+                  <button
+                    onClick={() => handleDelete(m.id, m.name)}
+                    disabled={pending}
+                    style={{
+                      fontFamily: "var(--font-body)",
+                      fontSize: "10px",
+                      fontWeight: 500,
+                      letterSpacing: "0.08em",
+                      textTransform: "uppercase",
+                      color: "var(--loss)",
+                      background: "none",
+                      border: "1px solid var(--loss)",
+                      padding: "4px 10px",
+                      cursor: "pointer",
+                      opacity: pending ? 0.4 : 1,
+                    }}
+                  >
+                    Remove
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
       )}
     </div>
   );

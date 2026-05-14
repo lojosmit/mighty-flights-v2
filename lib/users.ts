@@ -2,8 +2,9 @@
 
 import bcrypt from "bcryptjs";
 import { eq } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
 import { db } from "./db";
-import { users, type UserRole } from "./db/schema";
+import { players, users, type UserRole } from "./db/schema";
 
 export async function createUser({
   email,
@@ -58,4 +59,15 @@ export async function updateUserPassword(userId: string, newPassword: string) {
 
 export async function getUsersByClub(clubId: string) {
   return db.select().from(users).where(eq(users.clubId, clubId));
+}
+
+export async function updateUserRole(id: string, role: UserRole): Promise<void> {
+  await db.update(users).set({ role }).where(eq(users.id, id));
+  revalidatePath("/admin");
+}
+
+export async function deleteUser(id: string): Promise<void> {
+  await db.update(players).set({ userId: null }).where(eq(players.userId, id));
+  await db.delete(users).where(eq(users.id, id));
+  revalidatePath("/admin");
 }

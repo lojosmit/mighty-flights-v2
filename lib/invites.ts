@@ -1,7 +1,7 @@
 "use server";
 
 import { randomUUID } from "crypto";
-import { and, eq, isNull, gt } from "drizzle-orm";
+import { and, eq, isNull, gt, max } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { db } from "./db";
 import { inviteTokens, players, users, type UserRole } from "./db/schema";
@@ -79,6 +79,18 @@ export async function consumeInviteAndRegister({
       .update(players)
       .set({ userId: user.id, email: email.toLowerCase() })
       .where(eq(players.id, invite.playerId));
+  } else if (invite.role === "player") {
+    // Auto-create a player profile so the user appears in game night selection
+    const [{ maxRank }] = await db
+      .select({ maxRank: max(players.seasonRank) })
+      .from(players)
+      .where(eq(players.clubId, invite.clubId));
+    const seasonRank = (maxRank ?? 0) + 1;
+    const [newPlayer] = await db
+      .insert(players)
+      .values({ name, email: email.toLowerCase(), clubId: invite.clubId, userId: user.id, seasonRank })
+      .returning();
+    await db.update(users).set({ playerId: newPlayer.id }).where(eq(users.id, user.id));
   }
 
   // Mark token as used
