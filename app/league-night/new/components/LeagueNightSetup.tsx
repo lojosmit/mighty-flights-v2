@@ -12,7 +12,7 @@ import { BoardCountPicker } from "./BoardCountPicker";
 type Mode = "schedule" | "start-now";
 type Step = 0 | 1 | 2;
 
-const SCHEDULE_STEPS = ["Details", "Boards", "Confirm"] as const;
+const SCHEDULE_STEPS = ["Details", "Confirm"] as const;
 const START_STEPS = ["Players", "Boards", "Confirm"] as const;
 
 interface Props {
@@ -100,7 +100,7 @@ export function LeagueNightSetup({ players, members, clubId, clubs }: Props) {
     startTransition(async () => {
       await createLeagueNight({
         attendingPlayerIds: [],
-        boardCount,
+        boardCount: 1, // placeholder — set at start time after RSVPs
         clubId: effectiveClubId || null,
         date: gameDateTime ? new Date(gameDateTime) : new Date(),
         enableRsvp,
@@ -285,40 +285,12 @@ export function LeagueNightSetup({ players, members, clubId, clubs }: Props) {
                 className="px-8 py-3 text-small uppercase tracking-widest font-medium cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
                 style={{ backgroundColor: "var(--accent-primary)", color: "#FFFFFF" }}
               >
-                Set Boards →
+                Review →
               </button>
             </div>
           )}
 
           {step === 1 && (
-            <div>
-              <BoardCountPicker
-                playerCount={0}
-                fixedOptions={[1, 2, 3, 4, 5]}
-                heading="How many boards?"
-                selected={boardCount}
-                onSelect={setBoardCount}
-              />
-              <div className="mt-10 flex gap-4">
-                <button
-                  onClick={() => setStep(2)}
-                  className="px-8 py-3 text-small uppercase tracking-widest font-medium cursor-pointer"
-                  style={{ backgroundColor: "var(--accent-primary)", color: "#FFFFFF" }}
-                >
-                  Review
-                </button>
-                <button
-                  onClick={() => setStep(0)}
-                  className="px-8 py-3 text-small uppercase tracking-widest font-medium cursor-pointer"
-                  style={{ border: "1px solid var(--border-hairline)", color: "var(--ink-tertiary)" }}
-                >
-                  Back
-                </button>
-              </div>
-            </div>
-          )}
-
-          {step === 2 && (
             <div style={{ maxWidth: "480px" }}>
               <h2
                 className="mb-8"
@@ -342,7 +314,6 @@ export function LeagueNightSetup({ players, members, clubId, clubs }: Props) {
                 />
                 {selectedClub && <Row label="Club" value={selectedClub.name} />}
                 {selectedHost && <Row label="Host" value={`${selectedHost.name} (temp)`} />}
-                <Row label="Boards" value={String(boardCount)} />
                 <Row
                   label="RSVP"
                   value={
@@ -353,6 +324,9 @@ export function LeagueNightSetup({ players, members, clubId, clubs }: Props) {
                       : "Disabled"
                   }
                 />
+                <p style={{ fontFamily: "var(--font-body)", fontSize: "11px", color: "var(--ink-tertiary)", marginTop: "4px" }}>
+                  Board count is set when the night starts.
+                </p>
               </div>
               <div className="flex gap-4">
                 <button
@@ -364,7 +338,7 @@ export function LeagueNightSetup({ players, members, clubId, clubs }: Props) {
                   {isPending ? "Scheduling…" : "Schedule Night"}
                 </button>
                 <button
-                  onClick={() => setStep(1)}
+                  onClick={() => setStep(0)}
                   className="px-8 py-3 text-small uppercase tracking-widest font-medium cursor-pointer"
                   style={{ border: "1px solid var(--border-hairline)", color: "var(--ink-tertiary)" }}
                 >

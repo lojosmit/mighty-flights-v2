@@ -2,7 +2,7 @@ import { connection } from "next/server";
 import { notFound } from "next/navigation";
 import { auth } from "@/auth";
 import { getLeagueNight } from "@/lib/league-nights";
-import { getRoundsForNight, createRound1 } from "@/lib/rounds";
+import { getRoundsForNight } from "@/lib/rounds";
 import { getPlayers } from "@/lib/players";
 import { getUsersByClub } from "@/lib/users";
 import { getFixturePredictions } from "@/lib/predictions";
@@ -10,6 +10,7 @@ import { appUrl } from "@/lib/app-url";
 import RoundView from "./components/RoundView";
 import RoundHistory from "./components/RoundHistory";
 import EditScheduledNight from "./components/EditScheduledNight";
+import StartNightPanel from "./components/StartNightPanel";
 
 export default async function LeagueNightPage({
   params,
@@ -41,11 +42,6 @@ export default async function LeagueNightPage({
     if (night.attendingPlayerIds.includes(p.id)) {
       playerMap[p.id] = p.name;
     }
-  }
-
-  async function startRound1() {
-    "use server";
-    await createRound1(id);
   }
 
   // ── no rounds yet: pre-start screen ──────────────────────────────────────
@@ -96,8 +92,7 @@ export default async function LeagueNightPage({
             {nightDateLabel}
           </h1>
           <p style={{ fontFamily: "var(--font-body)", fontSize: "15px", color: "var(--ink-secondary)", marginBottom: "8px" }}>
-            {nightTimeLabel} · {night.attendingPlayerIds.length} players · {night.boardCount}{" "}
-            {night.boardCount === 1 ? "board" : "boards"}
+            {nightTimeLabel} · {night.attendingPlayerIds.length} attending
           </p>
           {night.hostUserId && (
             <p style={{ fontFamily: "var(--font-body)", fontSize: "12px", color: "var(--ink-tertiary)" }}>
@@ -154,38 +149,12 @@ export default async function LeagueNightPage({
 
         {/* Start action */}
         {canStartNight ? (
-          tooEarly ? (
-            <div>
-              <p style={{ fontFamily: "var(--font-body)", fontSize: "14px", color: "var(--ink-tertiary)", marginBottom: "8px" }}>
-                Game starts at {nightTimeLabel}. You can start up to 15 minutes before.
-              </p>
-              <p style={{ fontFamily: "var(--font-mono)", fontSize: "12px", color: "var(--ink-tertiary)" }}>
-                {minutesUntil > 60
-                  ? `${Math.round(minutesUntil / 60)}h ${Math.round(minutesUntil % 60)}m away`
-                  : `${Math.ceil(minutesUntil)} minutes away`}
-              </p>
-            </div>
-          ) : (
-            <form action={startRound1}>
-              <button
-                type="submit"
-                style={{
-                  fontFamily: "var(--font-body)",
-                  fontSize: "14px",
-                  fontWeight: 500,
-                  letterSpacing: "0.04em",
-                  textTransform: "uppercase",
-                  padding: "14px 28px",
-                  background: "var(--accent-primary)",
-                  color: "#ffffff",
-                  border: "none",
-                  cursor: "pointer",
-                }}
-              >
-                Start Round 1
-              </button>
-            </form>
-          )
+          <StartNightPanel
+            leagueNightId={id}
+            playerCount={night.attendingPlayerIds.length}
+            minutesUntil={minutesUntil}
+            nightTimeLabel={nightTimeLabel}
+          />
         ) : (
           <p style={{ fontFamily: "var(--font-body)", fontSize: "14px", color: "var(--ink-tertiary)" }}>
             Waiting for the host to start the night.
