@@ -33,7 +33,14 @@ export async function getActiveLeagueNight(): Promise<LeagueNight | null> {
   return night ?? null;
 }
 
-export async function getAllLeagueNights(): Promise<LeagueNight[]> {
+export async function getAllLeagueNights(clubId?: string | null): Promise<LeagueNight[]> {
+  if (clubId) {
+    return db
+      .select()
+      .from(leagueNights)
+      .where(eq(leagueNights.clubId, clubId))
+      .orderBy(desc(leagueNights.createdAt));
+  }
   return db
     .select()
     .from(leagueNights)

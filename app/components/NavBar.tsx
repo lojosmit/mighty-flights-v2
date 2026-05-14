@@ -1,15 +1,28 @@
 import Link from "next/link";
 import Image from "next/image";
+import { auth } from "@/auth";
 import ThemeToggle from "./ThemeToggle";
+import NavSignOut from "./NavSignOut";
 
-const NAV_LINKS = [
-  { href: "/leaderboard",     label: "Standings" },
-  { href: "/players",         label: "Players"   },
-  { href: "/history",         label: "History"   },
-  { href: "/league-night/new", label: "New Night" },
+const MANAGER_LINKS = [
+  { href: "/leaderboard",      label: "Standings"  },
+  { href: "/players",          label: "Players"    },
+  { href: "/history",          label: "History"    },
+  { href: "/league-night/new", label: "New Night"  },
 ];
 
-export default function NavBar() {
+const PLAYER_LINKS = [
+  { href: "/leaderboard", label: "Standings" },
+  { href: "/history",     label: "History"   },
+];
+
+export default async function NavBar() {
+  const session = await auth();
+  const role = session?.user.role;
+
+  const isManager = role === "super_admin" || role === "club_manager" || role === "host";
+  const navLinks = isManager ? MANAGER_LINKS : PLAYER_LINKS;
+
   return (
     <header
       style={{
@@ -39,7 +52,7 @@ export default function NavBar() {
         }}
       >
         <Image
-          src="/mighty-flights-logo.png"
+          src="/logo.png"
           alt=""
           width={40}
           height={40}
@@ -60,7 +73,7 @@ export default function NavBar() {
 
       {/* Nav links */}
       <nav style={{ display: "flex", gap: "32px", flex: 1 }}>
-        {NAV_LINKS.map(({ href, label }) => (
+        {navLinks.map(({ href, label }) => (
           <Link
             key={href}
             href={href}
@@ -77,10 +90,41 @@ export default function NavBar() {
             {label}
           </Link>
         ))}
+        {role === "super_admin" && (
+          <Link
+            href="/admin"
+            style={{
+              fontFamily: "var(--font-body)",
+              fontSize: "11px",
+              fontWeight: 500,
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              color: "var(--accent-gold)",
+              textDecoration: "none",
+            }}
+          >
+            Admin
+          </Link>
+        )}
       </nav>
 
-      {/* Right: theme toggle */}
-      <ThemeToggle />
+      {/* Right: user + theme + sign-out */}
+      <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+        {session?.user.name && (
+          <span
+            style={{
+              fontFamily: "var(--font-body)",
+              fontSize: "11px",
+              color: "var(--ink-tertiary)",
+              letterSpacing: "0.04em",
+            }}
+          >
+            {session.user.name}
+          </span>
+        )}
+        <ThemeToggle />
+        {session && <NavSignOut />}
+      </div>
     </header>
   );
 }

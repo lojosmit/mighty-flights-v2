@@ -1,10 +1,52 @@
-import { integer, jsonb, numeric, pgTable, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core";
+import {
+  boolean,
+  integer,
+  jsonb,
+  numeric,
+  pgTable,
+  text,
+  timestamp,
+  uniqueIndex,
+  uuid,
+} from "drizzle-orm/pg-core";
+
+// ── Clubs ─────────────────────────────────────────────────────────────────────
+
+export const clubs = pgTable("clubs", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  name: text("name").notNull(),
+  slug: text("slug").notNull().unique(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export type Club = typeof clubs.$inferSelect;
+
+// ── Users ─────────────────────────────────────────────────────────────────────
+
+export type UserRole = "super_admin" | "club_manager" | "host" | "player";
+
+export const users = pgTable("users", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  email: text("email").notNull().unique(),
+  passwordHash: text("password_hash").notNull(),
+  name: text("name").notNull(),
+  role: text("role").$type<UserRole>().notNull().default("player"),
+  clubId: uuid("club_id").references(() => clubs.id),
+  playerId: uuid("player_id"), // linked to players.id after player table exists
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export type User = typeof users.$inferSelect;
+
+// ── Players ───────────────────────────────────────────────────────────────────
 
 export const players = pgTable("players", {
   id: uuid("id").primaryKey().defaultRandom(),
   name: text("name").notNull(),
+  email: text("email"),
+  clubId: uuid("club_id").references(() => clubs.id),
+  userId: uuid("user_id").references(() => users.id),
   seasonRank: integer("season_rank").notNull().default(1),
-  // stats — per DESIGN.md Section 8
   wins: integer("wins").notNull().default(0),
   losses: integer("losses").notNull().default(0),
   doves: integer("doves").notNull().default(0),
@@ -15,6 +57,23 @@ export const players = pgTable("players", {
 
 export type Player = typeof players.$inferSelect;
 export type NewPlayer = typeof players.$inferInsert;
+
+// ── Invite Tokens ─────────────────────────────────────────────────────────────
+
+export const inviteTokens = pgTable("invite_tokens", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  token: text("token").notNull().unique(),
+  clubId: uuid("club_id").notNull().references(() => clubs.id),
+  role: text("role").$type<Exclude<UserRole, "super_admin">>().notNull().default("player"),
+  playerId: uuid("player_id"), // optionally pre-links to an existing player record
+  expiresAt: timestamp("expires_at").notNull(),
+  usedAt: timestamp("used_at"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export type InviteToken = typeof inviteTokens.$inferSelect;
+
+// ── Handicap Settings ─────────────────────────────────────────────────────────
 
 export const handicapSettings = pgTable("handicap_settings", {
   id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
@@ -31,15 +90,29 @@ export type LeagueNightStatus = "setup" | "in_progress" | "completed";
 
 export const leagueNights = pgTable("league_nights", {
   id: uuid("id").primaryKey().defaultRandom(),
+  clubId: uuid("club_id").references(() => clubs.id),
   date: timestamp("date").notNull().defaultNow(),
   attendingPlayerIds: jsonb("attending_player_ids").$type<string[]>().notNull().default([]),
   boardCount: integer("board_count").notNull().default(1),
   status: text("status").$type<LeagueNightStatus>().notNull().default("setup"),
+  rsvpDeadline: timestamp("rsvp_deadline"),
+  rsvpToken: text("rsvp_token"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
 export type LeagueNight = typeof leagueNights.$inferSelect;
 export type NewLeagueNight = typeof leagueNights.$inferInsert;
+
+// ── RSVPs ─────────────────────────────────────────────────────────────────────
+
+export const rsvps = pgTable("rsvps", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  leagueNightId: uuid("league_night_id").notNull().references(() => leagueNights.id),
+  userId: uuid("user_id").notNull().references(() => users.id),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export type Rsvp = typeof rsvps.$inferSelect;
 
 // ── Round ─────────────────────────────────────────────────────────────────────
 
@@ -93,15 +166,14 @@ export const fixtures = pgTable("fixtures", {
 
 export type Fixture = typeof fixtures.$inferSelect;
 
-// ── Pair Stats (DESIGN.md §8) ─────────────────────────────────────────────────
-// Tracks stats for any two players who have ever played on the same team.
+// ── Pair Stats ────────────────────────────────────────────────────────────────
 
 export const pairStats = pgTable(
   "pair_stats",
   {
     id: uuid("id").primaryKey().defaultRandom(),
-    playerIdA: text("player_id_a").notNull(), // alphabetically first
-    playerIdB: text("player_id_b").notNull(), // alphabetically second
+    playerIdA: text("player_id_a").notNull(),
+    playerIdB: text("player_id_b").notNull(),
     gamesPlayed: integer("games_played").notNull().default(0),
     wins: integer("wins").notNull().default(0),
     createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -111,8 +183,7 @@ export const pairStats = pgTable(
 
 export type PairStat = typeof pairStats.$inferSelect;
 
-// ── Matchup History (DESIGN.md §8) ───────────────────────────────────────────
-// Tracks head-to-head history between two teams (pair vs pair or solo vs solo).
+// ── Matchup History ───────────────────────────────────────────────────────────
 
 export const matchupHistory = pgTable("matchup_history", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -120,7 +191,6 @@ export const matchupHistory = pgTable("matchup_history", {
   teamAPlayerIds: jsonb("team_a_player_ids").$type<string[]>().notNull(),
   teamBPlayerIds: jsonb("team_b_player_ids").$type<string[]>().notNull(),
   gamesPlayed: integer("games_played").notNull().default(0),
-  // "A" = canonical teamA won, "B" = canonical teamB won, "X" = double forfeit
   winnerHistory: jsonb("winner_history").$type<string[]>().notNull().default([]),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });

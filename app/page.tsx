@@ -1,6 +1,7 @@
 import { connection } from "next/server";
 import Image from "next/image";
 import Link from "next/link";
+import { auth } from "@/auth";
 import { getLeaderboard, sortLeaderboard } from "@/lib/leaderboard";
 import { getActiveLeagueNight, getAllLeagueNights } from "@/lib/league-nights";
 
@@ -22,10 +23,13 @@ const STATUS_LABEL: Record<string, string> = {
 export default async function HomePage() {
   await connection();
 
+  const session = await auth();
+  const clubId = session?.user.clubId ?? null;
+
   const [leaderboard, activeNight, allNights] = await Promise.all([
-    getLeaderboard(),
+    getLeaderboard(clubId),
     getActiveLeagueNight(),
-    getAllLeagueNights(),
+    getAllLeagueNights(clubId),
   ]);
 
   const top5 = sortLeaderboard(leaderboard, "wins", "desc").slice(0, 5);
@@ -55,7 +59,7 @@ export default async function HomePage() {
         }}
       >
         <Image
-          src="/mighty-flights-logo.png"
+          src="/logo.png"
           alt="Mighty Flights"
           width={200}
           height={200}

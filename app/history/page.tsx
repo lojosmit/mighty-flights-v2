@@ -1,5 +1,6 @@
 import { connection } from "next/server";
 import Link from "next/link";
+import { auth } from "@/auth";
 import { getAllLeagueNights } from "@/lib/league-nights";
 import type { LeagueNightStatus } from "@/lib/db/schema";
 
@@ -36,7 +37,8 @@ const thStyle: React.CSSProperties = {
 
 export default async function HistoryPage() {
   await connection();
-  const nights = await getAllLeagueNights();
+  const session = await auth();
+  const nights = await getAllLeagueNights(session?.user.clubId);
 
   return (
     <main style={{ maxWidth: "1280px", margin: "0 auto", padding: "64px 80px" }}>

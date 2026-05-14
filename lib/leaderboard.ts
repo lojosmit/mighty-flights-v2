@@ -1,6 +1,7 @@
 // Leaderboard and player profile data — read-only, per DESIGN.md §10.
 
 import { eq, or, sql } from "drizzle-orm";
+// eq is used for both club_id and player id filtering
 import { db } from "./db/index";
 import { players, pairStats, matchupHistory, type Player } from "./db/schema";
 import type { LeaderboardEntry } from "./leaderboard-utils";
@@ -24,8 +25,10 @@ function toEntry(p: Player): LeaderboardEntry {
   };
 }
 
-export async function getLeaderboard(): Promise<LeaderboardEntry[]> {
-  const all = await db.select().from(players);
+export async function getLeaderboard(clubId?: string | null): Promise<LeaderboardEntry[]> {
+  const all = clubId
+    ? await db.select().from(players).where(eq(players.clubId, clubId))
+    : await db.select().from(players);
   return all.map(toEntry);
 }
 

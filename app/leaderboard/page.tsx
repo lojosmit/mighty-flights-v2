@@ -1,10 +1,12 @@
 import { connection } from "next/server";
+import { auth } from "@/auth";
 import { getLeaderboard } from "@/lib/leaderboard";
 import LeaderboardTable from "./LeaderboardTable";
 
 export default async function LeaderboardPage() {
   await connection();
-  const entries = await getLeaderboard();
+  const session = await auth();
+  const entries = await getLeaderboard(session?.user.clubId);
 
   return (
     <main style={{ maxWidth: "1280px", margin: "0 auto", padding: "64px 80px" }}>

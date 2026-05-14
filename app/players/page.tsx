@@ -1,10 +1,12 @@
 import { connection } from "next/server";
+import { auth } from "@/auth";
 import { getPlayers } from "@/lib/players";
 import { PlayerList } from "./components/PlayerList";
 
 export default async function PlayersPage() {
   await connection();
-  const players = await getPlayers();
+  const session = await auth();
+  const players = await getPlayers(session?.user.clubId);
 
   return (
     <main className="max-w-[1280px] mx-auto px-20 py-16">
