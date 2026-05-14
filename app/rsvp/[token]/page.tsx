@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
-import { redirect } from "next/navigation";
 import { getLeagueNightByRsvpToken, getRsvpsForNight } from "@/lib/rsvp";
 import RsvpButton from "./RsvpButton";
+import RequestAccessForm from "./RequestAccessForm";
 
 interface Props {
   params: Promise<{ token: string }>;
@@ -19,7 +19,6 @@ function formatDate(d: Date | string): string {
 export default async function RsvpPage({ params }: Props) {
   const { token } = await params;
   const session = await auth();
-  if (!session) redirect(`/login?callbackUrl=/rsvp/${token}`);
 
   const night = await getLeagueNightByRsvpToken(token);
 
@@ -31,7 +30,6 @@ export default async function RsvpPage({ params }: Props) {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          backgroundColor: "var(--bg-primary)",
           padding: "40px 24px",
         }}
       >
@@ -47,11 +45,9 @@ export default async function RsvpPage({ params }: Props) {
     );
   }
 
-  const deadlineExpired =
-    night.rsvpDeadline && new Date(night.rsvpDeadline) < new Date();
-
+  const deadlineExpired = night.rsvpDeadline && new Date(night.rsvpDeadline) < new Date();
   const rsvps = await getRsvpsForNight(night.id);
-  const hasRsvped = rsvps.some((r) => r.userId === session.user.id);
+  const hasRsvped = session ? rsvps.some((r) => r.userId === session.user.id) : false;
 
   return (
     <main
@@ -60,7 +56,6 @@ export default async function RsvpPage({ params }: Props) {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: "var(--bg-primary)",
         padding: "40px 24px",
       }}
     >
@@ -112,23 +107,20 @@ export default async function RsvpPage({ params }: Props) {
 
         <div style={{ height: "1px", backgroundColor: "var(--border-hairline)", marginBottom: "40px" }} />
 
-        {hasRsvped ? (
-          <p
-            style={{
-              fontFamily: "var(--font-body)",
-              fontSize: "14px",
-              color: "var(--accent-gold)",
-              fontWeight: 500,
-            }}
-          >
-            You&apos;re in for this night.
-          </p>
-        ) : deadlineExpired ? (
-          <p style={{ fontFamily: "var(--font-body)", fontSize: "14px", color: "var(--ink-tertiary)" }}>
-            The RSVP window is closed.
-          </p>
+        {session ? (
+          hasRsvped ? (
+            <p style={{ fontFamily: "var(--font-body)", fontSize: "14px", color: "var(--accent-gold)", fontWeight: 500 }}>
+              You&apos;re in for this night.
+            </p>
+          ) : deadlineExpired ? (
+            <p style={{ fontFamily: "var(--font-body)", fontSize: "14px", color: "var(--ink-tertiary)" }}>
+              The RSVP window is closed.
+            </p>
+          ) : (
+            <RsvpButton leagueNightId={night.id} userId={session.user.id} />
+          )
         ) : (
-          <RsvpButton leagueNightId={night.id} userId={session.user.id} />
+          <RequestAccessForm leagueNightId={night.id} clubId={night.clubId ?? undefined} />
         )}
       </div>
     </main>

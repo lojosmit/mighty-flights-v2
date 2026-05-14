@@ -196,3 +196,17 @@ export const matchupHistory = pgTable("matchup_history", {
 });
 
 export type MatchupHistoryRecord = typeof matchupHistory.$inferSelect;
+
+// ── Registration Requests ─────────────────────────────────────────────────────
+
+export const registrationRequests = pgTable("registration_requests", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  name: text("name").notNull(),
+  email: text("email").notNull(),
+  leagueNightId: uuid("league_night_id").references(() => leagueNights.id),
+  clubId: uuid("club_id").references(() => clubs.id),
+  fulfilled: boolean("fulfilled").notNull().default(false),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export type RegistrationRequest = typeof registrationRequests.$inferSelect;

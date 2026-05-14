@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
 import { NextResponse } from "next/server";
 
-const PUBLIC_PATHS = ["/login", "/register"];
+const PUBLIC_PATHS = ["/login", "/register", "/rsvp"];
 const STATIC_EXT = /\.(png|ico|svg|jpg|jpeg|webp|gif|woff2?|css|js)$/i;
 
 export default auth((req) => {

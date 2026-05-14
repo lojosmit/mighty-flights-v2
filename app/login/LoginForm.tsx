@@ -2,11 +2,9 @@
 
 import { useState, useTransition } from "react";
 import { signIn } from "next-auth/react";
-import { useRouter, useSearchParams } from "next/navigation";
-import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 
 export default function LoginForm() {
-  const router = useRouter();
   const params = useSearchParams();
   const callbackUrl = params.get("callbackUrl") ?? "/";
 
@@ -56,36 +54,22 @@ export default function LoginForm() {
   };
 
   return (
-    <div style={{ width: "100%", maxWidth: "400px" }}>
-      {/* Logo + wordmark */}
-      <div style={{ textAlign: "center", marginBottom: "48px" }}>
-        <div style={{ display: "inline-flex", alignItems: "center", gap: "12px" }}>
-          <Image
-            src="/logo.png"
-            alt="Mighty Flights"
-            width={48}
-            height={48}
-            style={{ display: "block" }}
-          />
-          <span
-            style={{
-              fontFamily: "var(--font-cormorant)",
-              fontSize: "28px",
-              fontWeight: 400,
-              color: "var(--ink-primary)",
-              letterSpacing: "0.02em",
-            }}
-          >
-            Mighty Flights
-          </span>
-        </div>
-        <div
+    <div style={{ width: "100%", maxWidth: "440px" }}>
+      <div style={{ marginBottom: "40px" }}>
+        <p
           style={{
-            height: "1px",
-            backgroundColor: "var(--accent-gold)",
-            marginTop: "24px",
+            fontFamily: "var(--font-body)",
+            fontSize: "10px",
+            fontWeight: 500,
+            letterSpacing: "0.14em",
+            textTransform: "uppercase",
+            color: "var(--ink-tertiary)",
+            marginBottom: "8px",
           }}
-        />
+        >
+          Member Login
+        </p>
+        <div style={{ height: "1px", backgroundColor: "var(--accent-gold)" }} />
       </div>
 
       <form onSubmit={handleSubmit}>

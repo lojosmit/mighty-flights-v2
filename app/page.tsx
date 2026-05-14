@@ -78,7 +78,7 @@ export default async function HomePage() {
             marginBottom: "12px",
           }}
         >
-          2025 Season
+          {new Date().getFullYear()} Season
         </p>
 
         {activeNight ? (

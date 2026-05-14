@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { getAllClubs } from "@/lib/clubs";
 import { getInvitesByClub } from "@/lib/invites";
 import { getUsersByClub } from "@/lib/users";
+import { getPendingRegistrationRequests } from "@/lib/registration-requests";
 import CreateClubForm from "./CreateClubForm";
 import InviteForm from "./InviteForm";
 import ResetPasswordForm from "./ResetPasswordForm";
@@ -14,6 +15,7 @@ export default async function AdminPage() {
   if (!session || session.user.role !== "super_admin") redirect("/");
 
   const clubs = await getAllClubs();
+  const pendingRequests = await getPendingRegistrationRequests();
 
   const clubsWithData = await Promise.all(
     clubs.map(async (club) => ({
@@ -62,6 +64,82 @@ export default async function AdminPage() {
           Club Management
         </h1>
       </header>
+
+      {/* My Account */}
+      <section style={{ marginBottom: "72px" }}>
+        <p
+          style={{
+            fontFamily: "var(--font-body)",
+            fontSize: "10px",
+            fontWeight: 500,
+            letterSpacing: "0.12em",
+            textTransform: "uppercase",
+            color: "var(--ink-tertiary)",
+            marginBottom: "8px",
+          }}
+        >
+          My Account
+        </p>
+        <div style={{ height: "1px", backgroundColor: "var(--accent-gold)", marginBottom: "24px" }} />
+        <div style={{ display: "flex", alignItems: "center", gap: "32px" }}>
+          <div>
+            <div style={{ fontFamily: "var(--font-cormorant)", fontSize: "22px", color: "var(--ink-primary)" }}>
+              {session.user.name}
+            </div>
+            <div style={{ fontFamily: "var(--font-body)", fontSize: "12px", color: "var(--ink-tertiary)", marginTop: "2px" }}>
+              {session.user.email} · super_admin
+            </div>
+          </div>
+          <ResetPasswordForm userId={session.user.id} />
+        </div>
+      </section>
+
+      {/* Pending registration requests */}
+      {pendingRequests.length > 0 && (
+        <section style={{ marginBottom: "72px" }}>
+          <p
+            style={{
+              fontFamily: "var(--font-body)",
+              fontSize: "10px",
+              fontWeight: 500,
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+              color: "var(--loss)",
+              marginBottom: "8px",
+            }}
+          >
+            Access Requests ({pendingRequests.length})
+          </p>
+          <div style={{ height: "1px", backgroundColor: "var(--loss)", marginBottom: "24px" }} />
+          <table style={{ width: "100%", borderCollapse: "collapse", maxWidth: "640px" }}>
+            <thead>
+              <tr style={{ borderBottom: "1px solid var(--border-hairline)" }}>
+                <th style={{ ...thStyle, textAlign: "left" }}>Name</th>
+                <th style={{ ...thStyle, textAlign: "left" }}>Email</th>
+                <th style={{ ...thStyle, textAlign: "right" }}>Requested</th>
+              </tr>
+            </thead>
+            <tbody>
+              {pendingRequests.map((r) => (
+                <tr key={r.id} style={{ height: "48px", borderBottom: "1px solid var(--border-hairline)" }}>
+                  <td style={{ fontFamily: "var(--font-cormorant)", fontSize: "18px", color: "var(--ink-primary)" }}>
+                    {r.name}
+                  </td>
+                  <td style={{ fontFamily: "var(--font-body)", fontSize: "12px", color: "var(--ink-tertiary)" }}>
+                    {r.email}
+                  </td>
+                  <td style={{ textAlign: "right", fontFamily: "var(--font-mono)", fontSize: "11px", color: "var(--ink-tertiary)" }}>
+                    {new Date(r.createdAt).toLocaleDateString("en-AU")}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <p style={{ fontFamily: "var(--font-body)", fontSize: "12px", color: "var(--ink-tertiary)", marginTop: "16px" }}>
+            Generate an invite link for these players using the club invite section below.
+          </p>
+        </section>
+      )}
 
       {/* Create club */}
       <section style={{ marginBottom: "72px" }}>

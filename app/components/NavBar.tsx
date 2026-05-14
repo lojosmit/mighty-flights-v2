@@ -37,7 +37,7 @@ export default async function NavBar() {
     <header
       style={{
         width: "100%",
-        height: "72px",
+        height: "88px",
         backgroundColor: "var(--bg-secondary)",
         borderBottom: "1px solid var(--accent-gold)",
         display: "flex",
@@ -64,14 +64,14 @@ export default async function NavBar() {
         <Image
           src="/logo.png"
           alt=""
-          width={40}
-          height={40}
+          width={56}
+          height={56}
           style={{ display: "block", flexShrink: 0 }}
         />
         <span
           style={{
             fontFamily: "var(--font-cormorant)",
-            fontSize: "24px",
+            fontSize: "30px",
             fontWeight: 400,
             color: "var(--ink-primary)",
             letterSpacing: "0.02em",
