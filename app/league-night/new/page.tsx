@@ -1,6 +1,6 @@
 import { connection } from "next/server";
 import { auth } from "@/auth";
-import { getPlayers } from "@/lib/players";
+import { getPlayers, syncClubPlayers } from "@/lib/players";
 import { getUsersByClub } from "@/lib/users";
 import { getAllClubs } from "@/lib/clubs";
 import { LeagueNightSetup } from "./components/LeagueNightSetup";
@@ -10,6 +10,9 @@ export default async function NewLeagueNightPage() {
   await connection();
   const session = await auth();
   const clubId = session?.user.clubId ?? null;
+
+  // Ensure all club members have player profiles before loading the selector
+  if (clubId) await syncClubPlayers(clubId);
 
   const [players, members, clubs]: [
     Awaited<ReturnType<typeof getPlayers>>,
