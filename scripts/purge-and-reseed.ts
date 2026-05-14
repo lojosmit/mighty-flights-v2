@@ -1,4 +1,4 @@
-// Run once: npx tsx scripts/seed-superadmin.ts
+// Run once: npx tsx scripts/purge-and-reseed.ts
 import { config } from "dotenv";
 config({ path: ".env.local" });
 
@@ -6,25 +6,20 @@ import bcrypt from "bcryptjs";
 import postgres from "postgres";
 import { drizzle } from "drizzle-orm/postgres-js";
 import * as schema from "../lib/db/schema";
-import { eq } from "drizzle-orm";
 
 const sql = postgres(process.env.DATABASE_URL!, { max: 1, ssl: "require" });
 const db = drizzle(sql, { schema });
 
 const EMAIL = "admin@mightyflights.co.za";
-const PASSWORD = "ChangeMe123!"; // change after first login via /admin
+const PASSWORD = "ChangeMe123!";
 
 async function main() {
-  const existing = await db
-    .select()
-    .from(schema.users)
-    .where(eq(schema.users.email, EMAIL));
+  console.log("Purging all data…");
 
-  if (existing.length > 0) {
-    console.log(`Super-admin already exists: ${EMAIL}`);
-    await sql.end();
-    return;
-  }
+  // Truncate in FK-safe order (children before parents)
+  await sql`TRUNCATE fixtures, rounds, rsvps, matchup_history, pair_stats, league_nights, invite_tokens, players, handicap_settings, users, clubs RESTART IDENTITY CASCADE`;
+
+  console.log("All tables cleared.");
 
   const passwordHash = await bcrypt.hash(PASSWORD, 12);
   const [user] = await db
@@ -38,9 +33,8 @@ async function main() {
     })
     .returning();
 
-  console.log(`Created super-admin: ${user.email}`);
+  console.log(`Re-created super-admin: ${user.email}`);
   console.log(`Temporary password: ${PASSWORD}`);
-  console.log(`Change it at /admin after first login.`);
   await sql.end();
 }
 
