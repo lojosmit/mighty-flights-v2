@@ -100,15 +100,15 @@ export function LeagueNightSetup({ players, members, clubId, clubs }: Props) {
   return (
     <div>
       {/* Step indicators */}
-      <div className="flex gap-8 mb-12">
+      <div className="mf-stepper">
         {STEP_LABELS.map((label, i) => {
           const n = i as Step;
           const active = step === n;
           const done = step > n;
           return (
-            <div key={label} className="flex items-center gap-3">
+            <div key={label} className="flex items-center gap-2">
               <div
-                className="w-6 h-6 flex items-center justify-center text-meta font-medium"
+                className="w-6 h-6 flex items-center justify-center font-medium flex-shrink-0"
                 style={{
                   backgroundColor: active || done ? "var(--accent-primary)" : "transparent",
                   border: active || done ? "none" : "1px solid var(--border-hairline)",
@@ -119,7 +119,7 @@ export function LeagueNightSetup({ players, members, clubId, clubs }: Props) {
                 {done ? "✓" : n + 1}
               </div>
               <span
-                className="text-meta uppercase tracking-widest"
+                className="mf-step-label"
                 style={{ color: active ? "var(--ink-primary)" : "var(--ink-tertiary)" }}
               >
                 {label}

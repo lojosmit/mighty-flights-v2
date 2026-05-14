@@ -198,6 +198,9 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html, body {
+    overflow-x: hidden;
+  }
   body {
     @apply bg-background text-foreground font-body;
   }
@@ -397,6 +400,26 @@
   /* Login */
   .mf-login-left  { display: none; }
   .mf-login-right { min-height: 100vh; padding: 48px 24px; }
+}
+
+/* ─── Stepper ─────────────────────────────────────────────────────────────── */
+.mf-stepper {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 48px;
+  flex-wrap: nowrap;
+}
+.mf-step-label {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 480px) {
+  .mf-stepper { gap: 12px; }
+  .mf-step-label { display: none; }
 }
 
 /* Theme crossfade — only active during the toggle (400ms per UIUX.md §6) */
