@@ -22,7 +22,7 @@ export default async function NewLeagueNightPage() {
   ]);
 
   return (
-    <main className="max-w-[1280px] mx-auto px-20 py-16">
+    <main className="mf-page">
       <header className="mb-16">
         <p
           className="text-meta uppercase tracking-widest mb-3"

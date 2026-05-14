@@ -124,7 +124,7 @@ export default function ScorekeeperPage() {
   }
 
   return (
-    <main className="max-w-[1280px] mx-auto px-20 py-12">
+    <main className="mf-page">
       {/* Header */}
       <div className="flex items-start justify-between mb-12">
         <div>

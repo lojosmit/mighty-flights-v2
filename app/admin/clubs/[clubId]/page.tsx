@@ -40,7 +40,7 @@ export default async function ClubPage({ params }: Props) {
   };
 
   return (
-    <main style={{ maxWidth: "1280px", margin: "0 auto", padding: "64px 80px" }}>
+    <main className="mf-page">
       {/* Breadcrumb */}
       <nav style={{ marginBottom: "40px" }}>
         <Link
@@ -79,6 +79,7 @@ export default async function ClubPage({ params }: Props) {
             Access Requests ({pendingRequests.length})
           </p>
           <div style={{ height: "1px", backgroundColor: "var(--loss)", marginBottom: "24px" }} />
+          <div className="mf-table-wrap">
           <table style={{ width: "100%", borderCollapse: "collapse", maxWidth: "600px" }}>
             <thead>
               <tr style={{ borderBottom: "1px solid var(--border-hairline)" }}>
@@ -99,11 +100,12 @@ export default async function ClubPage({ params }: Props) {
               ))}
             </tbody>
           </table>
+          </div>
         </section>
       )}
 
       {/* Two-column layout: Members + Invites */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "80px", alignItems: "start" }}>
+      <div className="mf-grid-2">
         {/* Members */}
         <section>
           <p style={sectionLabel}>Members ({members.length})</p>

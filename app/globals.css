@@ -203,6 +203,202 @@
   }
 }
 
+/* ─── Responsive layout utilities ────────────────────────────────────────── */
+
+/* Page container */
+.mf-page {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 64px 80px;
+}
+
+/* Section spacing */
+.mf-section { margin-bottom: 72px; }
+
+/* 2-column grid → stacks on mobile */
+.mf-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: start;
+}
+
+/* Scrollable table wrapper for narrow viewports */
+.mf-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
+}
+
+/* ─── Navbar ──────────────────────────────────────────────────────────────── */
+.mf-navbar {
+  width: 100%;
+  height: 88px;
+  background-color: var(--bg-secondary);
+  border-bottom: 1px solid var(--accent-gold);
+  display: flex;
+  align-items: center;
+  padding: 0 80px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  flex-shrink: 0;
+}
+.mf-navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  margin-right: 48px;
+  flex-shrink: 0;
+}
+.mf-navbar-title {
+  font-family: var(--font-cormorant);
+  font-size: 30px;
+  font-weight: 400;
+  color: var(--ink-primary);
+  letter-spacing: 0.02em;
+}
+.mf-navbar-links {
+  display: flex;
+  gap: 32px;
+  flex: 1;
+}
+.mf-navbar-link {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-tertiary);
+  text-decoration: none;
+}
+.mf-navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.mf-navbar-username {
+  font-family: var(--font-body);
+  font-size: 11px;
+  color: var(--ink-tertiary);
+  letter-spacing: 0.04em;
+}
+
+/* Hamburger — hidden on desktop */
+.mf-hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 44px;
+  height: 44px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  gap: 5px;
+  padding: 8px;
+  margin-right: -8px;
+}
+.mf-hamburger-line {
+  width: 22px;
+  height: 2px;
+  background-color: var(--ink-primary);
+  border-radius: 1px;
+  transition: transform 200ms ease, opacity 200ms ease;
+  display: block;
+}
+
+/* Mobile nav overlay */
+.mf-mobile-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background-color: var(--bg-secondary);
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow-y: auto;
+}
+.mf-mobile-menu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  height: 64px;
+  border-bottom: 1px solid var(--accent-gold);
+  flex-shrink: 0;
+}
+.mf-mobile-menu-links {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 8px 0;
+}
+.mf-mobile-nav-item {
+  display: flex;
+  align-items: center;
+  padding: 20px 24px;
+  font-family: var(--font-cormorant);
+  font-size: 28px;
+  font-weight: 400;
+  color: var(--ink-primary);
+  text-decoration: none;
+  border-bottom: 1px solid var(--border-hairline);
+  min-height: 72px;
+}
+.mf-mobile-menu-footer {
+  padding: 24px;
+  border-top: 1px solid var(--border-hairline);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* ─── Login split layout ──────────────────────────────────────────────────── */
+.mf-login-layout {
+  display: flex;
+  min-height: 100vh;
+}
+.mf-login-left {
+  flex: 0 0 55%;
+  background-color: var(--bg-secondary);
+  border-right: 1px solid var(--accent-gold);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px;
+}
+.mf-login-right {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 64px;
+  background-color: var(--bg-primary);
+}
+
+/* ─── Mobile breakpoint (≤768px) ─────────────────────────────────────────── */
+@media (max-width: 768px) {
+  /* Navbar */
+  .mf-navbar           { height: 64px; padding: 0 16px; }
+  .mf-navbar-brand     { margin-right: 0; flex: 1; gap: 8px; }
+  .mf-navbar-title     { font-size: 20px; }
+  .mf-navbar-links     { display: none; }
+  .mf-navbar-username  { display: none; }
+  .mf-hamburger        { display: flex; }
+
+  /* Page */
+  .mf-page    { padding: 24px 16px; }
+  .mf-section { margin-bottom: 48px; }
+  .mf-grid-2  { grid-template-columns: 1fr; gap: 40px; }
+
+  /* Login */
+  .mf-login-left  { display: none; }
+  .mf-login-right { min-height: 100vh; padding: 48px 24px; }
+}
+
 /* Theme crossfade — only active during the toggle (400ms per UIUX.md §6) */
 .theme-transitioning,
 .theme-transitioning *,

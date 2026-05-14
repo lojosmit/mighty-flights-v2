@@ -54,6 +54,7 @@ export default function LeaderboardTable({ entries }: Props) {
   };
 
   return (
+    <div className="mf-table-wrap">
     <table style={{ width: "100%", borderCollapse: "collapse" }}>
       <thead>
         <tr style={{ borderBottom: "1px solid var(--border-hairline)" }}>
@@ -170,5 +171,6 @@ export default function LeaderboardTable({ entries }: Props) {
         )}
       </tbody>
     </table>
+    </div>
   );
 }

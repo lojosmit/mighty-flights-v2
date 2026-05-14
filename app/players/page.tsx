@@ -9,7 +9,7 @@ export default async function PlayersPage() {
   const players = await getPlayers(session?.user.clubId);
 
   return (
-    <main className="max-w-[1280px] mx-auto px-20 py-16">
+    <main className="mf-page">
       <header className="mb-16">
         <p className="text-meta uppercase tracking-widest text-ink-tertiary mb-3">
           Mighty Flights

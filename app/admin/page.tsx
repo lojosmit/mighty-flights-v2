@@ -28,7 +28,7 @@ export default async function AdminPage() {
   };
 
   return (
-    <main style={{ maxWidth: "1280px", margin: "0 auto", padding: "64px 80px" }}>
+    <main className="mf-page">
       <header style={{ marginBottom: "64px" }}>
         <p style={{ fontFamily: "var(--font-body)", fontSize: "10px", fontWeight: 500, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--accent-gold)", marginBottom: "8px" }}>
           Super Admin
@@ -62,6 +62,7 @@ export default async function AdminPage() {
             Access Requests ({pendingRequests.length})
           </p>
           <div style={{ height: "1px", backgroundColor: "var(--loss)", marginBottom: "24px" }} />
+          <div className="mf-table-wrap">
           <table style={{ width: "100%", borderCollapse: "collapse", maxWidth: "640px" }}>
             <thead>
               <tr style={{ borderBottom: "1px solid var(--border-hairline)" }}>
@@ -84,6 +85,7 @@ export default async function AdminPage() {
               ))}
             </tbody>
           </table>
+          </div>
           <p style={{ fontFamily: "var(--font-body)", fontSize: "12px", color: "var(--ink-tertiary)", marginTop: "16px" }}>
             Generate invite links for these players via the relevant club page below.
           </p>

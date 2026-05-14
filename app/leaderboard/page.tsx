@@ -9,7 +9,7 @@ export default async function LeaderboardPage() {
   const entries = await getLeaderboard(session?.user.clubId);
 
   return (
-    <main style={{ maxWidth: "1280px", margin: "0 auto", padding: "64px 80px" }}>
+    <main className="mf-page">
       <header style={{ marginBottom: "64px" }}>
         <p
           style={{

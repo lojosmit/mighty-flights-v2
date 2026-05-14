@@ -41,7 +41,7 @@ export default async function HistoryPage() {
   const nights = await getAllLeagueNights(session?.user.clubId);
 
   return (
-    <main style={{ maxWidth: "1280px", margin: "0 auto", padding: "64px 80px" }}>
+    <main className="mf-page">
       <header style={{ marginBottom: "64px" }}>
         <p
           style={{
@@ -85,6 +85,7 @@ export default async function HistoryPage() {
           No league nights yet
         </p>
       ) : (
+        <div className="mf-table-wrap">
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr style={{ borderBottom: "1px solid var(--border-hairline)" }}>
@@ -175,6 +176,7 @@ export default async function HistoryPage() {
             ))}
           </tbody>
         </table>
+        </div>
       )}
     </main>
   );

@@ -44,7 +44,7 @@ export default async function PlayerProfilePage({ params, searchParams }: Props)
   };
 
   return (
-    <main style={{ maxWidth: "1280px", margin: "0 auto", padding: "64px 80px" }}>
+    <main className="mf-page">
       {/* Back link + copy */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "40px" }}>
         <Link
@@ -161,6 +161,7 @@ export default async function PlayerProfilePage({ params, searchParams }: Props)
             No partner history yet.
           </p>
         ) : (
+          <div className="mf-table-wrap">
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
               <tr style={{ borderBottom: "1px solid var(--border-hairline)" }}>
@@ -206,6 +207,7 @@ export default async function PlayerProfilePage({ params, searchParams }: Props)
               ))}
             </tbody>
           </table>
+          </div>
         )
       )}
 
@@ -216,6 +218,7 @@ export default async function PlayerProfilePage({ params, searchParams }: Props)
             No head-to-head history yet.
           </p>
         ) : (
+          <div className="mf-table-wrap">
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
               <tr style={{ borderBottom: "1px solid var(--border-hairline)" }}>
@@ -257,6 +260,7 @@ export default async function PlayerProfilePage({ params, searchParams }: Props)
               ))}
             </tbody>
           </table>
+          </div>
         )
       )}
     </main>

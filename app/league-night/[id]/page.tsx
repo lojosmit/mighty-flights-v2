@@ -51,7 +51,7 @@ export default async function LeagueNightPage({
     });
 
     return (
-      <main className="max-w-[1280px] mx-auto px-20 py-16">
+      <main className="mf-page">
         <header style={{ marginBottom: "64px" }}>
           <p
             style={{
@@ -131,7 +131,7 @@ export default async function LeagueNightPage({
 
   return (
     <main
-      className="max-w-[1280px] mx-auto px-20 py-16"
+      className="mf-page"
       style={{ position: "relative", overflow: "hidden" }}
     >
       <RoundView

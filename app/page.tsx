@@ -54,7 +54,7 @@ export default async function HomePage() {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          padding: "80px 80px 64px",
+          padding: "clamp(40px, 6vw, 80px) clamp(20px, 6vw, 80px) 48px",
           borderBottom: "1px solid var(--border-hairline)",
         }}
       >
@@ -121,17 +121,7 @@ export default async function HomePage() {
       </section>
 
       {/* ── Body ─────────────────────────────────────────────────────────── */}
-      <section
-        style={{
-          maxWidth: "1280px",
-          margin: "0 auto",
-          padding: "72px 80px",
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: "80px",
-          alignItems: "start",
-        }}
-      >
+      <section className="mf-page mf-grid-2" style={{ paddingTop: "56px", paddingBottom: "56px" }}>
         {/* Top 5 Standings */}
         <div>
           <div style={{ marginBottom: "32px" }}>
