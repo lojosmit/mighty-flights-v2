@@ -140,8 +140,8 @@ export default function ScorekeeperPage() {
 
       <div className="h-px w-full mb-12" style={{ backgroundColor: "var(--border-hairline)" }} />
 
-      {/* Three-column layout: Team A | Grid | Team B */}
-      <div className="grid gap-12" style={{ gridTemplateColumns: "240px 1fr 240px" }}>
+      {/* Three-column layout: Team A | Grid | Team B — stacks on mobile */}
+      <div className="grid gap-12 mf-scorekeeper-grid">
         <TeamPanel team="A" />
         <ScoreGrid />
         <TeamPanel team="B" />

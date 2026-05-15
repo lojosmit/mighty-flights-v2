@@ -9,124 +9,159 @@ import { DeletePlayerDialog } from "./DeletePlayerDialog";
 
 interface Props {
   players: Player[];
+  canEdit?: boolean;
 }
 
-export function PlayerList({ players }: Props) {
+export function PlayerList({ players, canEdit = false }: Props) {
   const [editing, setEditing] = useState<Player | null>(null);
   const [deleting, setDeleting] = useState<Player | null>(null);
 
+  const thStyle: React.CSSProperties = {
+    fontFamily: "var(--font-body)",
+    fontSize: "11px",
+    fontWeight: 500,
+    letterSpacing: "0.08em",
+    textTransform: "uppercase",
+    color: "var(--ink-tertiary)",
+    paddingBottom: "12px",
+    whiteSpace: "nowrap" as const,
+  };
+
   return (
     <div>
-      <div className="mb-12">
-        <AddPlayerForm />
-      </div>
+      {canEdit && (
+        <div style={{ marginBottom: "48px" }}>
+          <AddPlayerForm />
+        </div>
+      )}
 
       {players.length === 0 ? (
         <p
-          className="text-small uppercase tracking-widest"
-          style={{ color: "var(--ink-tertiary)" }}
+          style={{
+            fontFamily: "var(--font-body)",
+            fontSize: "13px",
+            letterSpacing: "0.06em",
+            textTransform: "uppercase",
+            color: "var(--ink-tertiary)",
+            textAlign: "center",
+            paddingTop: "48px",
+          }}
         >
-          No players yet — add the first one above.
+          {canEdit ? "No players yet — add the first one above." : "No players in this club yet."}
         </p>
       ) : (
-        <table className="w-full">
-          <thead>
-            <tr
-              className="border-b"
-              style={{ borderColor: "var(--border-hairline)" }}
-            >
-              <th className="text-left text-meta uppercase tracking-widest pb-3 font-medium" style={{ color: "var(--ink-tertiary)" }}>
-                Rank
-              </th>
-              <th className="text-left text-meta uppercase tracking-widest pb-3 font-medium" style={{ color: "var(--ink-tertiary)" }}>
-                Name
-              </th>
-              <th className="text-right text-meta uppercase tracking-widest pb-3 font-medium" style={{ color: "var(--ink-tertiary)" }}>
-                W
-              </th>
-              <th className="text-right text-meta uppercase tracking-widest pb-3 font-medium" style={{ color: "var(--ink-tertiary)" }}>
-                L
-              </th>
-              <th className="text-right text-meta uppercase tracking-widest pb-3 font-medium" style={{ color: "var(--ink-tertiary)" }}>
-                D
-              </th>
-              <th className="text-right text-meta uppercase tracking-widest pb-3 font-medium" style={{ color: "var(--ink-tertiary)" }}>
-                D+W
-              </th>
-              <th className="pb-3" />
-            </tr>
-          </thead>
-          <tbody>
-            {players.map((player) => (
-              <tr
-                key={player.id}
-                className="border-b group"
-                style={{ borderColor: "var(--border-hairline)", height: "56px" }}
-              >
-                <td
-                  className="text-meta font-mono py-3"
-                  style={{ color: "var(--accent-gold)", fontFamily: "var(--font-jetbrains-mono)", width: "64px" }}
-                >
-                  {player.seasonRank}
-                </td>
-                <td
-                  className="py-3 text-h3"
-                  style={{ fontFamily: "var(--font-cormorant)", fontSize: "1.25rem" }}
-                >
-                  <Link
-                    href={`/players/${player.id}`}
-                    style={{ color: "var(--ink-primary)", textDecoration: "none" }}
-                  >
-                    {player.name}
-                  </Link>
-                </td>
-                <td className="text-right py-3 font-mono text-small" style={{ fontFamily: "var(--font-jetbrains-mono)", color: "var(--ink-secondary)" }}>
-                  {player.wins}
-                </td>
-                <td className="text-right py-3 font-mono text-small" style={{ fontFamily: "var(--font-jetbrains-mono)", color: "var(--ink-secondary)" }}>
-                  {player.losses}
-                </td>
-                <td className="text-right py-3 font-mono text-small" style={{ fontFamily: "var(--font-jetbrains-mono)", color: "var(--ink-secondary)" }}>
-                  {player.doves}
-                </td>
-                <td className="text-right py-3 font-mono text-small" style={{ fontFamily: "var(--font-jetbrains-mono)", color: "var(--ink-secondary)" }}>
-                  {player.doveWins}
-                </td>
-                <td className="text-right py-3">
-                  <span className="opacity-0 group-hover:opacity-100 transition-opacity inline-flex gap-4">
-                    <button
-                      onClick={() => setEditing(player)}
-                      className="text-meta uppercase tracking-widest cursor-pointer"
-                      style={{ color: "var(--ink-tertiary)" }}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => setDeleting(player)}
-                      className="text-meta uppercase tracking-widest cursor-pointer"
-                      style={{ color: "var(--ink-tertiary)" }}
-                    >
-                      Delete
-                    </button>
-                  </span>
-                </td>
+        <div className="mf-table-wrap">
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <thead>
+              <tr style={{ borderBottom: "1px solid var(--border-hairline)" }}>
+                <th style={{ ...thStyle, textAlign: "left", width: "48px" }}>Rank</th>
+                <th style={{ ...thStyle, textAlign: "left" }}>Name</th>
+                <th style={{ ...thStyle, textAlign: "right" }}>GP</th>
+                <th style={{ ...thStyle, textAlign: "right" }}>W</th>
+                <th style={{ ...thStyle, textAlign: "right" }}>L</th>
+                <th style={{ ...thStyle, textAlign: "right" }}>D</th>
+                <th style={{ ...thStyle, textAlign: "right" }}>D+W</th>
+                {canEdit && <th style={{ ...thStyle, width: "96px" }} />}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {players.map((player) => (
+                <tr
+                  key={player.id}
+                  style={{
+                    height: "60px",
+                    borderBottom: "1px solid var(--border-hairline)",
+                  }}
+                >
+                  <td
+                    style={{
+                      fontFamily: "var(--font-mono)",
+                      fontSize: "12px",
+                      color: "var(--accent-gold)",
+                      width: "48px",
+                    }}
+                  >
+                    {player.seasonRank}
+                  </td>
+                  <td>
+                    <Link
+                      href={`/players/${player.id}`}
+                      style={{
+                        fontFamily: "var(--font-cormorant)",
+                        fontSize: "22px",
+                        fontWeight: 400,
+                        color: "var(--ink-primary)",
+                        textDecoration: "none",
+                      }}
+                    >
+                      {player.name}
+                    </Link>
+                  </td>
+                  <td style={{ textAlign: "right", fontFamily: "var(--font-mono)", fontSize: "13px", color: "var(--ink-secondary)" }}>
+                    {player.wins + player.losses}
+                  </td>
+                  <td style={{ textAlign: "right", fontFamily: "var(--font-mono)", fontSize: "13px", color: "var(--ink-secondary)" }}>
+                    {player.wins}
+                  </td>
+                  <td style={{ textAlign: "right", fontFamily: "var(--font-mono)", fontSize: "13px", color: "var(--ink-secondary)" }}>
+                    {player.losses}
+                  </td>
+                  <td style={{ textAlign: "right", fontFamily: "var(--font-mono)", fontSize: "13px", color: "var(--ink-secondary)" }}>
+                    {player.doves}
+                  </td>
+                  <td style={{ textAlign: "right", fontFamily: "var(--font-mono)", fontSize: "13px", color: "var(--ink-secondary)" }}>
+                    {player.doveWins}
+                  </td>
+                  {canEdit && (
+                    <td style={{ textAlign: "right" }}>
+                      <span style={{ display: "inline-flex", gap: "16px" }}>
+                        <button
+                          onClick={() => setEditing(player)}
+                          style={{
+                            background: "none",
+                            border: "none",
+                            cursor: "pointer",
+                            fontFamily: "var(--font-body)",
+                            fontSize: "11px",
+                            fontWeight: 500,
+                            letterSpacing: "0.08em",
+                            textTransform: "uppercase",
+                            color: "var(--ink-tertiary)",
+                          }}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => setDeleting(player)}
+                          style={{
+                            background: "none",
+                            border: "none",
+                            cursor: "pointer",
+                            fontFamily: "var(--font-body)",
+                            fontSize: "11px",
+                            fontWeight: 500,
+                            letterSpacing: "0.08em",
+                            textTransform: "uppercase",
+                            color: "var(--ink-tertiary)",
+                          }}
+                        >
+                          Delete
+                        </button>
+                      </span>
+                    </td>
+                  )}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
 
       {editing && (
-        <EditPlayerDialog
-          player={editing}
-          onClose={() => setEditing(null)}
-        />
+        <EditPlayerDialog player={editing} onClose={() => setEditing(null)} />
       )}
       {deleting && (
-        <DeletePlayerDialog
-          player={deleting}
-          onClose={() => setDeleting(null)}
-        />
+        <DeletePlayerDialog player={deleting} onClose={() => setDeleting(null)} />
       )}
     </div>
   );

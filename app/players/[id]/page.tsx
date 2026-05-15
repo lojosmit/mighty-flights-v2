@@ -1,6 +1,7 @@
 import { connection } from "next/server";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { auth } from "@/auth";
 import { getPlayerProfile } from "@/lib/leaderboard";
 import CopyLinkButton from "./CopyLinkButton";
 
@@ -18,8 +19,14 @@ export default async function PlayerProfilePage({ params, searchParams }: Props)
   const { tab: tabParam } = await searchParams;
   const tab: Tab = TABS.includes(tabParam as Tab) ? (tabParam as Tab) : "stats";
 
-  const profile = await getPlayerProfile(id);
+  const [session, profile] = await Promise.all([auth(), getPlayerProfile(id)]);
   if (!profile) notFound();
+
+  // Non-super-admin users can only view players in their own club
+  if (session?.user.role !== "super_admin") {
+    const userClubId = session?.user.clubId ?? null;
+    if (profile.player.clubId !== userClubId) notFound();
+  }
 
   const { player, partners, headToHeads } = profile;
 

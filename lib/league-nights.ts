@@ -4,6 +4,21 @@ import { desc, eq, getTableColumns } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { db } from "./db/index";
 import { clubs, leagueNights, type LeagueNight } from "./db/schema";
+import { auth } from "@/auth";
+
+async function requireManager() {
+  const session = await auth();
+  if (!session) throw new Error("Unauthorized");
+  const { role } = session.user;
+  if (role !== "super_admin" && role !== "club_manager") throw new Error("Forbidden");
+}
+
+async function requireGameRole() {
+  const session = await auth();
+  if (!session) throw new Error("Unauthorized");
+  const { role } = session.user;
+  if (!["super_admin", "club_manager", "host"].includes(role)) throw new Error("Forbidden");
+}
 
 export type LeagueNightWithClub = LeagueNight & { clubName: string | null };
 
@@ -24,6 +39,7 @@ export async function createLeagueNight({
   rsvpDeadline?: Date;
   hostUserId?: string | null;
 }): Promise<LeagueNight> {
+  await requireGameRole();
   const rsvpToken = (enableRsvp || rsvpDeadline) ? crypto.randomUUID() : undefined;
 
   const [night] = await db
@@ -51,6 +67,7 @@ export async function updateLeagueNight(
     hostUserId?: string | null;
   }
 ): Promise<void> {
+  await requireManager();
   await db
     .update(leagueNights)
     .set({

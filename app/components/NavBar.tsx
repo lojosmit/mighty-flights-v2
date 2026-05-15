@@ -10,6 +10,7 @@ const MANAGER_LINKS = [
 
 const PLAYER_LINKS = [
   { href: "/leaderboard", label: "Standings" },
+  { href: "/players",     label: "Players"   },
   { href: "/history",     label: "History"   },
 ];
 

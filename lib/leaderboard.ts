@@ -52,7 +52,7 @@ export type HeadToHeadRow = {
 };
 
 export type PlayerProfile = {
-  player: LeaderboardEntry;
+  player: LeaderboardEntry & { clubId: string | null };
   partners: PartnerRow[];
   headToHeads: HeadToHeadRow[];
 };
@@ -115,5 +115,9 @@ export async function getPlayerProfile(playerId: string): Promise<PlayerProfile 
     })
     .sort((a, b) => b.gamesPlayed - a.gamesPlayed);
 
-  return { player: toEntry(playerRow), partners, headToHeads };
+  return {
+    player: { ...toEntry(playerRow), clubId: playerRow.clubId ?? null },
+    partners,
+    headToHeads,
+  };
 }

@@ -474,6 +474,38 @@
   .mf-step-label { display: none; }
 }
 
+/* ─── Scorekeeper 3-col grid ─────────────────────────────────────────────── */
+.mf-scorekeeper-grid {
+  grid-template-columns: 240px 1fr 240px;
+}
+@media (max-width: 900px) {
+  .mf-scorekeeper-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ─── Table row hover ────────────────────────────────────────────────────── */
+.mf-table-wrap tbody tr {
+  transition: background-color 120ms ease;
+}
+.mf-table-wrap tbody tr:hover {
+  background-color: var(--bg-elevated);
+}
+
+/* ─── Navbar link hover ──────────────────────────────────────────────────── */
+.mf-navbar-link {
+  transition: color 150ms ease;
+}
+.mf-navbar-link:hover {
+  color: var(--ink-primary) !important;
+}
+
+/* ─── Button press feedback ──────────────────────────────────────────────── */
+button:active:not(:disabled) {
+  opacity: 0.75;
+  transform: scale(0.985);
+}
+
 /* Theme crossfade — only active during the toggle (400ms per UIUX.md §6) */
 .theme-transitioning,
 .theme-transitioning *,

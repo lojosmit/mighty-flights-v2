@@ -56,13 +56,28 @@ export default function NavBarShell({ navLinks, isAdmin, userName, isLoggedIn }:
 
         {/* Desktop nav links */}
         <nav className="mf-navbar-links">
-          {navLinks.map(({ href, label }) => (
-            <Link key={href} href={href} className="mf-navbar-link">
-              {label}
-            </Link>
-          ))}
+          {navLinks.map(({ href, label }) => {
+            const isActive = pathname === href || (href !== "/" && pathname.startsWith(href));
+            return (
+              <Link
+                key={href}
+                href={href}
+                className="mf-navbar-link"
+                style={isActive ? { color: "var(--ink-primary)", borderBottom: "2px solid var(--accent-gold)", paddingBottom: "2px" } : undefined}
+              >
+                {label}
+              </Link>
+            );
+          })}
           {isAdmin && (
-            <Link href="/admin" className="mf-navbar-link" style={{ color: "var(--accent-gold)" }}>
+            <Link
+              href="/admin"
+              className="mf-navbar-link"
+              style={{
+                color: pathname.startsWith("/admin") ? "var(--ink-primary)" : "var(--accent-gold)",
+                ...(pathname.startsWith("/admin") ? { borderBottom: "2px solid var(--accent-gold)", paddingBottom: "2px" } : {}),
+              }}
+            >
               Admin
             </Link>
           )}
@@ -126,11 +141,19 @@ export default function NavBarShell({ navLinks, isAdmin, userName, isLoggedIn }:
 
           {/* Nav links */}
           <nav className="mf-mobile-menu-links">
-            {navLinks.map(({ href, label }) => (
-              <Link key={href} href={href} className="mf-mobile-nav-item">
-                {label}
-              </Link>
-            ))}
+            {navLinks.map(({ href, label }) => {
+              const isActive = pathname === href || (href !== "/" && pathname.startsWith(href));
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  className="mf-mobile-nav-item"
+                  style={isActive ? { color: "var(--accent-gold)" } : undefined}
+                >
+                  {label}
+                </Link>
+              );
+            })}
             {isAdmin && (
               <Link href="/admin" className="mf-mobile-nav-item" style={{ color: "var(--accent-gold)" }}>
                 Admin

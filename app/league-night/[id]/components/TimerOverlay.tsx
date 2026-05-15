@@ -99,16 +99,20 @@ export default function TimerOverlay({
   };
 
   return (
-    // Always mounted — display:none keeps timer running in background
+    // Always mounted — opacity/visibility keeps timer running when dismissed
     <div
       style={{
-        display: open ? "flex" : "none",
+        display: "flex",
         position: "fixed",
         inset: 0,
         zIndex: 200,
         backgroundColor: "var(--bg-primary)",
         flexDirection: "column",
         overflow: "auto",
+        opacity: open ? 1 : 0,
+        visibility: open ? "visible" : "hidden",
+        transition: "opacity 220ms ease, visibility 220ms ease",
+        pointerEvents: open ? "auto" : "none",
       }}
     >
       {/* ── Top bar ── */}

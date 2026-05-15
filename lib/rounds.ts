@@ -12,6 +12,15 @@ import { nextRound, type RoundState } from "./rotation-engine";
 import { getPlayers } from "./players";
 import { getMultiplier } from "./handicap";
 import { applyFixtureStats } from "./stats";
+import { auth } from "@/auth";
+
+const GAME_ROLES = new Set(["super_admin", "club_manager", "host"]);
+
+async function requireGameRole() {
+  const session = await auth();
+  if (!session) throw new Error("Unauthorized");
+  if (!GAME_ROLES.has(session.user.role)) throw new Error("Forbidden");
+}
 
 export type RoundWithFixtures = Round & { fixtures: Fixture[] };
 
@@ -89,6 +98,7 @@ async function buildFixtureValues(
 export async function createRound1(
   leagueNightId: string
 ): Promise<RoundWithFixtures> {
+  await requireGameRole();
   const [night] = await db
     .select()
     .from(leagueNights)
@@ -128,6 +138,7 @@ export async function recordResult(
   leagueNightId: string,
   forfeitReason?: string
 ): Promise<void> {
+  await requireGameRole();
   // Fetch first so we can (a) guard against double-recording and (b) get team data.
   const [current] = await db
     .select()
@@ -152,6 +163,7 @@ export async function recordResult(
 export async function generateNextRound(
   leagueNightId: string
 ): Promise<RoundWithFixtures> {
+  await requireGameRole();
   const [night, allRoundsRaw, allPlayers] = await Promise.all([
     db.select().from(leagueNights).where(eq(leagueNights.id, leagueNightId)).then((r) => r[0]),
     db.select().from(rounds).where(eq(rounds.leagueNightId, leagueNightId)).orderBy(rounds.roundNumber),
@@ -215,6 +227,7 @@ export async function generateNextRound(
 }
 
 export async function endLeagueNight(leagueNightId: string): Promise<void> {
+  await requireGameRole();
   await db
     .update(leagueNights)
     .set({ status: "completed" })
@@ -228,6 +241,7 @@ export async function applyOverride(
   playerA: string,
   playerB: string
 ): Promise<void> {
+  await requireGameRole();
   const round = await getRoundWithFixtures(roundId);
   if (!round) return;
 
