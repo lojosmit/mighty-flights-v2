@@ -80,6 +80,7 @@ export default function FixtureBoard({
         />
 
         <div
+          className="mf-fixture-vs"
           style={{
             alignSelf: "center",
             fontFamily: "var(--font-body)",
