@@ -464,6 +464,8 @@
   padding: 36px 40px;
   min-height: 260px;
   border-radius: 6px;
+  display: flex;
+  flex-direction: column;
 }
 .mf-fixture-teams {
   display: flex;

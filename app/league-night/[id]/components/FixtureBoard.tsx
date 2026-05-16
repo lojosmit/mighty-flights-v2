@@ -173,7 +173,8 @@ export default function FixtureBoard({
         </div>
       )}
 
-      {/* Result section */}
+      {/* Result section — pushed to bottom so buttons align across cards */}
+      <div style={{ marginTop: "auto" }}>
       {fixture.result !== "in_progress" && (
         <ResultBadge result={fixture.result} teamALabel={teamALabel} teamBLabel={teamBLabel} />
       )}
@@ -186,6 +187,7 @@ export default function FixtureBoard({
           isPending={isPendingResult}
         />
       )}
+      </div>
     </div>
   );
 }
