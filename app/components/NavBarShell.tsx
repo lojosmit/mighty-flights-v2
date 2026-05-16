@@ -184,12 +184,12 @@ export default function NavBarShell({ navLinks, isAdmin, isClubManager, clubMana
           </nav>
 
           <div className="mf-mobile-menu-footer">
-            <div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
               {userName && (
                 <Link
                   href="/profile"
                   onClick={() => setMenuOpen(false)}
-                  style={{ display: "block", fontFamily: "var(--font-body)", fontSize: "13px", color: "var(--ink-secondary)", textDecoration: "none", marginBottom: "8px" }}
+                  style={{ display: "block", fontFamily: "var(--font-body)", fontSize: "14px", fontWeight: 500, color: "var(--ink-primary)", textDecoration: "none" }}
                 >
                   {userName}
                 </Link>

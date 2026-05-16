@@ -399,7 +399,7 @@
   min-height: 72px;
 }
 .mf-mobile-menu-footer {
-  padding: 24px;
+  padding: 32px 24px;
   border-top: 1px solid var(--border-hairline);
   display: flex;
   justify-content: space-between;
