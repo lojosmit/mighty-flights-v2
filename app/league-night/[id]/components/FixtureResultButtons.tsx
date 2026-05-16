@@ -68,7 +68,7 @@ export default function FixtureResultButtons({
             onClick={() => enabled && onResult("teamA_win")}
             style={{
               ...base,
-              minHeight: "60px",
+              height: "60px",
               background: "var(--accent-primary)",
               color: "#ffffff",
               fontSize: "13px",
@@ -81,7 +81,7 @@ export default function FixtureResultButtons({
             onClick={() => enabled && onResult("teamB_win")}
             style={{
               ...base,
-              minHeight: "60px",
+              height: "60px",
               background: "var(--bg-elevated)",
               color: "var(--ink-primary)",
               border: "1px solid var(--border-hairline)",
@@ -102,7 +102,7 @@ export default function FixtureResultButtons({
             onClick={() => enabled && onResult("special_win_A")}
             style={{
               ...base,
-              minHeight: "60px",
+              height: "60px",
               background: "transparent",
               color: "var(--accent-gold)",
               border: "1px solid var(--accent-gold)",
@@ -117,7 +117,7 @@ export default function FixtureResultButtons({
             onClick={() => enabled && onResult("special_win_B")}
             style={{
               ...base,
-              minHeight: "60px",
+              height: "60px",
               background: "transparent",
               color: "var(--accent-gold)",
               border: "1px solid var(--accent-gold)",
@@ -136,7 +136,7 @@ export default function FixtureResultButtons({
         onClick={() => enabled && onResult("double_forfeit")}
         style={{
           ...base,
-          minHeight: "40px",
+          height: "40px",
           flexDirection: "row",
           background: "transparent",
           color: "var(--ink-tertiary)",
