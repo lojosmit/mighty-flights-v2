@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, Suspense } from "react";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import LoginDrawer from "@/app/components/LoginDrawer";
@@ -9,11 +9,6 @@ function LoginPageInner() {
   const params = useSearchParams();
   const callbackUrl = params.get("callbackUrl") ?? "/";
   const [open, setOpen] = useState(false);
-
-  useEffect(() => {
-    const t = setTimeout(() => setOpen(true), 30);
-    return () => clearTimeout(t);
-  }, []);
 
   return (
     <>
@@ -64,6 +59,24 @@ function LoginPageInner() {
         >
           Sign in to access your club
         </p>
+        <button
+          onClick={() => setOpen(true)}
+          style={{
+            marginTop: "clamp(32px, 5vh, 56px)",
+            fontFamily: "var(--font-body)",
+            fontSize: "13px",
+            fontWeight: 500,
+            letterSpacing: "0.12em",
+            textTransform: "uppercase",
+            padding: "14px 40px",
+            background: "var(--accent-primary)",
+            color: "#ffffff",
+            border: "none",
+            cursor: "pointer",
+          }}
+        >
+          Sign In
+        </button>
       </main>
     </>
   );
