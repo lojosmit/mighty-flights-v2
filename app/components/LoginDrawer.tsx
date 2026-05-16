@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, Suspense } from "react";
+import { useEffect, useState, Suspense } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 import LoginForm from "@/app/login/LoginForm";
 
@@ -10,25 +11,10 @@ interface Props {
   callbackUrl?: string;
 }
 
-export default function LoginDrawer({ open, onClose, callbackUrl }: Props) {
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
-    document.addEventListener("keydown", onKey);
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = "";
-    };
-  }, [open, onClose]);
-
+function DrawerContent({ open, onClose, callbackUrl }: Props) {
   return (
     <>
-      <div
-        className={`mf-login-backdrop${open ? " open" : ""}`}
-        onClick={onClose}
-        aria-hidden="true"
-      />
+      {/* Drawer panel — rendered via portal so it sits outside #mf-page-wrap */}
       <div
         className={`mf-login-drawer${open ? " open" : ""}`}
         role="dialog"
@@ -59,41 +45,52 @@ export default function LoginDrawer({ open, onClose, callbackUrl }: Props) {
         <Image
           src="/logo.png"
           alt="Mighty Flights"
-          width={120}
-          height={120}
-          style={{ display: "block", marginBottom: "20px", width: "auto", height: "120px" }}
+          width={200}
+          height={200}
+          style={{ display: "block", marginBottom: "32px", width: "auto", height: "clamp(140px, 16vw, 200px)" }}
         />
-        <h2
-          style={{
-            fontFamily: "var(--font-cormorant)",
-            fontSize: "clamp(28px, 3vw, 40px)",
-            fontWeight: 400,
-            color: "var(--ink-primary)",
-            marginBottom: "8px",
-            textAlign: "center",
-          }}
-        >
-          Mighty Flights
-        </h2>
-        <p
-          style={{
-            fontFamily: "var(--font-body)",
-            fontSize: "11px",
-            fontWeight: 500,
-            letterSpacing: "0.14em",
-            textTransform: "uppercase",
-            color: "var(--accent-gold)",
-            marginBottom: "40px",
-          }}
-        >
-          {new Date().getFullYear()} Season
-        </p>
-        <div style={{ width: "100%", maxWidth: "440px" }}>
+
+        <div style={{ width: "100%", maxWidth: "420px" }}>
           <Suspense fallback={null}>
             <LoginForm callbackUrl={callbackUrl} />
           </Suspense>
         </div>
       </div>
     </>
+  );
+}
+
+export default function LoginDrawer({ open, onClose, callbackUrl }: Props) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => { setMounted(true); }, []);
+
+  // Drive the page-push via a data attribute on <html>
+  useEffect(() => {
+    document.documentElement.setAttribute("data-login-open", open ? "true" : "false");
+    if (open) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.documentElement.removeAttribute("data-login-open");
+      document.body.style.overflow = "";
+    };
+  }, [open]);
+
+  // Escape key
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [open, onClose]);
+
+  if (!mounted) return null;
+
+  return createPortal(
+    <DrawerContent open={open} onClose={onClose} callbackUrl={callbackUrl} />,
+    document.body
   );
 }

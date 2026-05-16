@@ -71,8 +71,10 @@ export default function RootLayout({
           }}
         />
         <ServiceWorkerRegister />
-        <NavBar />
-        {children}
+        <div id="mf-page-wrap" className="flex flex-col flex-1">
+          <NavBar />
+          {children}
+        </div>
       </body>
     </html>
   );

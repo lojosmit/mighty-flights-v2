@@ -20,47 +20,19 @@ function LoginPageInner() {
         style={{
           minHeight: "100vh",
           display: "flex",
-          flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
           background: "var(--bg-secondary)",
-          padding: "40px 24px",
-          textAlign: "center",
         }}
       >
         <Image
           src="/logo.png"
           alt="Mighty Flights"
-          width={320}
-          height={320}
+          width={480}
+          height={480}
           priority
-          style={{ display: "block", marginBottom: "32px", width: "auto", height: "clamp(180px, 20vw, 320px)" }}
+          style={{ display: "block", width: "auto", height: "clamp(260px, 30vw, 480px)" }}
         />
-        <h1
-          style={{
-            fontFamily: "var(--font-cormorant)",
-            fontSize: "clamp(48px, 6vw, 84px)",
-            fontWeight: 400,
-            color: "var(--ink-primary)",
-            letterSpacing: "0.02em",
-            marginBottom: "12px",
-            lineHeight: 1,
-          }}
-        >
-          Mighty Flights
-        </h1>
-        <p
-          style={{
-            fontFamily: "var(--font-body)",
-            fontSize: "12px",
-            fontWeight: 500,
-            letterSpacing: "0.18em",
-            textTransform: "uppercase",
-            color: "var(--accent-gold)",
-          }}
-        >
-          {new Date().getFullYear()} Season
-        </p>
       </main>
     </>
   );
