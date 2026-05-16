@@ -68,10 +68,11 @@ export default function FixtureResultButtons({
             onClick={() => enabled && onResult("teamA_win")}
             style={{
               ...base,
-              minHeight: "68px",
+              minHeight: "60px",
               background: "var(--accent-primary)",
               color: "#ffffff",
               fontSize: "13px",
+              borderRadius: "4px",
             }}
           >
             <span>{teamALabel}</span>
@@ -80,11 +81,12 @@ export default function FixtureResultButtons({
             onClick={() => enabled && onResult("teamB_win")}
             style={{
               ...base,
-              minHeight: "68px",
+              minHeight: "60px",
               background: "var(--bg-elevated)",
               color: "var(--ink-primary)",
               border: "1px solid var(--border-hairline)",
               fontSize: "13px",
+              borderRadius: "4px",
             }}
           >
             <span>{teamBLabel}</span>
@@ -100,11 +102,12 @@ export default function FixtureResultButtons({
             onClick={() => enabled && onResult("special_win_A")}
             style={{
               ...base,
-              minHeight: "52px",
+              minHeight: "60px",
               background: "transparent",
               color: "var(--accent-gold)",
               border: "1px solid var(--accent-gold)",
               fontSize: "12px",
+              borderRadius: "4px",
             }}
           >
             <span>{teamALabel}</span>
@@ -114,11 +117,12 @@ export default function FixtureResultButtons({
             onClick={() => enabled && onResult("special_win_B")}
             style={{
               ...base,
-              minHeight: "52px",
+              minHeight: "60px",
               background: "transparent",
               color: "var(--accent-gold)",
               border: "1px solid var(--accent-gold)",
               fontSize: "12px",
+              borderRadius: "4px",
             }}
           >
             <span>{teamBLabel}</span>
@@ -139,6 +143,7 @@ export default function FixtureResultButtons({
           border: "1px solid var(--border-hairline)",
           fontSize: "11px",
           letterSpacing: "0.1em",
+          borderRadius: "4px",
         }}
       >
         Double Forfeit

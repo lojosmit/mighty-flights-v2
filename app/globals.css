@@ -204,6 +204,9 @@
   body {
     @apply bg-background text-foreground font-body;
   }
+  button {
+    border-radius: 4px;
+  }
 }
 
 /* ─── Responsive layout utilities ────────────────────────────────────────── */
@@ -460,6 +463,7 @@
   border: 1px solid var(--border-hairline);
   padding: 36px 40px;
   min-height: 260px;
+  border-radius: 6px;
 }
 .mf-fixture-teams {
   display: flex;

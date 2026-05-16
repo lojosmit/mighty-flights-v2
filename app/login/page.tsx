@@ -37,6 +37,33 @@ function LoginPageInner() {
           priority
           style={{ display: "block", width: "auto", height: "clamp(280px, 36vw, 520px)" }}
         />
+        <p
+          style={{
+            marginTop: "clamp(24px, 4vh, 48px)",
+            fontFamily: "var(--font-body)",
+            fontSize: "clamp(13px, 1.2vw, 16px)",
+            fontWeight: 400,
+            letterSpacing: "0.18em",
+            textTransform: "uppercase",
+            color: "var(--ink-tertiary)",
+            textAlign: "center",
+          }}
+        >
+          Darts League Management
+        </p>
+        <p
+          style={{
+            marginTop: "12px",
+            fontFamily: "var(--font-body)",
+            fontSize: "clamp(12px, 1vw, 14px)",
+            color: "var(--ink-tertiary)",
+            opacity: 0.6,
+            letterSpacing: "0.06em",
+            textAlign: "center",
+          }}
+        >
+          Sign in to access your club
+        </p>
       </main>
     </>
   );
