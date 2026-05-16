@@ -10,8 +10,10 @@ function LoginPageInner() {
   const callbackUrl = params.get("callbackUrl") ?? "/";
   const [open, setOpen] = useState(false);
 
-  // Defer open until after first paint so CSS transition actually animates
-  useEffect(() => { const t = setTimeout(() => setOpen(true), 30); return () => clearTimeout(t); }, []);
+  useEffect(() => {
+    const t = setTimeout(() => setOpen(true), 30);
+    return () => clearTimeout(t);
+  }, []);
 
   return (
     <>
@@ -21,18 +23,19 @@ function LoginPageInner() {
         style={{
           minHeight: "100vh",
           display: "flex",
+          flexDirection: "column",
           alignItems: "center",
-          justifyContent: "center",
+          paddingTop: "clamp(48px, 8vh, 96px)",
           background: "var(--bg-secondary)",
         }}
       >
         <Image
           src="/logo.png"
           alt="Mighty Flights"
-          width={480}
-          height={480}
+          width={520}
+          height={520}
           priority
-          style={{ display: "block", width: "auto", height: "clamp(260px, 30vw, 480px)" }}
+          style={{ display: "block", width: "auto", height: "clamp(280px, 36vw, 520px)" }}
         />
       </main>
     </>

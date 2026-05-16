@@ -2,7 +2,6 @@
 
 import { useEffect, useState, Suspense } from "react";
 import { createPortal } from "react-dom";
-import Image from "next/image";
 import LoginForm from "@/app/login/LoginForm";
 
 interface Props {
@@ -14,7 +13,11 @@ interface Props {
 function DrawerContent({ open, onClose, callbackUrl }: Props) {
   return (
     <>
-      {/* Drawer panel — rendered via portal so it sits outside #mf-page-wrap */}
+      <div
+        className={`mf-login-backdrop${open ? " open" : ""}`}
+        onClick={onClose}
+        aria-hidden="true"
+      />
       <div
         className={`mf-login-drawer${open ? " open" : ""}`}
         role="dialog"
@@ -42,14 +45,6 @@ function DrawerContent({ open, onClose, callbackUrl }: Props) {
           </svg>
         </button>
 
-        <Image
-          src="/logo.png"
-          alt="Mighty Flights"
-          width={200}
-          height={200}
-          style={{ display: "block", marginBottom: "32px", width: "auto", height: "clamp(140px, 16vw, 200px)" }}
-        />
-
         <div style={{ width: "100%", maxWidth: "420px" }}>
           <Suspense fallback={null}>
             <LoginForm callbackUrl={callbackUrl} />
@@ -65,21 +60,11 @@ export default function LoginDrawer({ open, onClose, callbackUrl }: Props) {
 
   useEffect(() => { setMounted(true); }, []);
 
-  // Drive the page-push via a data attribute on <html>
   useEffect(() => {
-    document.documentElement.setAttribute("data-login-open", open ? "true" : "false");
-    if (open) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => {
-      document.documentElement.removeAttribute("data-login-open");
-      document.body.style.overflow = "";
-    };
+    document.body.style.overflow = open ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
   }, [open]);
 
-  // Escape key
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };

@@ -233,25 +233,30 @@
   width: 100%;
 }
 
-/* ─── Login drawer (push panel) ───────────────────────────────────────────── */
+/* ─── Login drawer (overlay) ──────────────────────────────────────────────── */
 
-/* Page wrap: slides left to make room for the drawer */
-#mf-page-wrap {
-  transition: transform 420ms cubic-bezier(0.32, 0.72, 0, 1);
-  will-change: transform;
-  min-height: 100vh;
+/* Backdrop */
+.mf-login-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 199;
+  opacity: 0;
+  transition: opacity 400ms ease;
+  pointer-events: none;
 }
-html[data-login-open="true"] #mf-page-wrap {
-  transform: translateX(calc(-1 * clamp(360px, 46vw, 680px)));
+.mf-login-backdrop.open {
+  opacity: 1;
+  pointer-events: auto;
 }
 
-/* Drawer: fixed panel slides in from the right */
+/* Drawer: slides in over the page */
 .mf-login-drawer {
   position: fixed;
   top: 0;
   right: 0;
   height: 100vh;
-  width: clamp(360px, 46vw, 680px);
+  width: clamp(360px, 44vw, 640px);
   background: var(--bg-secondary);
   border-left: 1px solid var(--accent-gold);
   z-index: 200;
@@ -259,7 +264,7 @@ html[data-login-open="true"] #mf-page-wrap {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 48px clamp(20px, 6%, 64px);
+  padding: 48px clamp(24px, 6%, 72px);
   overflow-y: auto;
   transform: translateX(100%);
   transition: transform 420ms cubic-bezier(0.32, 0.72, 0, 1);
@@ -270,7 +275,6 @@ html[data-login-open="true"] #mf-page-wrap {
 }
 @media (max-width: 640px) {
   .mf-login-drawer { width: 100vw; }
-  html[data-login-open="true"] #mf-page-wrap { transform: translateX(-100vw); }
 }
 
 /* ─── Navbar ──────────────────────────────────────────────────────────────── */
