@@ -36,7 +36,7 @@ export default auth((req) => {
   }
 
   // Management routes — manager/host/super_admin only
-  const managementPaths = ["/league-night/new", "/settings", "/players"];
+  const managementPaths = ["/league-night/new", "/settings"];
   const isManagement = managementPaths.some((p) => pathname.startsWith(p));
   if (isManagement && role === "player") {
     return NextResponse.redirect(new URL("/", req.nextUrl));
