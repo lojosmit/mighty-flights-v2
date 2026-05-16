@@ -6,6 +6,7 @@ import {
   Oswald,
 } from "next/font/google";
 import Script from "next/script";
+import Link from "next/link";
 import "./globals.css";
 import NavBar from "./components/NavBar";
 import ServiceWorkerRegister from "./components/ServiceWorkerRegister";
@@ -73,7 +74,18 @@ export default function RootLayout({
         <ServiceWorkerRegister />
         <div id="mf-page-wrap" className="flex flex-col flex-1">
           <NavBar />
-          {children}
+          <div className="flex flex-col flex-1">
+            {children}
+          </div>
+          <footer className="mf-footer">
+            <Link href="/contact" className="mf-footer-contact">
+              Contact Developer
+            </Link>
+            <p className="mf-footer-sig">
+              <span className="mf-footer-sig-by">Developed by</span>
+              <span className="mf-footer-sig-name">Wikus Smit</span>
+            </p>
+          </footer>
         </div>
       </body>
     </html>

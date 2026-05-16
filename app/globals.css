@@ -569,6 +569,51 @@ button:active:not(:disabled) {
   opacity: 0.75;
 }
 
+/* ─── Footer ─────────────────────────────────────────────────────────────── */
+.mf-footer {
+  width: 100%;
+  border-top: 1px solid var(--accent-gold);
+  padding: 28px clamp(20px, 5vw, 80px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-shrink: 0;
+}
+.mf-footer-contact {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-tertiary);
+  text-decoration: none;
+  transition: color 150ms ease;
+}
+.mf-footer-contact:hover { color: var(--ink-primary); }
+.mf-footer-sig {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.mf-footer-sig-by {
+  font-family: var(--font-body);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-tertiary);
+  opacity: 0.6;
+}
+.mf-footer-sig-name {
+  font-family: var(--font-cormorant);
+  font-size: 20px;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--ink-tertiary);
+  letter-spacing: 0.02em;
+}
+
 /* Theme crossfade — only active during the toggle (400ms per UIUX.md §6) */
 .theme-transitioning,
 .theme-transitioning *,
