@@ -36,12 +36,13 @@ export default async function AdminPage() {
   return (
     <main className="mf-page">
       <header style={{ marginBottom: "64px" }}>
-        <p style={{ fontFamily: "var(--font-body)", fontSize: "10px", fontWeight: 500, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--accent-gold)", marginBottom: "8px" }}>
+        <p style={{ fontFamily: "var(--font-body)", fontSize: "11px", fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--accent-gold)", marginBottom: "12px" }}>
           Super Admin
         </p>
-        <h1 style={{ fontFamily: "var(--font-cormorant)", fontSize: "48px", fontWeight: 400, color: "var(--ink-primary)", lineHeight: 1 }}>
+        <h1 style={{ fontFamily: "var(--font-cormorant)", fontSize: "clamp(48px, 6vw, 72px)", fontWeight: 400, color: "var(--ink-primary)", lineHeight: 1, marginBottom: "24px" }}>
           Administration
         </h1>
+        <div style={{ height: "1px", backgroundColor: "var(--border-hairline)" }} />
       </header>
 
       {/* My Account */}

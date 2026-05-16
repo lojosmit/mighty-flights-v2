@@ -30,7 +30,7 @@ function LoginPageInner() {
           width={520}
           height={520}
           priority
-          style={{ display: "block", width: "auto", height: "clamp(280px, 36vw, 520px)" }}
+          style={{ display: "block", width: "min(420px, 80vw)", height: "auto" }}
         />
         <p
           style={{

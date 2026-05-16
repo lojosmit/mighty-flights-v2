@@ -65,7 +65,7 @@ export default async function HomePage() {
           width={200}
           height={200}
           priority
-          style={{ display: "block", marginBottom: "24px" }}
+          style={{ display: "block", width: "min(200px, 50vw)", height: "auto", marginBottom: "24px" }}
         />
 
         <p

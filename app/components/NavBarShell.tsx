@@ -90,21 +90,23 @@ export default function NavBarShell({ navLinks, isAdmin, isClubManager, clubMana
         {/* Right */}
         <div className="mf-navbar-right">
           {userName && (
-            <Link href="/profile" style={{ fontFamily: "var(--font-body)", fontSize: "11px", color: "var(--ink-tertiary)", letterSpacing: "0.04em", textDecoration: "none" }}>
+            <Link href="/profile" className="mf-navbar-username" style={{ fontFamily: "var(--font-body)", fontSize: "11px", color: "var(--ink-tertiary)", letterSpacing: "0.04em", textDecoration: "none" }}>
               {userName}
             </Link>
           )}
           <ThemeToggle />
-          {isLoggedIn ? (
-            <NavSignOut />
-          ) : (
-            <button
-              onClick={() => setLoginOpen(true)}
-              style={{ ...linkStyle, background: "none", border: "none", cursor: "pointer", padding: 0 }}
-            >
-              Sign in
-            </button>
-          )}
+          <span className="mf-navbar-desktop-only">
+            {isLoggedIn ? (
+              <NavSignOut />
+            ) : (
+              <button
+                onClick={() => setLoginOpen(true)}
+                style={{ ...linkStyle, background: "none", border: "none", cursor: "pointer", padding: 0 }}
+              >
+                Sign in
+              </button>
+            )}
+          </span>
 
           {/* Hamburger */}
           <button
@@ -162,7 +164,11 @@ export default function NavBarShell({ navLinks, isAdmin, isClubManager, clubMana
               );
             })}
             {(isAdmin || isClubManager) && (
-              <Link href={adminHref} className="mf-mobile-nav-item" style={{ color: "var(--accent-gold)" }}>
+              <Link
+                href={adminHref}
+                className="mf-mobile-nav-item"
+                style={pathname.startsWith("/admin") ? { color: "var(--accent-gold)" } : undefined}
+              >
                 Admin
               </Link>
             )}
@@ -180,9 +186,13 @@ export default function NavBarShell({ navLinks, isAdmin, isClubManager, clubMana
           <div className="mf-mobile-menu-footer">
             <div>
               {userName && (
-                <p style={{ fontFamily: "var(--font-body)", fontSize: "13px", color: "var(--ink-secondary)", marginBottom: "4px" }}>
+                <Link
+                  href="/profile"
+                  onClick={() => setMenuOpen(false)}
+                  style={{ display: "block", fontFamily: "var(--font-body)", fontSize: "13px", color: "var(--ink-secondary)", textDecoration: "none", marginBottom: "8px" }}
+                >
                   {userName}
-                </p>
+                </Link>
               )}
               {isLoggedIn && <NavSignOut />}
             </div>

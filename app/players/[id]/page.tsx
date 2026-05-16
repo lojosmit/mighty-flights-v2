@@ -87,7 +87,7 @@ export default async function PlayerProfilePage({ params, searchParams }: Props)
         <h1
           style={{
             fontFamily: "var(--font-cormorant)",
-            fontSize: "clamp(52px, 7vw, 84px)",
+            fontSize: "clamp(48px, 6vw, 72px)",
             fontWeight: 400,
             color: "var(--ink-primary)",
             lineHeight: 1,

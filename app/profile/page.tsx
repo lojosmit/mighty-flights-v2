@@ -59,7 +59,7 @@ export default async function ProfilePage() {
         <h1
           style={{
             fontFamily: "var(--font-cormorant)",
-            fontSize: "clamp(40px, 5vw, 72px)",
+            fontSize: "clamp(48px, 6vw, 72px)",
             fontWeight: 400,
             color: "var(--ink-primary)",
             lineHeight: 1,

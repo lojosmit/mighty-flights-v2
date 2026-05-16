@@ -211,11 +211,11 @@
 
 /* ─── Responsive layout utilities ────────────────────────────────────────── */
 
-/* Page container — fills ~75–80% of viewport on wide screens */
+/* Page container */
 .mf-page {
-  max-width: 1600px;
+  max-width: 1100px;
   margin: 0 auto;
-  padding: 64px clamp(24px, 6vw, 120px);
+  padding: 64px clamp(24px, 5vw, 80px);
 }
 
 /* Section spacing */
@@ -288,7 +288,7 @@
   border-bottom: 1px solid var(--accent-gold);
   display: flex;
   align-items: center;
-  padding: 0 clamp(20px, 6vw, 120px);
+  padding: 0 clamp(20px, 5vw, 80px);
   position: sticky;
   top: 0;
   z-index: 50;
@@ -430,15 +430,25 @@
   background-color: var(--bg-primary);
 }
 
+/* ─── Desktop-only elements (hidden on mobile) ───────────────────────────── */
+.mf-navbar-desktop-only { display: contents; }
+
+/* ─── Tablet breakpoint (≤900px) ─────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .mf-page   { padding: 40px clamp(20px, 4vw, 48px); }
+  .mf-grid-2 { gap: clamp(24px, 3vw, 48px); }
+}
+
 /* ─── Mobile breakpoint (≤768px) ─────────────────────────────────────────── */
 @media (max-width: 768px) {
   /* Navbar */
-  .mf-navbar           { height: 64px; padding: 0 16px; }
-  .mf-navbar-brand     { margin-right: 0; flex: 1; gap: 8px; }
-  .mf-navbar-title     { font-size: 20px; }
-  .mf-navbar-links     { display: none; }
-  .mf-navbar-username  { display: none; }
-  .mf-hamburger        { display: flex; }
+  .mf-navbar                { height: 64px; padding: 0 16px; }
+  .mf-navbar-brand          { margin-right: 0; flex: 1; gap: 8px; }
+  .mf-navbar-title          { font-size: 20px; }
+  .mf-navbar-links          { display: none; }
+  .mf-navbar-username       { display: none; }
+  .mf-navbar-desktop-only   { display: none; }
+  .mf-hamburger             { display: flex; }
 
   /* Page */
   .mf-page    { padding: 24px 16px; }
@@ -557,7 +567,6 @@
 /* ─── Button press feedback ──────────────────────────────────────────────── */
 button:active:not(:disabled) {
   opacity: 0.75;
-  transform: scale(0.985);
 }
 
 /* Theme crossfade — only active during the toggle (400ms per UIUX.md §6) */
