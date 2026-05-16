@@ -6,6 +6,7 @@ import { getPendingRegistrationRequests } from "@/lib/registration-requests";
 import CreateClubForm from "./CreateClubForm";
 import ResetPasswordForm from "./ResetPasswordForm";
 import QuickInvite from "./QuickInvite";
+import RejectRequestButton from "./RejectRequestButton";
 import Link from "next/link";
 
 export default async function AdminPage() {
@@ -67,7 +68,7 @@ export default async function AdminPage() {
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
               <tr style={{ borderBottom: "1px solid var(--border-hairline)" }}>
-                {["Name", "Email", "Club", "Requested", ""].map((h, i) => (
+                {["Name", "Email", "Club", "Requested", "", ""].map((h, i) => (
                   <th key={i} style={{ fontFamily: "var(--font-body)", fontSize: "10px", fontWeight: 500, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--ink-tertiary)", paddingBottom: "10px", textAlign: i >= 3 ? "right" : "left", whiteSpace: "nowrap" }}>
                     {h}
                   </th>
@@ -83,8 +84,11 @@ export default async function AdminPage() {
                   <td style={{ textAlign: "right", fontFamily: "var(--font-mono)", fontSize: "11px", color: "var(--ink-tertiary)", verticalAlign: "top", paddingTop: "14px", whiteSpace: "nowrap", paddingRight: "16px" }}>
                     {new Date(r.createdAt).toLocaleDateString("en-AU")}
                   </td>
-                  <td style={{ textAlign: "right", verticalAlign: "top", paddingTop: "10px" }}>
+                  <td style={{ textAlign: "right", verticalAlign: "top", paddingTop: "10px", paddingRight: "12px" }}>
                     {r.clubId && <QuickInvite clubId={r.clubId} />}
+                  </td>
+                  <td style={{ textAlign: "right", verticalAlign: "top", paddingTop: "10px" }}>
+                    <RejectRequestButton id={r.id} />
                   </td>
                 </tr>
               ))}

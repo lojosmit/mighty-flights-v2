@@ -1,6 +1,7 @@
 "use server";
 
 import { getTableColumns, eq, and } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
 import { db } from "./db";
 import { registrationRequests, clubs } from "./db/schema";
 
@@ -41,4 +42,13 @@ export async function fulfillRegistrationRequest(id: string) {
     .update(registrationRequests)
     .set({ fulfilled: true })
     .where(eq(registrationRequests.id, id));
+  revalidatePath("/admin");
+}
+
+export async function rejectRegistrationRequest(id: string) {
+  await db
+    .update(registrationRequests)
+    .set({ fulfilled: true })
+    .where(eq(registrationRequests.id, id));
+  revalidatePath("/admin");
 }

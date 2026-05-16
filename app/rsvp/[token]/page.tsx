@@ -108,6 +108,7 @@ export default async function RsvpPage({ params }: Props) {
         <div style={{ height: "1px", backgroundColor: "var(--border-hairline)", marginBottom: "40px" }} />
 
         {session ? (
+          /* ── Logged-in state ── */
           hasRsvped ? (
             <p style={{ fontFamily: "var(--font-body)", fontSize: "14px", color: "var(--accent-gold)", fontWeight: 500 }}>
               You&apos;re in for this night.
@@ -120,7 +121,47 @@ export default async function RsvpPage({ params }: Props) {
             <RsvpButton leagueNightId={night.id} userId={session.user.id} />
           )
         ) : (
-          <RequestAccessForm leagueNightId={night.id} clubId={night.clubId ?? undefined} />
+          /* ── Unauthenticated: sign in OR request access ── */
+          <div style={{ textAlign: "left" }}>
+            {/* Option A — already have an account */}
+            <div style={{ marginBottom: "32px" }}>
+              <p style={{ fontFamily: "var(--font-body)", fontSize: "11px", fontWeight: 500, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--ink-tertiary)", marginBottom: "12px" }}>
+                Already have an account?
+              </p>
+              <a
+                href={`/login?callbackUrl=${encodeURIComponent(`/rsvp/${token}`)}`}
+                style={{
+                  display: "inline-block",
+                  padding: "12px 28px",
+                  backgroundColor: "var(--accent-primary)",
+                  color: "#ffffff",
+                  fontFamily: "var(--font-body)",
+                  fontSize: "11px",
+                  fontWeight: 500,
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase",
+                  textDecoration: "none",
+                }}
+              >
+                Sign in →
+              </a>
+            </div>
+
+            {/* Divider */}
+            <div style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "32px" }}>
+              <div style={{ flex: 1, height: "1px", backgroundColor: "var(--border-hairline)" }} />
+              <span style={{ fontFamily: "var(--font-body)", fontSize: "10px", letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--ink-tertiary)" }}>
+                or
+              </span>
+              <div style={{ flex: 1, height: "1px", backgroundColor: "var(--border-hairline)" }} />
+            </div>
+
+            {/* Option B — new player */}
+            <p style={{ fontFamily: "var(--font-body)", fontSize: "11px", fontWeight: 500, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--ink-tertiary)", marginBottom: "16px" }}>
+              New to Mighty Flights?
+            </p>
+            <RequestAccessForm leagueNightId={night.id} clubId={night.clubId ?? undefined} />
+          </div>
         )}
       </div>
     </main>

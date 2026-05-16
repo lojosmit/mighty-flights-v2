@@ -4,7 +4,7 @@ import { randomUUID } from "crypto";
 import { and, eq, isNull, gt, max } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { db } from "./db";
-import { inviteTokens, players, users, type UserRole } from "./db/schema";
+import { inviteTokens, players, registrationRequests, users, type UserRole } from "./db/schema";
 import { createUser } from "./users";
 
 export async function createInviteToken({
@@ -99,6 +99,18 @@ export async function consumeInviteAndRegister({
     .set({ usedAt: new Date() })
     .where(eq(inviteTokens.id, invite.id));
 
+  // Auto-fulfill any pending registration request with this email
+  await db
+    .update(registrationRequests)
+    .set({ fulfilled: true })
+    .where(
+      and(
+        eq(registrationRequests.email, email.toLowerCase()),
+        eq(registrationRequests.fulfilled, false)
+      )
+    );
+
+  revalidatePath("/admin");
   return { success: true, role: invite.role };
 }
 
