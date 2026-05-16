@@ -4,7 +4,7 @@ import { randomUUID } from "crypto";
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { db } from "./db";
-import { leagueNights, rsvps } from "./db/schema";
+import { leagueNights, rsvps, users } from "./db/schema";
 
 export async function setLeagueNightRsvp(leagueNightId: string, deadline: Date) {
   const token = randomUUID();
@@ -34,6 +34,19 @@ export async function submitRsvp(leagueNightId: string, userId: string) {
   if (existing.length > 0) return { alreadyRsvped: true };
 
   await db.insert(rsvps).values({ leagueNightId, userId });
+
+  // Add this user's player profile to the night's attendingPlayerIds
+  const [user] = await db.select({ playerId: users.playerId }).from(users).where(eq(users.id, userId));
+  if (user?.playerId) {
+    const [night] = await db.select({ attendingPlayerIds: leagueNights.attendingPlayerIds }).from(leagueNights).where(eq(leagueNights.id, leagueNightId));
+    if (night && !night.attendingPlayerIds.includes(user.playerId)) {
+      await db
+        .update(leagueNights)
+        .set({ attendingPlayerIds: [...night.attendingPlayerIds, user.playerId] })
+        .where(eq(leagueNights.id, leagueNightId));
+    }
+  }
+
   revalidatePath(`/league-night/${leagueNightId}`);
   return { alreadyRsvped: false };
 }
