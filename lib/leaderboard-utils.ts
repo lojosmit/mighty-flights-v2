@@ -11,13 +11,14 @@ export type LeaderboardEntry = {
   forfeits: number;
   gamesPlayed: number;
   winRatio: number;
+  totalPoints: number;
 };
 
-export type SortKey = "wins" | "winRatio" | "doveWins" | "doves" | "gamesPlayed";
+export type SortKey = "wins" | "winRatio" | "doveWins" | "doves" | "gamesPlayed" | "totalPoints";
 
 // Tie-breaker chain applied after the primary sort key (DESIGN.md §10, phase 13.4).
 // Descending order within each tier: wins → winRatio → doveWins → gamesPlayed.
-const TIEBREAKERS: SortKey[] = ["wins", "winRatio", "doveWins", "gamesPlayed"];
+const TIEBREAKERS: SortKey[] = ["totalPoints", "wins", "winRatio", "doveWins", "gamesPlayed"];
 
 export function sortLeaderboard(
   entries: LeaderboardEntry[],

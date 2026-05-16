@@ -29,7 +29,7 @@ export function BoardCountPicker({ playerCount, selected, onSelect, fixedOptions
           color: "var(--ink-primary)",
         }}
       >
-        {heading ?? "How many boards tonight?"}
+        {heading ?? "How many boards?"}
       </h2>
       <p className="text-small mb-8" style={{ color: "var(--ink-tertiary)" }}>
         {defaultNote}

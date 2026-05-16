@@ -161,7 +161,7 @@ export default async function HistoryPage({ searchParams }: Props) {
 
       {nights.length === 0 ? (
         <p style={{ fontFamily: "var(--font-body)", fontSize: "13px", letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--ink-tertiary)", textAlign: "center", paddingTop: "48px" }}>
-          No league nights yet
+          No league games yet
         </p>
       ) : (
         <>

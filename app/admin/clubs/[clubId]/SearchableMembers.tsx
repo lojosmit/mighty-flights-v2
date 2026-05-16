@@ -7,12 +7,18 @@ import { deleteUser, updateUserRole } from "@/lib/users";
 
 interface Props {
   members: User[];
+  viewerIsSuperAdmin?: boolean;
 }
 
-const ASSIGNABLE_ROLES: { value: Exclude<UserRole, "super_admin">; label: string }[] = [
+const BASE_ROLES: { value: Exclude<UserRole, "super_admin">; label: string }[] = [
   { value: "club_manager", label: "Club Manager" },
   { value: "host",         label: "Host" },
   { value: "player",       label: "Player" },
+];
+
+const ALL_ROLES: { value: UserRole; label: string }[] = [
+  { value: "super_admin",  label: "Super Admin" },
+  ...BASE_ROLES,
 ];
 
 const inputStyle: React.CSSProperties = {
@@ -29,7 +35,7 @@ const inputStyle: React.CSSProperties = {
   outline: "none",
 };
 
-export default function SearchableMembers({ members: initialMembers }: Props) {
+export default function SearchableMembers({ members: initialMembers, viewerIsSuperAdmin = false }: Props) {
   const [members, setMembers] = useState(initialMembers);
   const [query, setQuery] = useState("");
   const [pending, startTransition] = useTransition();
@@ -106,14 +112,14 @@ export default function SearchableMembers({ members: initialMembers }: Props) {
               {/* Controls row */}
               <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
                 {/* Role selector */}
-                {m.role !== "super_admin" ? (
+                {(m.role !== "super_admin" || viewerIsSuperAdmin) ? (
                   <select
                     value={m.role}
                     onChange={(e) => handleRoleChange(m.id, e.target.value as UserRole)}
                     style={inputStyle}
                     disabled={pending}
                   >
-                    {ASSIGNABLE_ROLES.map(({ value, label }) => (
+                    {(viewerIsSuperAdmin ? ALL_ROLES : BASE_ROLES).map(({ value, label }) => (
                       <option key={value} value={value}>{label}</option>
                     ))}
                   </select>

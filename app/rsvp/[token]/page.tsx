@@ -71,7 +71,7 @@ export default async function RsvpPage({ params }: Props) {
             marginBottom: "12px",
           }}
         >
-          League Night · RSVP
+          League Game · RSVP
         </p>
         <h1
           style={{

@@ -1,6 +1,6 @@
 // Server-side stats writer — called from recordResult, not a public server action.
 
-import { eq, sql } from "drizzle-orm";
+import { eq, inArray, sql } from "drizzle-orm";
 import { db } from "./db/index";
 import { players, pairStats, matchupHistory } from "./db/schema";
 import {
@@ -8,6 +8,7 @@ import {
   normalizeMatchup,
   canonicalWinner,
 } from "./stats-utils";
+import { computeMultiplier } from "./handicap-utils";
 import type { FixtureResult } from "./db/schema";
 
 export async function applyFixtureStats(
@@ -17,19 +18,35 @@ export async function applyFixtureStats(
 ): Promise<void> {
   if (result === "in_progress") return;
 
-  const deltas = computePlayerDeltas(teamAIds, teamBIds, result);
+  const allIds = [...teamAIds, ...teamBIds];
+  const [deltas, playerRows] = await Promise.all([
+    Promise.resolve(computePlayerDeltas(teamAIds, teamBIds, result)),
+    db.select({ id: players.id, seasonRank: players.seasonRank })
+      .from(players)
+      .where(inArray(players.id, allIds)),
+  ]);
+
+  const rankMap: Record<string, number> = Object.fromEntries(
+    playerRows.map((p) => [p.id, p.seasonRank])
+  );
 
   // ── 1. Player stats ───────────────────────────────────────────────────────
 
   for (const d of deltas) {
+    const rank = rankMap[d.playerId] ?? 1;
+    const multiplier = computeMultiplier(rank);
+    // win points = handicap multiplier; dove bonus = +1 on top of win
+    const pointsDelta = d.wins > 0 ? multiplier + d.doveWins : 0;
+
     await db
       .update(players)
       .set({
-        wins:     sql`${players.wins}     + ${d.wins}`,
-        losses:   sql`${players.losses}   + ${d.losses}`,
-        doves:    sql`${players.doves}    + ${d.doves}`,
-        doveWins: sql`${players.doveWins} + ${d.doveWins}`,
-        forfeits: sql`${players.forfeits} + ${d.forfeits}`,
+        wins:        sql`${players.wins}        + ${d.wins}`,
+        losses:      sql`${players.losses}      + ${d.losses}`,
+        doves:       sql`${players.doves}       + ${d.doves}`,
+        doveWins:    sql`${players.doveWins}    + ${d.doveWins}`,
+        forfeits:    sql`${players.forfeits}    + ${d.forfeits}`,
+        totalPoints: sql`${players.totalPoints} + ${pointsDelta}`,
       })
       .where(eq(players.id, d.playerId));
   }

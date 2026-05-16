@@ -199,7 +199,7 @@ export function LeagueNightSetup({ players, members, clubId, clubs }: Props) {
                 className="mb-8"
                 style={{ fontFamily: "var(--font-cormorant)", fontSize: "1.75rem", color: "var(--ink-primary)" }}
               >
-                Schedule this night
+                Schedule this game
               </h2>
 
               {/* Club — super_admin only */}
@@ -233,7 +233,7 @@ export function LeagueNightSetup({ players, members, clubId, clubs }: Props) {
               {/* Host */}
               {members.length > 0 && (
                 <div style={{ marginBottom: "20px" }}>
-                  <label style={labelStyle}>Host for this night</label>
+                  <label style={labelStyle}>Host for this game</label>
                   <select
                     value={hostId}
                     onChange={(e) => setHostId(e.target.value)}
@@ -246,7 +246,7 @@ export function LeagueNightSetup({ players, members, clubId, clubs }: Props) {
                   </select>
                   {hostId && (
                     <p style={{ fontFamily: "var(--font-body)", fontSize: "11px", color: "var(--ink-tertiary)", marginTop: "6px" }}>
-                      Host gets edit access for this night only.
+                      Host gets edit access for this game only.
                     </p>
                   )}
                 </div>
@@ -325,7 +325,7 @@ export function LeagueNightSetup({ players, members, clubId, clubs }: Props) {
                   }
                 />
                 <p style={{ fontFamily: "var(--font-body)", fontSize: "11px", color: "var(--ink-tertiary)", marginTop: "4px" }}>
-                  Board count is set when the night starts.
+                  Board count is set when the game starts.
                 </p>
               </div>
               <div className="flex gap-4">
@@ -335,7 +335,7 @@ export function LeagueNightSetup({ players, members, clubId, clubs }: Props) {
                   className="px-8 py-3 text-small uppercase tracking-widest font-medium cursor-pointer disabled:opacity-50"
                   style={{ backgroundColor: "var(--accent-primary)", color: "#FFFFFF" }}
                 >
-                  {isPending ? "Scheduling…" : "Schedule Night"}
+                  {isPending ? "Scheduling…" : "Schedule Game"}
                 </button>
                 <button
                   onClick={() => setStep(0)}
@@ -469,7 +469,7 @@ export function LeagueNightSetup({ players, members, clubId, clubs }: Props) {
                   className="px-8 py-3 text-small uppercase tracking-widest font-medium cursor-pointer disabled:opacity-50"
                   style={{ backgroundColor: "var(--accent-primary)", color: "#FFFFFF" }}
                 >
-                  {isPending ? "Starting…" : "Start Night →"}
+                  {isPending ? "Starting…" : "Start Game →"}
                 </button>
                 <button
                   onClick={() => setStep(1)}

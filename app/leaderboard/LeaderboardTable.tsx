@@ -17,10 +17,11 @@ const COLS: { key: ColKey; label: string }[] = [
   { key: "losses",      label: "L"     },
   { key: "doves",       label: "D"     },
   { key: "doveWins",    label: "D+"    },
-  { key: "winRatio",    label: "Ratio" },
+  { key: "winRatio",    label: "Win %"  },
+  { key: "totalPoints", label: "Pts"   },
 ];
 
-const SORTABLE = new Set<SortKey>(["gamesPlayed", "wins", "doves", "doveWins", "winRatio"]);
+const SORTABLE = new Set<SortKey>(["gamesPlayed", "wins", "doves", "doveWins", "winRatio", "totalPoints"]);
 
 export default function LeaderboardTable({ entries }: Props) {
   const [sortKey, setSortKey] = useState<SortKey>("wins");
@@ -48,7 +49,7 @@ export default function LeaderboardTable({ entries }: Props) {
     letterSpacing: "0.08em",
     textTransform: "uppercase",
     color: "var(--ink-tertiary)",
-    paddingBottom: "12px",
+    padding: "0 16px 16px",
     textAlign: "right",
     whiteSpace: "nowrap",
   };
@@ -95,7 +96,7 @@ export default function LeaderboardTable({ entries }: Props) {
             <tr
               key={entry.id}
               style={{
-                height: "56px",
+                height: "72px",
                 borderBottom: "1px solid var(--border-hairline)",
                 background: isTop3 ? "var(--bg-elevated)" : "transparent",
               }}
@@ -107,6 +108,7 @@ export default function LeaderboardTable({ entries }: Props) {
                   color: isTop3 ? "var(--accent-gold)" : "var(--ink-tertiary)",
                   fontWeight: isTop3 ? 600 : 400,
                   width: "48px",
+                  paddingLeft: "8px",
                 }}
               >
                 {pos}
@@ -129,10 +131,10 @@ export default function LeaderboardTable({ entries }: Props) {
 
               {COLS.map(({ key }) => {
                 const val = entry[key as keyof LeaderboardEntry] as number;
-                const display =
-                  key === "winRatio"
-                    ? val.toFixed(3)
-                    : String(val);
+                let display: string;
+                if (key === "winRatio") display = (val * 100).toFixed(1) + "%";
+                else if (key === "totalPoints") display = val.toFixed(2);
+                else display = String(val);
                 return (
                   <td
                     key={key}
@@ -140,6 +142,7 @@ export default function LeaderboardTable({ entries }: Props) {
                       textAlign: "right",
                       fontFamily: "var(--font-mono)",
                       fontSize: "13px",
+                      padding: "0 16px",
                       color: key === sortKey ? "var(--ink-primary)" : "var(--ink-secondary)",
                     }}
                   >

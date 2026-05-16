@@ -327,14 +327,14 @@ export default function TimerOverlay({
                   cursor: "pointer",
                 }}
               >
-                End night
+                End game
               </button>
             )}
 
             {confirmEnd && (
               <>
                 <p style={{ fontFamily: "var(--font-body)", fontSize: "13px", color: "var(--ink-secondary)" }}>
-                  End this league night?
+                  End this league game?
                 </p>
                 <button
                   onClick={onEnd}

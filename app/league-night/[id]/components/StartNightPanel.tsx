@@ -63,7 +63,7 @@ export default function StartNightPanel({
           marginBottom: "16px",
         }}
       >
-        Boards tonight
+        Boards
         {playerCount > 0 && (
           <span style={{ marginLeft: "8px", color: "var(--ink-tertiary)" }}>
             · {playerCount} attending
@@ -122,7 +122,7 @@ export default function StartNightPanel({
         <p style={{ fontFamily: "var(--font-body)", fontSize: "11px", color: "var(--ink-tertiary)", marginBottom: "16px" }}>
           {playerCount === 0
             ? "No RSVP attendees yet — confirm player count before starting."
-            : `${playerCount} attending — need at least 6 to run a full night.`}
+            : `${playerCount} attending — need at least 6 to run a full game.`}
         </p>
       )}
 

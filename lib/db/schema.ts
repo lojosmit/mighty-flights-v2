@@ -52,6 +52,7 @@ export const players = pgTable("players", {
   doves: integer("doves").notNull().default(0),
   doveWins: integer("dove_wins").notNull().default(0),
   forfeits: integer("forfeits").notNull().default(0),
+  totalPoints: numeric("total_points", { precision: 8, scale: 2 }).notNull().default("0"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

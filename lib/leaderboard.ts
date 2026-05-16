@@ -22,6 +22,7 @@ function toEntry(p: Player): LeaderboardEntry {
     forfeits: p.forfeits,
     gamesPlayed,
     winRatio: gamesPlayed > 0 ? p.wins / gamesPlayed : 0,
+    totalPoints: parseFloat(p.totalPoints ?? "0"),
   };
 }
 

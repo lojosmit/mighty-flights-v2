@@ -78,7 +78,7 @@ export default async function LeagueNightPage({
     return (
       <main className="mf-page">
         <header style={{ marginBottom: "48px" }}>
-          <p style={{ ...metaStyle, marginBottom: "12px" }}>League Night · Scheduled</p>
+          <p style={{ ...metaStyle, marginBottom: "12px" }}>League Game · Scheduled</p>
           <h1
             style={{
               fontFamily: "var(--font-cormorant)",
@@ -157,7 +157,7 @@ export default async function LeagueNightPage({
           />
         ) : (
           <p style={{ fontFamily: "var(--font-body)", fontSize: "14px", color: "var(--ink-tertiary)" }}>
-            Waiting for the host to start the night.
+            Waiting for the host to start the game.
           </p>
         )}
       </main>

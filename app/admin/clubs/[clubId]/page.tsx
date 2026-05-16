@@ -156,7 +156,7 @@ export default async function ClubPage({ params }: Props) {
         <section>
           <p style={sectionLabel}>Members ({members.length})</p>
           <div style={{ height: "1px", backgroundColor: "var(--accent-gold)", marginBottom: "24px" }} />
-          <SearchableMembers members={members} />
+          <SearchableMembers members={members} viewerIsSuperAdmin={isSuperAdmin} />
         </section>
 
         {/* Invite links */}

@@ -41,7 +41,7 @@ export default async function NewLeagueNightPage() {
             lineHeight: 1.05,
           }}
         >
-          New League Night
+          New Game
         </h1>
         <div
           className="mt-4 h-px w-full"

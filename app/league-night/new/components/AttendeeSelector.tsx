@@ -19,7 +19,7 @@ export function AttendeeSelector({ players, selected, onToggle }: Props) {
             color: "var(--ink-primary)",
           }}
         >
-          Who is playing tonight?
+          Who is playing?
         </h2>
         <span
           className="text-meta uppercase tracking-widest"

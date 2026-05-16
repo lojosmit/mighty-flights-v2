@@ -98,7 +98,7 @@ export default async function HomePage() {
               marginTop: "8px",
             }}
           >
-            Night in progress — view live
+            Game in progress — view live
           </Link>
         ) : (
           <Link
@@ -116,7 +116,7 @@ export default async function HomePage() {
               marginTop: "8px",
             }}
           >
-            Schedule a night
+            Schedule a game
           </Link>
         )}
       </section>
@@ -272,7 +272,7 @@ export default async function HomePage() {
                 marginBottom: "8px",
               }}
             >
-              Recent Nights
+              Recent Games
             </p>
             <div style={{ height: "1px", backgroundColor: "var(--accent-gold)" }} />
           </div>
@@ -285,7 +285,7 @@ export default async function HomePage() {
                 color: "var(--ink-tertiary)",
               }}
             >
-              No nights played yet.
+              No games played yet.
             </p>
           ) : (
             <div style={{ display: "flex", flexDirection: "column" }}>
