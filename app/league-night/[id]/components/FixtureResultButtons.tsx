@@ -9,35 +9,6 @@ interface Props {
   isPending?: boolean;
 }
 
-const btn = (active: boolean): React.CSSProperties => ({
-  fontFamily: "var(--font-body)",
-  fontSize: "11px",
-  fontWeight: 500,
-  letterSpacing: "0.08em",
-  textTransform: "uppercase",
-  padding: "8px 16px",
-  cursor: active ? "pointer" : "not-allowed",
-  opacity: active ? 1 : 0.45,
-  border: "1px solid var(--border-hairline)",
-  background: "transparent",
-  color: "var(--ink-secondary)",
-  transition: "border-color 120ms ease, color 120ms ease",
-  whiteSpace: "nowrap" as const,
-});
-
-const primaryBtn = (active: boolean): React.CSSProperties => ({
-  ...btn(active),
-  background: "var(--accent-primary)",
-  border: "1px solid var(--accent-primary)",
-  color: "#ffffff",
-});
-
-const goldBtn = (active: boolean): React.CSSProperties => ({
-  ...btn(active),
-  border: "1px solid var(--accent-gold)",
-  color: "var(--accent-gold)",
-});
-
 export default function FixtureResultButtons({
   teamALabel,
   teamBLabel,
@@ -45,6 +16,24 @@ export default function FixtureResultButtons({
   isPending = false,
 }: Props) {
   const enabled = !isPending;
+
+  const base: React.CSSProperties = {
+    fontFamily: "var(--font-body)",
+    fontSize: "13px",
+    fontWeight: 500,
+    letterSpacing: "0.08em",
+    textTransform: "uppercase",
+    cursor: enabled ? "pointer" : "not-allowed",
+    opacity: enabled ? 1 : 0.45,
+    border: "none",
+    transition: "opacity 120ms ease, transform 80ms ease",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: "0 12px",
+    minHeight: "68px",
+    width: "100%",
+  };
 
   return (
     <div
@@ -54,55 +43,85 @@ export default function FixtureResultButtons({
         marginTop: "24px",
         display: "flex",
         flexDirection: "column",
-        gap: "10px",
+        gap: "8px",
       }}
     >
       {isPending && (
-        <p style={{ fontFamily: "var(--font-body)", fontSize: "11px", fontWeight: 500, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--ink-tertiary)" }}>
+        <p style={{ fontFamily: "var(--font-body)", fontSize: "11px", fontWeight: 500, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--ink-tertiary)", marginBottom: "4px" }}>
           Saving…
         </p>
       )}
-      {/* Win buttons */}
-      <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+
+      {/* Win buttons — full width, split 50/50 */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px" }}>
         <button
           onClick={() => enabled && onResult("teamA_win")}
-          style={primaryBtn(enabled)}
+          style={{
+            ...base,
+            background: "var(--accent-primary)",
+            color: "#ffffff",
+          }}
         >
           {teamALabel} wins
         </button>
         <button
           onClick={() => enabled && onResult("teamB_win")}
-          style={{ ...primaryBtn(enabled), background: "transparent", border: "1px solid var(--accent-primary)", color: "var(--accent-primary)" }}
+          style={{
+            ...base,
+            background: "var(--bg-elevated)",
+            color: "var(--ink-primary)",
+            border: "1px solid var(--border-hairline)",
+          }}
         >
           {teamBLabel} wins
         </button>
       </div>
 
-      {/* Dove (special win) buttons */}
-      <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+      {/* Dove buttons — gold outline, same grid */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px" }}>
         <button
           onClick={() => enabled && onResult("special_win_A")}
-          style={goldBtn(enabled)}
+          style={{
+            ...base,
+            minHeight: "52px",
+            background: "transparent",
+            color: "var(--accent-gold)",
+            border: "1px solid var(--accent-gold)",
+            fontSize: "12px",
+          }}
         >
           {teamALabel} — dove
         </button>
         <button
           onClick={() => enabled && onResult("special_win_B")}
-          style={goldBtn(enabled)}
+          style={{
+            ...base,
+            minHeight: "52px",
+            background: "transparent",
+            color: "var(--accent-gold)",
+            border: "1px solid var(--accent-gold)",
+            fontSize: "12px",
+          }}
         >
           {teamBLabel} — dove
         </button>
       </div>
 
-      {/* Forfeit */}
-      <div>
-        <button
-          onClick={() => enabled && onResult("double_forfeit")}
-          style={btn(enabled)}
-        >
-          Double forfeit
-        </button>
-      </div>
+      {/* Forfeit — full width, tertiary */}
+      <button
+        onClick={() => enabled && onResult("double_forfeit")}
+        style={{
+          ...base,
+          minHeight: "40px",
+          background: "transparent",
+          color: "var(--ink-tertiary)",
+          border: "1px solid var(--border-hairline)",
+          fontSize: "11px",
+          letterSpacing: "0.1em",
+        }}
+      >
+        Double Forfeit
+      </button>
     </div>
   );
 }

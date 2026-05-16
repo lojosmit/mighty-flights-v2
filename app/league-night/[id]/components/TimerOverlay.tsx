@@ -189,7 +189,7 @@ export default function TimerOverlay({
           aria-label={`Time remaining: ${fmt(remaining)}`}
           style={{
             fontFamily: "var(--font-mono)",
-            fontSize: "clamp(96px, 14vw, 180px)",
+            fontSize: "clamp(120px, 20vw, 260px)",
             lineHeight: 1,
             letterSpacing: "-0.03em",
             color: timerColor,
@@ -246,7 +246,7 @@ export default function TimerOverlay({
       </div>
 
       {/* ── Fixture boards ── */}
-      <div style={{ padding: "0 48px", flex: 1 }}>
+      <div style={{ padding: "0 clamp(16px, 4vw, 48px)", flex: 1 }}>
         <div style={{ height: "1px", backgroundColor: "var(--border-hairline)", marginBottom: "32px" }} />
 
         <div

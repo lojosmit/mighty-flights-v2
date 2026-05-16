@@ -458,8 +458,8 @@
   overflow: hidden;
   background: var(--bg-secondary);
   border: 1px solid var(--border-hairline);
-  padding: 40px 48px;
-  min-height: 240px;
+  padding: 36px 40px;
+  min-height: 260px;
 }
 .mf-fixture-teams {
   display: flex;
@@ -481,7 +481,7 @@
   padding: 2px 8px;
   cursor: pointer;
   font-family: var(--font-cormorant);
-  font-size: 30px;
+  font-size: clamp(26px, 2.4vw, 36px);
   font-weight: 400;
   line-height: 1.15;
   outline: none;
