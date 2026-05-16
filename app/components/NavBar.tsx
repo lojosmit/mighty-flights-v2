@@ -24,6 +24,8 @@ export default async function NavBar() {
     <NavBarShell
       navLinks={navLinks}
       isAdmin={role === "super_admin"}
+      isClubManager={role === "club_manager"}
+      clubManagerClubId={session?.user.clubId ?? null}
       userName={session?.user.name ?? null}
       isLoggedIn={!!session}
     />

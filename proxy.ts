@@ -30,8 +30,19 @@ export default auth((req) => {
 
   const role = req.auth.user.role;
 
-  // /admin — super_admin only
-  if (pathname.startsWith("/admin") && role !== "super_admin") {
+  // /admin routes
+  if (pathname.startsWith("/admin")) {
+    if (role === "super_admin") return NextResponse.next();
+    // Club managers may access their own club page only
+    if (role === "club_manager") {
+      const clubId = req.auth.user.clubId;
+      if (clubId) {
+        const allowed = `/admin/clubs/${clubId}`;
+        if (pathname === allowed || pathname.startsWith(allowed + "/")) return NextResponse.next();
+      }
+      const dest = req.auth.user.clubId ? `/admin/clubs/${req.auth.user.clubId}` : "/";
+      return NextResponse.redirect(new URL(dest, req.nextUrl));
+    }
     return NextResponse.redirect(new URL("/", req.nextUrl));
   }
 

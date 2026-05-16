@@ -208,11 +208,11 @@
 
 /* ─── Responsive layout utilities ────────────────────────────────────────── */
 
-/* Page container */
+/* Page container — fills ~75–80% of viewport on wide screens */
 .mf-page {
-  max-width: 1280px;
+  max-width: 1600px;
   margin: 0 auto;
-  padding: 64px 80px;
+  padding: 64px clamp(24px, 6vw, 120px);
 }
 
 /* Section spacing */
@@ -222,7 +222,7 @@
 .mf-grid-2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 80px;
+  gap: clamp(32px, 5vw, 80px);
   align-items: start;
 }
 
@@ -233,6 +233,45 @@
   width: 100%;
 }
 
+/* ─── Login drawer ────────────────────────────────────────────────────────── */
+.mf-login-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 199;
+  opacity: 0;
+  transition: opacity 400ms ease;
+  pointer-events: none;
+}
+.mf-login-backdrop.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+.mf-login-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  width: clamp(360px, 46vw, 680px);
+  background: var(--bg-secondary);
+  border-left: 1px solid var(--accent-gold);
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px clamp(24px, 6%, 64px);
+  overflow-y: auto;
+  transform: translateX(100%);
+  transition: transform 420ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+.mf-login-drawer.open {
+  transform: translateX(0);
+}
+@media (max-width: 640px) {
+  .mf-login-drawer { width: 100vw; }
+}
+
 /* ─── Navbar ──────────────────────────────────────────────────────────────── */
 .mf-navbar {
   width: 100%;
@@ -241,7 +280,7 @@
   border-bottom: 1px solid var(--accent-gold);
   display: flex;
   align-items: center;
-  padding: 0 80px;
+  padding: 0 clamp(20px, 6vw, 120px);
   position: sticky;
   top: 0;
   z-index: 50;

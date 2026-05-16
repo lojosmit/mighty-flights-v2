@@ -12,7 +12,11 @@ import Link from "next/link";
 export default async function AdminPage() {
   await connection();
   const session = await auth();
-  if (!session || session.user.role !== "super_admin") redirect("/");
+  if (!session) redirect("/login");
+  if (session.user.role === "club_manager" && session.user.clubId) {
+    redirect(`/admin/clubs/${session.user.clubId}`);
+  }
+  if (session.user.role !== "super_admin") redirect("/");
 
   const [clubs, pendingRequests] = await Promise.all([
     getAllClubs(),

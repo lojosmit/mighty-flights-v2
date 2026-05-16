@@ -16,10 +16,11 @@ interface Props {
 
 export default async function ClubPage({ params }: Props) {
   await connection();
-  const session = await auth();
-  if (!session || session.user.role !== "super_admin") redirect("/");
+  const [session, { clubId }] = await Promise.all([auth(), params]);
 
-  const { clubId } = await params;
+  const isSuperAdmin = session?.user.role === "super_admin";
+  const isOwnClub = session?.user.role === "club_manager" && session.user.clubId === clubId;
+  if (!session || (!isSuperAdmin && !isOwnClub)) redirect("/");
 
   const [club, members, players, invites, pendingRequests] = await Promise.all([
     getClubById(clubId),

@@ -1,29 +1,50 @@
-import { Suspense } from "react";
-import Image from "next/image";
-import LoginForm from "./LoginForm";
+"use client";
 
-export default function LoginPage() {
+import { useState, useEffect, Suspense } from "react";
+import Image from "next/image";
+import { useSearchParams } from "next/navigation";
+import LoginDrawer from "@/app/components/LoginDrawer";
+
+function LoginPageInner() {
+  const params = useSearchParams();
+  const callbackUrl = params.get("callbackUrl") ?? "/";
+  const [open, setOpen] = useState(true);
+
+  useEffect(() => { setOpen(true); }, []);
+
   return (
-    <div className="mf-login-layout">
-      {/* Left panel — branding (hidden on mobile) */}
-      <div className="mf-login-left">
+    <>
+      <LoginDrawer open={open} onClose={() => setOpen(false)} callbackUrl={callbackUrl} />
+
+      <main
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          background: "var(--bg-secondary)",
+          padding: "40px 24px",
+          textAlign: "center",
+        }}
+      >
         <Image
           src="/logo.png"
           alt="Mighty Flights"
-          width={260}
-          height={260}
+          width={320}
+          height={320}
           priority
-          style={{ display: "block", marginBottom: "32px" }}
+          style={{ display: "block", marginBottom: "32px", width: "auto", height: "clamp(180px, 20vw, 320px)" }}
         />
         <h1
           style={{
             fontFamily: "var(--font-cormorant)",
-            fontSize: "clamp(40px, 4vw, 64px)",
+            fontSize: "clamp(48px, 6vw, 84px)",
             fontWeight: 400,
             color: "var(--ink-primary)",
             letterSpacing: "0.02em",
             marginBottom: "12px",
-            textAlign: "center",
+            lineHeight: 1,
           }}
         >
           Mighty Flights
@@ -31,37 +52,24 @@ export default function LoginPage() {
         <p
           style={{
             fontFamily: "var(--font-body)",
-            fontSize: "11px",
+            fontSize: "12px",
             fontWeight: 500,
             letterSpacing: "0.18em",
             textTransform: "uppercase",
             color: "var(--accent-gold)",
-            marginBottom: "40px",
           }}
         >
           {new Date().getFullYear()} Season
         </p>
-        <div style={{ height: "1px", width: "64px", backgroundColor: "var(--accent-gold)", marginBottom: "32px" }} />
-        <p
-          style={{
-            fontFamily: "var(--font-body)",
-            fontSize: "13px",
-            color: "var(--ink-tertiary)",
-            textAlign: "center",
-            maxWidth: "300px",
-            lineHeight: 1.7,
-          }}
-        >
-          Darts league management for your club — standings, fixtures, and game nights.
-        </p>
-      </div>
+      </main>
+    </>
+  );
+}
 
-      {/* Right panel — form */}
-      <div className="mf-login-right">
-        <Suspense>
-          <LoginForm />
-        </Suspense>
-      </div>
-    </div>
+export default function LoginPage() {
+  return (
+    <Suspense fallback={null}>
+      <LoginPageInner />
+    </Suspense>
   );
 }

@@ -4,9 +4,9 @@ import { useState, useTransition } from "react";
 import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 
-export default function LoginForm() {
+export default function LoginForm({ callbackUrl: propCallbackUrl }: { callbackUrl?: string } = {}) {
   const params = useSearchParams();
-  const callbackUrl = params.get("callbackUrl") ?? "/";
+  const callbackUrl = propCallbackUrl ?? params.get("callbackUrl") ?? "/";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

@@ -124,41 +124,124 @@ export default async function PlayerProfilePage({ params, searchParams }: Props)
 
       {/* Stats tab */}
       {tab === "stats" && (
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))",
-            gap: "32px",
-          }}
-        >
-          {statBlocks.map(({ label, value }) => (
-            <div key={label}>
-              <p
-                style={{
-                  fontFamily: "var(--font-mono)",
-                  fontSize: "36px",
-                  fontWeight: 400,
-                  color: "var(--ink-primary)",
-                  lineHeight: 1,
-                  marginBottom: "8px",
-                }}
-              >
-                {value}
-              </p>
-              <p
-                style={{
-                  fontFamily: "var(--font-body)",
-                  fontSize: "10px",
-                  letterSpacing: "0.1em",
-                  textTransform: "uppercase",
-                  color: "var(--ink-tertiary)",
-                }}
-              >
-                {label}
-              </p>
+        <>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))",
+              gap: "40px",
+              marginBottom: "64px",
+            }}
+          >
+            {statBlocks.map(({ label, value }) => (
+              <div key={label}>
+                <p
+                  style={{
+                    fontFamily: "var(--font-mono)",
+                    fontSize: "clamp(32px, 4vw, 48px)",
+                    fontWeight: 400,
+                    color: "var(--ink-primary)",
+                    lineHeight: 1,
+                    marginBottom: "10px",
+                  }}
+                >
+                  {value}
+                </p>
+                <p
+                  style={{
+                    fontFamily: "var(--font-body)",
+                    fontSize: "11px",
+                    letterSpacing: "0.1em",
+                    textTransform: "uppercase",
+                    color: "var(--ink-tertiary)",
+                  }}
+                >
+                  {label}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          {/* Achievements */}
+          <div>
+            <p
+              style={{
+                fontFamily: "var(--font-body)",
+                fontSize: "11px",
+                fontWeight: 500,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                color: "var(--ink-tertiary)",
+                marginBottom: "8px",
+              }}
+            >
+              Achievements
+            </p>
+            <div style={{ height: "1px", backgroundColor: "var(--accent-gold)", marginBottom: "28px" }} />
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+                gap: "20px",
+              }}
+            >
+              {[
+                { label: "3 in a Box",    desc: "Three consecutive wins in a night" },
+                { label: "Shanghai",      desc: "Win on singles, doubles & triples"  },
+                { label: "Max Score",     desc: "Highest single-game score on record" },
+              ].map(({ label, desc }) => (
+                <div
+                  key={label}
+                  style={{
+                    padding: "24px",
+                    border: "1px solid var(--border-hairline)",
+                    background: "var(--bg-elevated)",
+                    position: "relative",
+                    opacity: 0.55,
+                  }}
+                >
+                  <span
+                    style={{
+                      position: "absolute",
+                      top: "12px",
+                      right: "12px",
+                      fontFamily: "var(--font-body)",
+                      fontSize: "9px",
+                      fontWeight: 500,
+                      letterSpacing: "0.1em",
+                      textTransform: "uppercase",
+                      color: "var(--accent-gold)",
+                      border: "1px solid var(--accent-gold)",
+                      padding: "2px 6px",
+                    }}
+                  >
+                    Coming Soon
+                  </span>
+                  <p
+                    style={{
+                      fontFamily: "var(--font-cormorant)",
+                      fontSize: "22px",
+                      color: "var(--ink-primary)",
+                      marginBottom: "6px",
+                    }}
+                  >
+                    {label}
+                  </p>
+                  <p
+                    style={{
+                      fontFamily: "var(--font-body)",
+                      fontSize: "12px",
+                      color: "var(--ink-tertiary)",
+                      lineHeight: 1.5,
+                    }}
+                  >
+                    {desc}
+                  </p>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </div>
+        </>
       )}
 
       {/* Partners tab */}

@@ -6,28 +6,30 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import ThemeToggle from "./ThemeToggle";
 import NavSignOut from "./NavSignOut";
+import LoginDrawer from "./LoginDrawer";
 
 interface NavLink { href: string; label: string; }
 
 interface Props {
   navLinks: NavLink[];
   isAdmin: boolean;
+  isClubManager: boolean;
+  clubManagerClubId: string | null;
   userName: string | null;
   isLoggedIn: boolean;
 }
 
-export default function NavBarShell({ navLinks, isAdmin, userName, isLoggedIn }: Props) {
-  const [open, setOpen] = useState(false);
+export default function NavBarShell({ navLinks, isAdmin, isClubManager, clubManagerClubId, userName, isLoggedIn }: Props) {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [loginOpen, setLoginOpen] = useState(false);
   const pathname = usePathname();
 
-  // Close menu on route change
-  useEffect(() => { setOpen(false); }, [pathname]);
+  useEffect(() => { setMenuOpen(false); setLoginOpen(false); }, [pathname]);
 
-  // Prevent body scroll when menu is open
   useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : "";
+    document.body.style.overflow = menuOpen ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
-  }, [open]);
+  }, [menuOpen]);
 
   const linkStyle: React.CSSProperties = {
     fontFamily: "var(--font-body)",
@@ -38,6 +40,8 @@ export default function NavBarShell({ navLinks, isAdmin, userName, isLoggedIn }:
     color: "var(--ink-tertiary)",
     textDecoration: "none",
   };
+
+  const adminHref = isClubManager && clubManagerClubId ? `/admin/clubs/${clubManagerClubId}` : "/admin";
 
   return (
     <>
@@ -69,9 +73,9 @@ export default function NavBarShell({ navLinks, isAdmin, userName, isLoggedIn }:
               </Link>
             );
           })}
-          {isAdmin && (
+          {(isAdmin || isClubManager) && (
             <Link
-              href="/admin"
+              href={adminHref}
               className="mf-navbar-link"
               style={{
                 color: pathname.startsWith("/admin") ? "var(--ink-primary)" : "var(--accent-gold)",
@@ -90,45 +94,45 @@ export default function NavBarShell({ navLinks, isAdmin, userName, isLoggedIn }:
           {isLoggedIn ? (
             <NavSignOut />
           ) : (
-            <Link href="/login" style={linkStyle}>Sign in</Link>
+            <button
+              onClick={() => setLoginOpen(true)}
+              style={{ ...linkStyle, background: "none", border: "none", cursor: "pointer", padding: 0 }}
+            >
+              Sign in
+            </button>
           )}
 
           {/* Hamburger */}
           <button
             className="mf-hamburger"
-            onClick={() => setOpen((v) => !v)}
-            aria-label={open ? "Close menu" : "Open menu"}
-            aria-expanded={open}
+            onClick={() => setMenuOpen((v) => !v)}
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={menuOpen}
           >
-            <span
-              className="mf-hamburger-line"
-              style={open ? { transform: "translateY(7px) rotate(45deg)" } : undefined}
-            />
-            <span
-              className="mf-hamburger-line"
-              style={open ? { opacity: 0 } : undefined}
-            />
-            <span
-              className="mf-hamburger-line"
-              style={open ? { transform: "translateY(-7px) rotate(-45deg)" } : undefined}
-            />
+            <span className="mf-hamburger-line" style={menuOpen ? { transform: "translateY(7px) rotate(45deg)" } : undefined} />
+            <span className="mf-hamburger-line" style={menuOpen ? { opacity: 0 } : undefined} />
+            <span className="mf-hamburger-line" style={menuOpen ? { transform: "translateY(-7px) rotate(-45deg)" } : undefined} />
           </button>
         </div>
       </header>
 
+      {/* Login drawer */}
+      {!isLoggedIn && (
+        <LoginDrawer open={loginOpen} onClose={() => setLoginOpen(false)} />
+      )}
+
       {/* Mobile overlay menu */}
-      {open && (
+      {menuOpen && (
         <div className="mf-mobile-menu" role="dialog" aria-label="Navigation menu">
-          {/* Header row matching navbar height */}
           <div className="mf-mobile-menu-header">
-            <Link href="/" className="mf-navbar-brand" onClick={() => setOpen(false)}>
+            <Link href="/" className="mf-navbar-brand" onClick={() => setMenuOpen(false)}>
               <Image src="/logo.png" alt="" width={40} height={40} style={{ display: "block" }} />
               <span style={{ fontFamily: "var(--font-cormorant)", fontSize: "22px", fontWeight: 400, color: "var(--ink-primary)", letterSpacing: "0.02em" }}>
                 Mighty Flights
               </span>
             </Link>
             <button
-              onClick={() => setOpen(false)}
+              onClick={() => setMenuOpen(false)}
               aria-label="Close menu"
               style={{ background: "none", border: "none", cursor: "pointer", padding: "8px", color: "var(--ink-tertiary)" }}
             >
@@ -139,7 +143,6 @@ export default function NavBarShell({ navLinks, isAdmin, userName, isLoggedIn }:
             </button>
           </div>
 
-          {/* Nav links */}
           <nav className="mf-mobile-menu-links">
             {navLinks.map(({ href, label }) => {
               const isActive = pathname === href || (href !== "/" && pathname.startsWith(href));
@@ -154,19 +157,22 @@ export default function NavBarShell({ navLinks, isAdmin, userName, isLoggedIn }:
                 </Link>
               );
             })}
-            {isAdmin && (
-              <Link href="/admin" className="mf-mobile-nav-item" style={{ color: "var(--accent-gold)" }}>
+            {(isAdmin || isClubManager) && (
+              <Link href={adminHref} className="mf-mobile-nav-item" style={{ color: "var(--accent-gold)" }}>
                 Admin
               </Link>
             )}
             {!isLoggedIn && (
-              <Link href="/login" className="mf-mobile-nav-item">
+              <button
+                onClick={() => { setMenuOpen(false); setLoginOpen(true); }}
+                className="mf-mobile-nav-item"
+                style={{ background: "none", border: "none", cursor: "pointer", textAlign: "left", width: "100%" }}
+              >
                 Sign in
-              </Link>
+              </button>
             )}
           </nav>
 
-          {/* Footer: user info + theme + sign out */}
           <div className="mf-mobile-menu-footer">
             <div>
               {userName && (
