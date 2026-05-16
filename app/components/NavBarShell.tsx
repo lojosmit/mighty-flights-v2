@@ -89,7 +89,11 @@ export default function NavBarShell({ navLinks, isAdmin, isClubManager, clubMana
 
         {/* Right */}
         <div className="mf-navbar-right">
-          <span className="mf-navbar-username">{userName}</span>
+          {userName && (
+            <Link href="/profile" style={{ fontFamily: "var(--font-body)", fontSize: "11px", color: "var(--ink-tertiary)", letterSpacing: "0.04em", textDecoration: "none" }}>
+              {userName}
+            </Link>
+          )}
           <ThemeToggle />
           {isLoggedIn ? (
             <NavSignOut />

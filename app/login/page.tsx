@@ -8,9 +8,10 @@ import LoginDrawer from "@/app/components/LoginDrawer";
 function LoginPageInner() {
   const params = useSearchParams();
   const callbackUrl = params.get("callbackUrl") ?? "/";
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
 
-  useEffect(() => { setOpen(true); }, []);
+  // Defer open until after first paint so CSS transition actually animates
+  useEffect(() => { const t = setTimeout(() => setOpen(true), 30); return () => clearTimeout(t); }, []);
 
   return (
     <>
