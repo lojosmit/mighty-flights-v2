@@ -218,6 +218,9 @@
   padding: 64px clamp(24px, 5vw, 80px);
 }
 
+/* Strip trailing margin so the last section never creates a blank gap */
+.mf-page > *:last-child { margin-bottom: 0 !important; }
+
 /* Section spacing */
 .mf-section { margin-bottom: 72px; }
 
