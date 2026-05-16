@@ -94,6 +94,9 @@ export default function NavBarShell({ navLinks, isAdmin, isClubManager, clubMana
               {userName}
             </Link>
           )}
+          <Link href="/contact" className="mf-navbar-username" style={{ fontFamily: "var(--font-body)", fontSize: "11px", color: "var(--ink-tertiary)", letterSpacing: "0.08em", textTransform: "uppercase", textDecoration: "none", fontWeight: 500 }}>
+            Contact
+          </Link>
           <ThemeToggle />
           <span className="mf-navbar-desktop-only">
             {isLoggedIn ? (
@@ -195,6 +198,13 @@ export default function NavBarShell({ navLinks, isAdmin, isClubManager, clubMana
                 </Link>
               )}
               {isLoggedIn && <NavSignOut />}
+              <Link
+                href="/contact"
+                onClick={() => setMenuOpen(false)}
+                style={{ fontFamily: "var(--font-body)", fontSize: "11px", fontWeight: 500, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--ink-tertiary)", textDecoration: "none" }}
+              >
+                Contact Developer
+              </Link>
             </div>
             <ThemeToggle />
           </div>

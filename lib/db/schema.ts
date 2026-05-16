@@ -199,6 +199,22 @@ export const matchupHistory = pgTable("matchup_history", {
 
 export type MatchupHistoryRecord = typeof matchupHistory.$inferSelect;
 
+// ── Contact Messages ──────────────────────────────────────────────────────────
+
+export type ContactMessageStatus = "unread" | "read" | "archived";
+
+export const contactMessages = pgTable("contact_messages", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  name: text("name").notNull(),
+  email: text("email").notNull(),
+  message: text("message").notNull(),
+  status: text("status").$type<ContactMessageStatus>().notNull().default("unread"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export type ContactMessage = typeof contactMessages.$inferSelect;
+export type NewContactMessage = typeof contactMessages.$inferInsert;
+
 // ── Registration Requests ─────────────────────────────────────────────────────
 
 export const registrationRequests = pgTable("registration_requests", {
