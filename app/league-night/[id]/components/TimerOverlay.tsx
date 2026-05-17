@@ -158,30 +158,28 @@ export default function TimerOverlay({
       >
         {/* Duration picker */}
         {!running && isAtStart && isActive && (
-          <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "20px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "20px", flexWrap: "wrap", justifyContent: "center" }}>
             <span style={{ ...metaStyle, color: "var(--ink-tertiary)" }}>Duration</span>
-            <select
-              value={duration}
-              onChange={(e) => {
-                const m = parseInt(e.target.value, 10);
-                setDuration(m);
-                setRemaining(m * 60);
-              }}
-              style={{
-                background: "transparent",
-                border: "none",
-                borderBottom: "1px solid var(--border-hairline)",
-                outline: "none",
-                cursor: "pointer",
-                fontFamily: "var(--font-mono)",
-                fontSize: "13px",
-                color: "var(--ink-secondary)",
-              }}
-            >
-              {DURATIONS.map((m) => (
-                <option key={m} value={m}>{m} min</option>
-              ))}
-            </select>
+            {DURATIONS.map((m) => (
+              <button
+                key={m}
+                onClick={() => { setDuration(m); setRemaining(m * 60); }}
+                style={{
+                  fontFamily: "var(--font-mono)",
+                  fontSize: "13px",
+                  fontWeight: m === duration ? 600 : 400,
+                  padding: "4px 10px",
+                  background: "transparent",
+                  border: "1px solid",
+                  borderColor: m === duration ? "var(--accent-gold)" : "var(--border-hairline)",
+                  color: m === duration ? "var(--accent-gold)" : "var(--ink-tertiary)",
+                  cursor: "pointer",
+                  transition: "border-color 120ms ease, color 120ms ease",
+                }}
+              >
+                {m}m
+              </button>
+            ))}
           </div>
         )}
 

@@ -13,6 +13,7 @@ import RoundView from "./components/RoundView";
 import RoundHistory from "./components/RoundHistory";
 import EditScheduledNight from "./components/EditScheduledNight";
 import StartNightPanel from "./components/StartNightPanel";
+import DeleteLeagueNightButton from "./components/DeleteLeagueNightButton";
 
 export default async function LeagueNightPage({
   params,
@@ -34,6 +35,7 @@ export default async function LeagueNightPage({
   if (!night) notFound();
 
   const isManager = ["super_admin", "club_manager"].includes(session?.user.role ?? "");
+  const isSuperAdmin = session?.user.role === "super_admin";
   const isNightHost = !!session && night.hostUserId === session.user.id;
   const canManageSchedule = isManager;                  // edit attendees / details before start
   const canStartNight = isManager || isNightHost;       // start round 1 (within 15-min window)
@@ -162,6 +164,8 @@ export default async function LeagueNightPage({
             Waiting for the host to start the game.
           </p>
         )}
+
+        {isSuperAdmin && <DeleteLeagueNightButton nightId={id} />}
       </main>
     );
   }
@@ -223,6 +227,8 @@ export default async function LeagueNightPage({
       />
 
       <RoundHistory rounds={pastRounds} playerMap={playerMap} />
+
+      {isSuperAdmin && <DeleteLeagueNightButton nightId={id} />}
     </main>
   );
 }
