@@ -78,16 +78,16 @@ export function PlayerList({ players, canEdit = false, clubId }: Props) {
         </p>
       ) : (
         <div className="mf-table-wrap">
-          <table style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed" }}>
+          <table className="mf-player-table" style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed" }}>
             <thead>
               <tr style={{ borderBottom: "1px solid var(--border-hairline)" }}>
-                <th style={{ ...thStyle, textAlign: "left", width: canEdit ? "30%" : "36%" }}>Name</th>
-                <th style={{ ...thStyle, textAlign: "right", width: canEdit ? "10%" : "13%" }}>GP</th>
-                <th style={{ ...thStyle, textAlign: "right", width: canEdit ? "10%" : "13%" }}>W</th>
-                <th style={{ ...thStyle, textAlign: "right", width: canEdit ? "10%" : "13%" }}>L</th>
-                <th style={{ ...thStyle, textAlign: "right", width: canEdit ? "10%" : "13%" }}>D</th>
-                <th style={{ ...thStyle, textAlign: "right", width: canEdit ? "10%" : "12%" }}>D+W</th>
-                {canEdit && <th style={{ ...thStyle, width: "20%", textAlign: "right" }} />}
+                <th style={{ ...thStyle, textAlign: "left", width: canEdit ? "36%" : "40%" }}>Name</th>
+                <th style={{ ...thStyle, textAlign: "right", width: canEdit ? "10%" : "12%" }}>GP</th>
+                <th style={{ ...thStyle, textAlign: "right", width: canEdit ? "10%" : "12%" }}>W</th>
+                <th style={{ ...thStyle, textAlign: "right", width: canEdit ? "10%" : "12%" }}>L</th>
+                <th className="mf-hide-mobile" style={{ ...thStyle, textAlign: "right", width: canEdit ? "9%" : "12%" }}>D</th>
+                <th className="mf-hide-mobile" style={{ ...thStyle, textAlign: "right", width: canEdit ? "9%" : "12%" }}>D+W</th>
+                {canEdit && <th style={{ ...thStyle, width: "16%", textAlign: "right" }} />}
               </tr>
             </thead>
             <tbody>
@@ -122,15 +122,15 @@ export function PlayerList({ players, canEdit = false, clubId }: Props) {
                   <td style={{ textAlign: "right", fontFamily: "var(--font-mono)", fontSize: "13px", color: "var(--ink-secondary)" }}>
                     {player.losses}
                   </td>
-                  <td style={{ textAlign: "right", fontFamily: "var(--font-mono)", fontSize: "13px", color: "var(--ink-secondary)" }}>
+                  <td className="mf-hide-mobile" style={{ textAlign: "right", fontFamily: "var(--font-mono)", fontSize: "13px", color: "var(--ink-secondary)" }}>
                     {player.doves}
                   </td>
-                  <td style={{ textAlign: "right", fontFamily: "var(--font-mono)", fontSize: "13px", color: "var(--ink-secondary)" }}>
+                  <td className="mf-hide-mobile" style={{ textAlign: "right", fontFamily: "var(--font-mono)", fontSize: "13px", color: "var(--ink-secondary)" }}>
                     —
                   </td>
                   {canEdit && (
                     <td style={{ textAlign: "right" }}>
-                      <span style={{ display: "inline-flex", gap: "16px" }}>
+                      <span style={{ display: "inline-flex", gap: "12px" }}>
                         <button
                           onClick={() => setEditing(player)}
                           style={{
@@ -161,7 +161,7 @@ export function PlayerList({ players, canEdit = false, clubId }: Props) {
                             color: "var(--ink-tertiary)",
                           }}
                         >
-                          Delete
+                          Del
                         </button>
                       </span>
                     </td>

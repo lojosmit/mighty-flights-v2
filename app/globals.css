@@ -634,6 +634,16 @@
   padding-right: 24px;
 }
 
+/* ─── Responsive table columns ───────────────────────────────────────────── */
+@media (max-width: 768px) {
+  /* Hide secondary stat columns so tables fit without scrolling */
+  .mf-hide-mobile { display: none; }
+  /* Switch player table to auto layout so remaining cols fill the space */
+  .mf-player-table { table-layout: auto !important; }
+  /* Tighten leaderboard cell padding on mobile */
+  .mf-leaderboard-cell { padding-left: 8px !important; padding-right: 8px !important; }
+}
+
 /* ─── Active game pulse ──────────────────────────────────────────────────── */
 @keyframes mf-pulse {
   0%, 100% { opacity: 1; }

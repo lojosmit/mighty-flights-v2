@@ -11,13 +11,13 @@ interface Props {
 type Dir = "asc" | "desc";
 
 type ColKey = keyof LeaderboardEntry;
-const COLS: { key: ColKey; label: string }[] = [
+const COLS: { key: ColKey; label: string; mobileHide?: boolean }[] = [
   { key: "gamesPlayed", label: "GP"    },
   { key: "wins",        label: "W"     },
   { key: "losses",      label: "L"     },
-  { key: "doves",       label: "D"     },
-  { key: "doveWins",    label: "D+"    },
-  { key: "winRatio",    label: "Win %"  },
+  { key: "doves",       label: "D",     mobileHide: true },
+  { key: "doveWins",    label: "D+",    mobileHide: true },
+  { key: "winRatio",    label: "Win %", mobileHide: true },
   { key: "totalPoints", label: "Pts"   },
 ];
 
@@ -62,12 +62,13 @@ export default function LeaderboardTable({ entries }: Props) {
           <th style={{ ...thStyle, textAlign: "left", width: "48px" }}>#</th>
           <th style={{ ...thStyle, textAlign: "left" }}>Player</th>
 
-          {COLS.map(({ key, label }) => {
+          {COLS.map(({ key, label, mobileHide }) => {
             const isSorted = key === sortKey;
             const canSort = SORTABLE.has(key as SortKey);
             return (
               <th
                 key={key}
+                className={mobileHide ? "mf-hide-mobile mf-leaderboard-cell" : "mf-leaderboard-cell"}
                 style={{
                   ...thStyle,
                   color: isSorted ? "var(--accent-gold)" : "var(--ink-tertiary)",
@@ -129,7 +130,7 @@ export default function LeaderboardTable({ entries }: Props) {
                 </Link>
               </td>
 
-              {COLS.map(({ key }) => {
+              {COLS.map(({ key, mobileHide }) => {
                 const val = entry[key as keyof LeaderboardEntry] as number;
                 let display: string;
                 if (key === "doves" || key === "doveWins") display = "—";
@@ -139,6 +140,7 @@ export default function LeaderboardTable({ entries }: Props) {
                 return (
                   <td
                     key={key}
+                    className={mobileHide ? "mf-hide-mobile mf-leaderboard-cell" : "mf-leaderboard-cell"}
                     style={{
                       textAlign: "right",
                       fontFamily: "var(--font-mono)",

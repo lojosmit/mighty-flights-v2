@@ -38,6 +38,7 @@ export default async function ProfilePage() {
   await connection();
   const session = await auth();
   if (!session) redirect("/login");
+  if (session.user.role === "super_admin") redirect("/admin");
 
   const [userRow] = await db
     .select({ playerId: users.playerId })

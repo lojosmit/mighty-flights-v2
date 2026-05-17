@@ -135,7 +135,7 @@ export default function NavBarShell({ navLinks, isAdmin, isClubManager, clubMana
         {/* Right */}
         <div className="mf-navbar-right">
           {userName && (
-            <Link href="/profile" className="mf-navbar-username">
+            <Link href={isAdmin ? "/admin" : "/profile"} className="mf-navbar-username">
               <span className="mf-navbar-avatar">{avatarInitials}</span>
               <span>{userName}</span>
             </Link>
@@ -223,7 +223,7 @@ export default function NavBarShell({ navLinks, isAdmin, isClubManager, clubMana
             <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
               {userName && (
                 <Link
-                  href="/profile"
+                  href={isAdmin ? "/admin" : "/profile"}
                   onClick={() => setMenuOpen(false)}
                   style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none" }}
                 >

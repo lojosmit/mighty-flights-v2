@@ -39,24 +39,24 @@ export default async function LeaderboardPage({ searchParams }: Props) {
         >
           Mighty Flights
         </p>
-        <h1
-          style={{
-            fontFamily: "var(--font-cormorant)",
-            fontSize: "clamp(48px, 6vw, 72px)",
-            fontWeight: 400,
-            color: "var(--ink-primary)",
-            lineHeight: 1,
-            marginBottom: "24px",
-          }}
-        >
-          Season Standings
-        </h1>
+        <div style={{ display: "flex", alignItems: "flex-end", gap: "32px", flexWrap: "wrap", marginBottom: "24px" }}>
+          <h1
+            style={{
+              fontFamily: "var(--font-cormorant)",
+              fontSize: "clamp(48px, 6vw, 72px)",
+              fontWeight: 400,
+              color: "var(--ink-primary)",
+              lineHeight: 1,
+            }}
+          >
+            Season Standings
+          </h1>
+          {isSuperAdmin && (
+            <ClubFilter clubs={clubs} selected={effectiveClubId} />
+          )}
+        </div>
         <div style={{ height: "1px", backgroundColor: "var(--border-hairline)" }} />
       </header>
-
-      {isSuperAdmin && (
-        <ClubFilter clubs={clubs} selected={effectiveClubId} />
-      )}
 
       {entries.length === 0 ? (
         <p style={{ fontFamily: "var(--font-body)", fontSize: "13px", color: "var(--ink-tertiary)" }}>
