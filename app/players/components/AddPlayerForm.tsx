@@ -29,9 +29,9 @@ export function AddPlayerForm({ clubId }: { clubId?: string | null }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px", maxWidth: "360px" }}>
-      <div>
-        <label style={labelStyle}>Player name</label>
+    <form onSubmit={handleSubmit} style={{ maxWidth: "520px" }}>
+      <label style={labelStyle}>Player name</label>
+      <div className="mf-add-player-row">
         <input
           type="text"
           value={name}
@@ -39,7 +39,7 @@ export function AddPlayerForm({ clubId }: { clubId?: string | null }) {
           placeholder="Full name"
           required
           style={{
-            width: "100%",
+            flex: 1,
             padding: "10px 14px",
             fontFamily: "var(--font-body)",
             fontSize: "14px",
@@ -48,28 +48,29 @@ export function AddPlayerForm({ clubId }: { clubId?: string | null }) {
             border: "1px solid var(--border-hairline)",
             outline: "none",
             boxSizing: "border-box",
+            minWidth: 0,
           }}
         />
+        <button
+          type="submit"
+          disabled={isPending}
+          style={{
+            padding: "10px 24px",
+            backgroundColor: isPending ? "var(--ink-tertiary)" : "var(--accent-primary)",
+            color: "#fff",
+            fontFamily: "var(--font-body)",
+            fontSize: "11px",
+            fontWeight: 500,
+            letterSpacing: "0.1em",
+            textTransform: "uppercase",
+            border: "none",
+            cursor: isPending ? "not-allowed" : "pointer",
+            flexShrink: 0,
+          }}
+        >
+          {isPending ? "Adding…" : "Add Player"}
+        </button>
       </div>
-      <button
-        type="submit"
-        disabled={isPending}
-        style={{
-          padding: "12px 24px",
-          backgroundColor: isPending ? "var(--ink-tertiary)" : "var(--accent-primary)",
-          color: "#fff",
-          fontFamily: "var(--font-body)",
-          fontSize: "11px",
-          fontWeight: 500,
-          letterSpacing: "0.1em",
-          textTransform: "uppercase",
-          border: "none",
-          cursor: isPending ? "not-allowed" : "pointer",
-          alignSelf: "flex-start",
-        }}
-      >
-        {isPending ? "Adding…" : "Add Player"}
-      </button>
     </form>
   );
 }

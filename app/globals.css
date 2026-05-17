@@ -566,6 +566,17 @@
   .mf-fixture-vs          { align-self: stretch; text-align: center; padding: 6px 0; border-top: 1px solid var(--border-hairline); border-bottom: 1px solid var(--border-hairline); margin: 8px 0; }
 }
 
+/* ─── Add-player form row ─────────────────────────────────────────────────── */
+.mf-add-player-row {
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+}
+@media (max-width: 768px) {
+  .mf-add-player-row { flex-direction: column; }
+  .mf-add-player-row button { align-self: flex-start; }
+}
+
 /* ─── Bench cards (round heading row) ────────────────────────────────────── */
 @media (max-width: 768px) {
   .mf-bench-section {
