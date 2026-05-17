@@ -174,8 +174,8 @@ export default async function PlayerProfilePage({ params, searchParams }: Props)
               }}
             >
               {[
-                { label: "3 in a Box",    desc: "Three consecutive wins in a night" },
-                { label: "Shanghai",      desc: "Win on singles, doubles & triples"  },
+                { label: "3 in a Box",    desc: "Three darts in a special box — triple, double or bull" },
+                { label: "Shanghai",      desc: "Triple, single & double all on the same number in one visit" },
                 { label: "Max Score",     desc: "Highest single-game score on record" },
               ].map(({ label, desc }) => (
                 <div

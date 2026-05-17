@@ -165,8 +165,8 @@ export default async function ProfilePage() {
               <div style={{ height: "1px", backgroundColor: "var(--accent-gold)", marginBottom: "16px" }} />
               <div style={{ display: "flex", flexDirection: "column", gap: "12px", flex: 1 }}>
                 {[
-                  { label: "3 in a Box", desc: "Three consecutive wins in a night" },
-                  { label: "Shanghai",   desc: "Win on singles, doubles & triples" },
+                  { label: "3 in a Box", desc: "Three darts in a special box — triple, double or bull" },
+                  { label: "Shanghai",   desc: "Triple, single & double all on the same number in one visit" },
                   { label: "Max Score",  desc: "Highest single-game score on record" },
                 ].map(({ label, desc }) => (
                   <div
@@ -201,8 +201,8 @@ export default async function ProfilePage() {
             <div style={{ height: "1px", backgroundColor: "var(--accent-gold)", marginBottom: "28px" }} />
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: "16px" }}>
               {[
-                { label: "3 in a Box", desc: "Three consecutive wins in a night" },
-                { label: "Shanghai",   desc: "Win on singles, doubles & triples" },
+                { label: "3 in a Box", desc: "Three darts in a special box — triple, double or bull" },
+                { label: "Shanghai",   desc: "Triple, single & double all on the same number in one visit" },
                 { label: "Max Score",  desc: "Highest single-game score on record" },
               ].map(({ label, desc }) => (
                 <div
