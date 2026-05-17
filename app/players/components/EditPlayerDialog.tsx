@@ -11,7 +11,7 @@ interface Props {
 
 export function EditPlayerDialog({ player, onClose }: Props) {
   const [name, setName] = useState(player.name);
-  const [rank, setRank] = useState(String(player.seasonRank));
+  const [email, setEmail] = useState(player.email ?? "");
   const [isPending, startTransition] = useTransition();
 
   function handleSubmit(e: React.FormEvent) {
@@ -19,7 +19,7 @@ export function EditPlayerDialog({ player, onClose }: Props) {
     const trimmed = name.trim();
     if (!trimmed) return;
     startTransition(async () => {
-      await updatePlayer(player.id, { name: trimmed, seasonRank: parseInt(rank, 10) });
+      await updatePlayer(player.id, { name: trimmed, email: email.trim() || null });
       onClose();
     });
   }
@@ -61,20 +61,14 @@ export function EditPlayerDialog({ player, onClose }: Props) {
 
           <div className="flex flex-col gap-1.5">
             <label className="text-meta uppercase tracking-widest" style={{ color: "var(--ink-tertiary)" }}>
-              Rank
+              Email
             </label>
             <input
-              type="number"
-              value={rank}
-              onChange={(e) => setRank(e.target.value)}
-              min={1}
-              required
-              className="border-b bg-transparent pb-1.5 text-body outline-none w-16"
-              style={{
-                borderColor: "var(--border-hairline)",
-                color: "var(--ink-primary)",
-                fontFamily: "var(--font-jetbrains-mono)",
-              }}
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="border-b bg-transparent pb-1.5 text-body outline-none w-full"
+              style={{ borderColor: "var(--border-hairline)", color: "var(--ink-primary)" }}
             />
           </div>
 

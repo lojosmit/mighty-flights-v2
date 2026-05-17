@@ -43,9 +43,14 @@ export default function NavBarShell({ navLinks, isAdmin, isClubManager, clubMana
 
   const adminHref = isClubManager && clubManagerClubId ? `/admin/clubs/${clubManagerClubId}` : "/admin";
 
+  const avatarInitials = userName
+    ? userName.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase()
+    : "";
+
   return (
     <>
       <header className="mf-navbar">
+      <div className="mf-navbar-inner">
         {/* Brand */}
         <Link href="/" className="mf-navbar-brand">
           <Image
@@ -90,8 +95,9 @@ export default function NavBarShell({ navLinks, isAdmin, isClubManager, clubMana
         {/* Right */}
         <div className="mf-navbar-right">
           {userName && (
-            <Link href="/profile" className="mf-navbar-username" style={{ fontFamily: "var(--font-body)", fontSize: "11px", color: "var(--ink-tertiary)", letterSpacing: "0.04em", textDecoration: "none" }}>
-              {userName}
+            <Link href="/profile" className="mf-navbar-username">
+              <span className="mf-navbar-avatar">{avatarInitials}</span>
+              <span>{userName}</span>
             </Link>
           )}
           <ThemeToggle />
@@ -120,6 +126,7 @@ export default function NavBarShell({ navLinks, isAdmin, isClubManager, clubMana
             <span className="mf-hamburger-line" style={menuOpen ? { transform: "translateY(-7px) rotate(-45deg)" } : undefined} />
           </button>
         </div>
+      </div>
       </header>
 
       {/* Login drawer */}

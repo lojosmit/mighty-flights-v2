@@ -213,7 +213,7 @@
 
 /* Page container */
 .mf-page {
-  max-width: 1100px;
+  max-width: 1280px;
   margin: 0 auto;
   padding: 64px clamp(24px, 5vw, 80px);
 }
@@ -289,13 +289,19 @@
   height: 88px;
   background-color: var(--bg-secondary);
   border-bottom: 1px solid var(--accent-gold);
-  display: flex;
-  align-items: center;
-  padding: 0 clamp(20px, 5vw, 80px);
   position: sticky;
   top: 0;
   z-index: 50;
   flex-shrink: 0;
+}
+/* Inner wrapper — constrains content to same width/padding as .mf-page */
+.mf-navbar-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0 clamp(24px, 5vw, 80px);
 }
 .mf-navbar-brand {
   display: flex;
@@ -333,11 +339,35 @@
   gap: 16px;
 }
 .mf-navbar-username {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   font-family: var(--font-body);
   font-size: 11px;
   color: var(--ink-tertiary);
   letter-spacing: 0.04em;
+  text-decoration: none;
+  transition: color 150ms ease;
 }
+.mf-navbar-username:hover { color: var(--ink-primary); }
+.mf-navbar-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: var(--accent-primary);
+  border: 1px solid var(--accent-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-family: var(--font-cormorant);
+  font-size: 13px;
+  font-weight: 500;
+  color: #fff;
+  line-height: 1;
+  transition: border-color 150ms ease;
+}
+.mf-navbar-username:hover .mf-navbar-avatar { border-color: var(--ink-primary); }
 
 /* Hamburger — hidden on desktop */
 .mf-hamburger {
@@ -445,7 +475,8 @@
 /* ─── Mobile breakpoint (≤768px) ─────────────────────────────────────────── */
 @media (max-width: 768px) {
   /* Navbar */
-  .mf-navbar                { height: 64px; padding: 0 16px; }
+  .mf-navbar                { height: 64px; }
+  .mf-navbar-inner          { padding: 0 16px; }
   .mf-navbar-brand          { margin-right: 0; flex: 1; gap: 8px; }
   .mf-navbar-title          { font-size: 20px; }
   .mf-navbar-links          { display: none; }

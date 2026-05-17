@@ -121,15 +121,8 @@ export default async function ClubPage({ params }: Props) {
         </section>
       )}
 
-      {/* Combined player roster + account controls */}
-      <section style={{ marginBottom: "64px" }}>
-        <p style={sectionLabel}>Players &amp; Accounts ({rosterEntries.length})</p>
-        <div style={{ height: "1px", backgroundColor: "var(--accent-gold)", marginBottom: "24px" }} />
-        <CombinedRoster entries={rosterEntries} viewerIsSuperAdmin={isSuperAdmin} />
-      </section>
-
       {/* Invite links */}
-      <section>
+      <section style={{ marginBottom: "64px" }}>
         <p style={sectionLabel}>Generate Invite Link</p>
         <div style={{ height: "1px", backgroundColor: "var(--accent-gold)", marginBottom: "24px" }} />
         <InviteForm clubId={club.id} />
@@ -164,6 +157,13 @@ export default async function ClubPage({ params }: Props) {
             })}
           </div>
         )}
+      </section>
+
+      {/* Combined player roster + account controls */}
+      <section>
+        <p style={sectionLabel}>Players &amp; Accounts ({rosterEntries.length})</p>
+        <div style={{ height: "1px", backgroundColor: "var(--accent-gold)", marginBottom: "24px" }} />
+        <CombinedRoster entries={rosterEntries} viewerIsSuperAdmin={isSuperAdmin} />
       </section>
     </main>
   );
