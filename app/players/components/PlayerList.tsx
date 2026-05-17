@@ -80,16 +80,16 @@ export function PlayerList({ players, canEdit = false, clubId }: Props) {
         </p>
       ) : (
         <div className="mf-table-wrap">
-          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed" }}>
             <thead>
               <tr style={{ borderBottom: "1px solid var(--border-hairline)" }}>
-                <th style={{ ...thStyle, textAlign: "left" }}>Name</th>
-                <th style={{ ...thStyle, textAlign: "right" }}>GP</th>
-                <th style={{ ...thStyle, textAlign: "right" }}>W</th>
-                <th style={{ ...thStyle, textAlign: "right" }}>L</th>
-                <th style={{ ...thStyle, textAlign: "right" }}>D</th>
-                <th style={{ ...thStyle, textAlign: "right" }}>D+W</th>
-                {canEdit && <th style={{ ...thStyle, width: "96px" }} />}
+                <th style={{ ...thStyle, textAlign: "left", width: canEdit ? "30%" : "36%" }}>Name</th>
+                <th style={{ ...thStyle, textAlign: "right", width: canEdit ? "10%" : "13%" }}>GP</th>
+                <th style={{ ...thStyle, textAlign: "right", width: canEdit ? "10%" : "13%" }}>W</th>
+                <th style={{ ...thStyle, textAlign: "right", width: canEdit ? "10%" : "13%" }}>L</th>
+                <th style={{ ...thStyle, textAlign: "right", width: canEdit ? "10%" : "13%" }}>D</th>
+                <th style={{ ...thStyle, textAlign: "right", width: canEdit ? "10%" : "12%" }}>D+W</th>
+                {canEdit && <th style={{ ...thStyle, width: "20%", textAlign: "right" }} />}
               </tr>
             </thead>
             <tbody>
@@ -101,7 +101,7 @@ export function PlayerList({ players, canEdit = false, clubId }: Props) {
                     borderBottom: "1px solid var(--border-hairline)",
                   }}
                 >
-                  <td>
+                  <td style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                     <Link
                       href={`/players/${player.id}`}
                       style={{
