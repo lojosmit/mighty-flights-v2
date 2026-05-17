@@ -311,10 +311,16 @@
   letter-spacing: 0.02em;
 }
 .mf-navbar-links {
+  position: absolute;
+  left: 17.5%;
+  right: 17.5%;
   display: flex;
   gap: 32px;
-  flex: 1;
   justify-content: center;
+  pointer-events: none;
+}
+.mf-navbar-links > * {
+  pointer-events: auto;
 }
 .mf-navbar-link {
   font-family: var(--font-body);
@@ -468,7 +474,7 @@
 @media (max-width: 768px) {
   /* Navbar */
   .mf-navbar                { height: 64px; padding: 0 16px; }
-  .mf-navbar-brand          { margin-right: 0; flex: 1; gap: 8px; }
+  .mf-navbar-brand          { position: absolute; left: 50%; transform: translateX(-50%); flex: none; margin-right: 0; gap: 8px; }
   .mf-navbar-title          { font-size: 20px; }
   .mf-navbar-links          { display: none; }
   .mf-navbar-username       { display: none; }
