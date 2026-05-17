@@ -175,13 +175,13 @@ export default async function LeagueNightPage({
   return (
     <main
       className="mf-page"
-      style={{ position: "relative", overflow: "hidden" }}
+      style={{ position: "relative" }}
     >
       <span
         aria-hidden
         style={{
-          position: "absolute",
-          bottom: 0,
+          position: "fixed",
+          bottom: "72px",
           left: "50%",
           transform: "translateX(-50%)",
           fontFamily: "var(--font-cormorant)",
