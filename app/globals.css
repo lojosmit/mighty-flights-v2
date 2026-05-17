@@ -587,7 +587,8 @@
     justify-content: center;
   }
   .mf-round-actions {
-    margin-left: 0;
+    margin-left: auto;
+    margin-right: auto;
   }
 }
 
