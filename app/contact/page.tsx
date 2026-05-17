@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { isValidEmail } from "@/lib/validate";
 
 type Status = "idle" | "submitting" | "success" | "error";
 
@@ -36,8 +37,13 @@ export default function ContactPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setStatus("submitting");
     setErrorMsg("");
+    if (!isValidEmail(email)) {
+      setErrorMsg("Please enter a valid email address.");
+      setStatus("error");
+      return;
+    }
+    setStatus("submitting");
 
     const res = await fetch("/api/contact", {
       method: "POST",

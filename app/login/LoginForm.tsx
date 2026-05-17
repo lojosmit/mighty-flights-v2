@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
+import { isValidEmail } from "@/lib/validate";
 
 export default function LoginForm({ callbackUrl: propCallbackUrl }: { callbackUrl?: string } = {}) {
   const params = useSearchParams();
@@ -17,6 +18,10 @@ export default function LoginForm({ callbackUrl: propCallbackUrl }: { callbackUr
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
+    if (!isValidEmail(email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
     startTransition(async () => {
       const result = await signIn("credentials", {
         email,

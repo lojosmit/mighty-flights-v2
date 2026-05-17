@@ -6,6 +6,7 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
 import { db } from "./db";
 import { players, users, type UserRole } from "./db/schema";
+import { isValidEmail } from "./validate";
 
 export async function createUser({
   email,
@@ -83,6 +84,8 @@ export async function completeAccountSetup(
 
   const userId = session.user.id;
   const trimmedEmail = newEmail.trim().toLowerCase();
+
+  if (!isValidEmail(trimmedEmail)) return { error: "Please enter a valid email address." };
 
   // Check email not taken by another user
   const [existing] = await db

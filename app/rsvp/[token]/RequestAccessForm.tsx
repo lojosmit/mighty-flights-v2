@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { createRegistrationRequest } from "@/lib/registration-requests";
+import { isValidEmail } from "@/lib/validate";
 
 interface Props {
   leagueNightId: string;
@@ -11,6 +12,7 @@ interface Props {
 export default function RequestAccessForm({ leagueNightId, clubId }: Props) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState("");
   const [done, setDone] = useState(false);
   const [isPending, startTransition] = useTransition();
 
@@ -73,20 +75,27 @@ export default function RequestAccessForm({ leagueNightId, clubId }: Props) {
         <input
           type="email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          style={inputStyle}
+          onChange={(e) => { setEmail(e.target.value); setEmailError(""); }}
+          style={{ ...inputStyle, borderColor: emailError ? "var(--loss)" : "var(--border-hairline)" }}
           required
         />
+        {emailError && (
+          <p style={{ fontFamily: "var(--font-body)", fontSize: "12px", color: "var(--loss)", marginTop: "4px" }}>{emailError}</p>
+        )}
       </div>
 
       <button
         disabled={isPending || !name.trim() || !email.trim()}
-        onClick={() =>
+        onClick={() => {
+          if (!isValidEmail(email)) {
+            setEmailError("Please enter a valid email address.");
+            return;
+          }
           startTransition(async () => {
             await createRegistrationRequest({ name: name.trim(), email: email.trim(), leagueNightId, clubId });
             setDone(true);
-          })
-        }
+          });
+        }}
         style={{
           width: "100%",
           padding: "14px",

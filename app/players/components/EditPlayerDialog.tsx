@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import type { Player } from "@/lib/db/schema";
 import { updatePlayer } from "@/lib/players";
+import { isValidEmail } from "@/lib/validate";
 
 interface Props {
   player: Player;
@@ -12,14 +13,21 @@ interface Props {
 export function EditPlayerDialog({ player, onClose }: Props) {
   const [name, setName] = useState(player.name);
   const [email, setEmail] = useState(player.email ?? "");
+  const [emailError, setEmailError] = useState("");
   const [isPending, startTransition] = useTransition();
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     const trimmed = name.trim();
     if (!trimmed) return;
+    const trimmedEmail = email.trim();
+    if (trimmedEmail && !isValidEmail(trimmedEmail)) {
+      setEmailError("Invalid email address.");
+      return;
+    }
+    setEmailError("");
     startTransition(async () => {
-      await updatePlayer(player.id, { name: trimmed, email: email.trim() || null });
+      await updatePlayer(player.id, { name: trimmed, email: trimmedEmail || null });
       onClose();
     });
   }
@@ -66,10 +74,13 @@ export function EditPlayerDialog({ player, onClose }: Props) {
             <input
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => { setEmail(e.target.value); setEmailError(""); }}
               className="border-b bg-transparent pb-1.5 text-body outline-none w-full"
-              style={{ borderColor: "var(--border-hairline)", color: "var(--ink-primary)" }}
+              style={{ borderColor: emailError ? "var(--loss)" : "var(--border-hairline)", color: "var(--ink-primary)" }}
             />
+            {emailError && (
+              <p style={{ fontFamily: "var(--font-body)", fontSize: "12px", color: "var(--loss)", marginTop: "4px" }}>{emailError}</p>
+            )}
           </div>
 
           <div className="flex gap-4 pt-2">

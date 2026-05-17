@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { signOut } from "next-auth/react";
 import { completeAccountSetup } from "@/lib/users";
+import { isValidEmail } from "@/lib/validate";
 
 export default function AccountSetupForm({ currentEmail }: { currentEmail: string }) {
   const [email, setEmail] = useState(currentEmail);
@@ -16,6 +17,10 @@ export default function AccountSetupForm({ currentEmail }: { currentEmail: strin
     e.preventDefault();
     setError("");
 
+    if (!isValidEmail(email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
     if (password.length < 8) {
       setError("Password must be at least 8 characters.");
       return;
