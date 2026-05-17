@@ -255,7 +255,10 @@ export default function RoundView({
         {/* Fixture boards */}
         <div
           className="mf-fixture-grid"
+          data-boards={round.fixtures.length}
           style={{
+            gridTemplateColumns: `repeat(${round.fixtures.length}, 1fr)`,
+            maxWidth: `min(100%, ${round.fixtures.length * 480 + (round.fixtures.length - 1) * 24}px)`,
             opacity: isPending ? 0.55 : 1,
             transition: "opacity 200ms ease",
           }}

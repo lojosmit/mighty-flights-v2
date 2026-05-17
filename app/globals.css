@@ -495,9 +495,15 @@
 /* ─── Fixture grid & boards ──────────────────────────────────────────────── */
 .mf-fixture-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 32px;
+  gap: 24px;
+  margin-left: auto;
+  margin-right: auto;
 }
+
+/* Compact layout when 3 boards are visible */
+[data-boards="3"] .mf-fixture-board { padding: 24px 16px; }
+[data-boards="3"] .mf-fixture-team  { min-width: 80px; }
+[data-boards="3"] .mf-fixture-player-btn { font-size: clamp(16px, 1.5vw, 22px); }
 .mf-fixture-board {
   position: relative;
   overflow: hidden;
@@ -540,7 +546,7 @@
 }
 
 @media (max-width: 640px) {
-  .mf-fixture-grid        { grid-template-columns: 1fr; }
+  .mf-fixture-grid        { grid-template-columns: 1fr !important; max-width: 100% !important; }
   .mf-fixture-board       { padding: 20px 20px; }
   /* Stack teams vertically so each name gets the full card width */
   .mf-fixture-teams       { flex-direction: column; gap: 0; align-items: stretch; }
