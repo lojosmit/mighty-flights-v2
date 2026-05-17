@@ -113,7 +113,7 @@ export default function PlayerChangesPanel({
       <div
         style={{
           position: "fixed",
-          top: 0,
+          top: "var(--navbar-h)",
           right: 0,
           bottom: 0,
           zIndex: 195,

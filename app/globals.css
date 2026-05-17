@@ -6,6 +6,8 @@
 
 /* ─── Mighty Flights color tokens (UIUX.md § 1) ─────────────────────────── */
 :root {
+  --navbar-h: 88px;
+
   /* Backgrounds */
   --bg-primary:        #EDF1F5;
   --bg-secondary:      #FFFFFF;
@@ -477,13 +479,15 @@
 
 /* ─── Mobile breakpoint (≤768px) ─────────────────────────────────────────── */
 @media (max-width: 768px) {
+  :root { --navbar-h: 64px; }
+
   /* Navbar */
   .mf-navbar                { height: 64px; padding: 0 16px; }
   .mf-navbar-brand          { position: absolute; left: 50%; transform: translateX(-50%); flex: none; margin-right: 0; gap: 8px; white-space: nowrap; }
   .mf-navbar-title          { font-size: 20px; }
   .mf-navbar-links          { display: none; }
   .mf-navbar-username       { display: none; }
-  .mf-navbar-desktop-only   { display: none; }
+  .mf-navbar-desktop-only   { display: none !important; }
   .mf-hamburger             { display: flex; }
 
   /* Page */
