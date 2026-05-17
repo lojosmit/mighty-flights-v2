@@ -37,7 +37,7 @@ export default function FixtureResultButtons({
 
   const rowLabel: React.CSSProperties = {
     fontFamily: "var(--font-body)",
-    fontSize: "20px",
+    fontSize: "10px",
     fontWeight: 500,
     letterSpacing: "0.12em",
     textTransform: "uppercase",
@@ -96,10 +96,10 @@ export default function FixtureResultButtons({
             onClick={() => enabled && onResult("teamA_win")}
             style={{
               ...base,
-              height: "90px",
+              height: "60px",
               background: "var(--accent-primary)",
               color: "#ffffff",
-              fontSize: "26px",
+              fontSize: "13px",
               borderRadius: "4px",
             }}
           >
@@ -109,11 +109,11 @@ export default function FixtureResultButtons({
             onClick={() => enabled && onResult("teamB_win")}
             style={{
               ...base,
-              height: "90px",
+              height: "60px",
               background: "var(--bg-elevated)",
               color: "var(--ink-primary)",
               border: "1px solid var(--border-hairline)",
-              fontSize: "26px",
+              fontSize: "13px",
               borderRadius: "4px",
             }}
           >
@@ -130,31 +130,31 @@ export default function FixtureResultButtons({
             onClick={() => enabled && onResult("special_win_A")}
             style={{
               ...base,
-              height: "90px",
+              height: "60px",
               background: "transparent",
               color: "var(--accent-gold)",
               border: "1px solid var(--accent-gold)",
-              fontSize: "24px",
+              fontSize: "12px",
               borderRadius: "4px",
             }}
           >
             <span>{teamALabel}</span>
-            <span style={{ fontSize: "20px", letterSpacing: "0.1em", opacity: 0.8 }}>+ dove</span>
+            <span style={{ fontSize: "10px", letterSpacing: "0.1em", opacity: 0.8 }}>+ dove</span>
           </button>
           <button
             onClick={() => enabled && onResult("special_win_B")}
             style={{
               ...base,
-              height: "90px",
+              height: "60px",
               background: "transparent",
               color: "var(--accent-gold)",
               border: "1px solid var(--accent-gold)",
-              fontSize: "24px",
+              fontSize: "12px",
               borderRadius: "4px",
             }}
           >
             <span>{teamBLabel}</span>
-            <span style={{ fontSize: "20px", letterSpacing: "0.1em", opacity: 0.8 }}>+ dove</span>
+            <span style={{ fontSize: "10px", letterSpacing: "0.1em", opacity: 0.8 }}>+ dove</span>
           </button>
         </div>
       </div>
@@ -164,12 +164,12 @@ export default function FixtureResultButtons({
         onClick={() => enabled && onResult("double_forfeit")}
         style={{
           ...base,
-          height: "70px",
+          height: "40px",
           flexDirection: "row",
           background: "transparent",
           color: "var(--ink-tertiary)",
           border: "1px solid var(--border-hairline)",
-          fontSize: "22px",
+          fontSize: "11px",
           letterSpacing: "0.1em",
           borderRadius: "4px",
         }}
