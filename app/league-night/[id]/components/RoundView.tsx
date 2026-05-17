@@ -10,7 +10,6 @@ import {
 } from "@/lib/rounds";
 import type { FixtureResult, LeagueNightStatus } from "@/lib/db/schema";
 import FixtureBoard from "./FixtureBoard";
-import BenchDisplay from "./BenchDisplay";
 import PlayerChangesPanel from "./PlayerChangesPanel";
 import TimerOverlay from "./TimerOverlay";
 
@@ -120,11 +119,13 @@ export default function RoundView({
           style={{
             display: "flex",
             alignItems: "flex-start",
-            justifyContent: "space-between",
+            gap: "32px",
             marginBottom: "24px",
+            flexWrap: "wrap",
           }}
         >
-          <div>
+          {/* Title */}
+          <div style={{ flexShrink: 0 }}>
             <p
               style={{
                 fontFamily: "var(--font-body)",
@@ -138,13 +139,12 @@ export default function RoundView({
             >
               {nightStatus === "completed" ? "League Game — Completed" : "League Game — In Progress"}
             </p>
-
             <h1
               style={{
                 fontFamily: "var(--font-cormorant)",
-                fontSize: "48px",
+                fontSize: "clamp(48px, 6vw, 72px)",
                 fontWeight: 400,
-                lineHeight: 1.05,
+                lineHeight: 1,
                 color: "var(--ink-primary)",
               }}
             >
@@ -152,7 +152,38 @@ export default function RoundView({
             </h1>
           </div>
 
-          {/* Timer button */}
+          {/* Bench — inline next to heading */}
+          {round.bench.length > 0 && (
+            <div style={{ display: "flex", flexDirection: "column", gap: "8px", paddingTop: "4px" }}>
+              <p style={{ fontFamily: "var(--font-body)", fontSize: "10px", fontWeight: 500, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--ink-tertiary)" }}>
+                Bench
+              </p>
+              <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                {round.bench.map((id) => (
+                  <button
+                    key={id}
+                    onClick={() => handlePlayerClick(id)}
+                    style={{
+                      fontFamily: "var(--font-cormorant)",
+                      fontSize: "22px",
+                      fontWeight: 400,
+                      color: selectedId === id ? "var(--accent-gold)" : "var(--ink-secondary)",
+                      background: "none",
+                      border: "none",
+                      cursor: canEdit && isActive && !allDone ? "pointer" : "default",
+                      padding: 0,
+                      lineHeight: 1.2,
+                      transition: "color 150ms ease",
+                    }}
+                  >
+                    {playerMap[id] ?? "—"}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Timer button — pushed to far right */}
           {isActive && (
             <button
               onClick={() => setOverlayOpen(true)}
@@ -168,6 +199,7 @@ export default function RoundView({
                 border: "1px solid var(--border-hairline)",
                 cursor: "pointer",
                 flexShrink: 0,
+                marginLeft: "auto",
                 marginTop: "8px",
               }}
             >
@@ -255,14 +287,6 @@ export default function RoundView({
             />
           ))}
         </div>
-
-        {/* Bench */}
-        <BenchDisplay
-          bench={round.bench}
-          playerMap={playerMap}
-          selectedPlayerId={selectedId}
-          onPlayerClick={handlePlayerClick}
-        />
 
         {/* Player changes */}
         {isActive && canEdit && (

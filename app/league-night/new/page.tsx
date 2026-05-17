@@ -26,27 +26,14 @@ export default async function NewLeagueNightPage() {
 
   return (
     <main className="mf-page">
-      <header className="mb-16">
-        <p
-          className="text-meta uppercase tracking-widest mb-3"
-          style={{ color: "var(--ink-tertiary)" }}
-        >
+      <header style={{ marginBottom: "64px" }}>
+        <p style={{ fontFamily: "var(--font-body)", fontSize: "11px", letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--ink-tertiary)", marginBottom: "12px" }}>
           Mighty Flights
         </p>
-        <h1
-          style={{
-            fontFamily: "var(--font-cormorant)",
-            fontSize: "3rem",
-            color: "var(--ink-primary)",
-            lineHeight: 1.05,
-          }}
-        >
+        <h1 style={{ fontFamily: "var(--font-cormorant)", fontSize: "clamp(48px, 6vw, 72px)", fontWeight: 400, color: "var(--ink-primary)", lineHeight: 1, marginBottom: "24px" }}>
           New Game
         </h1>
-        <div
-          className="mt-4 h-px w-full"
-          style={{ backgroundColor: "var(--border-hairline)" }}
-        />
+        <div style={{ height: "1px", backgroundColor: "var(--border-hairline)" }} />
       </header>
 
       <LeagueNightSetup

@@ -251,7 +251,13 @@ export default function TimerOverlay({
 
         <div
           className="mf-fixture-grid"
-          style={{ opacity: isPending ? 0.55 : 1, transition: "opacity 200ms ease" }}
+          data-boards={round.fixtures.length}
+          style={{
+            gridTemplateColumns: `repeat(${round.fixtures.length}, 1fr)`,
+            maxWidth: `min(100%, ${round.fixtures.length * 480 + (round.fixtures.length - 1) * 24}px)`,
+            opacity: isPending ? 0.55 : 1,
+            transition: "opacity 200ms ease",
+          }}
         >
           {round.fixtures.map((fixture) => (
             <FixtureBoard
