@@ -59,7 +59,7 @@ export default function FixtureBoard({
       <p
         style={{
           fontFamily: "var(--font-body)",
-          fontSize: "12px",
+          fontSize: "24px",
           fontWeight: 500,
           letterSpacing: "0.08em",
           textTransform: "uppercase",
@@ -86,7 +86,7 @@ export default function FixtureBoard({
           style={{
             alignSelf: "center",
             fontFamily: "var(--font-body)",
-            fontSize: "11px",
+            fontSize: "22px",
             fontWeight: 500,
             letterSpacing: "0.1em",
             textTransform: "uppercase",
@@ -121,7 +121,7 @@ export default function FixtureBoard({
         <p
           style={{
             fontFamily: "var(--font-body)",
-            fontSize: "10px",
+            fontSize: "20px",
             fontWeight: 500,
             letterSpacing: "0.1em",
             textTransform: "uppercase",
@@ -135,7 +135,7 @@ export default function FixtureBoard({
           <p
             style={{
               fontFamily: "var(--font-mono)",
-              fontSize: "12px",
+              fontSize: "24px",
               color: "var(--ink-secondary)",
               letterSpacing: "0.04em",
             }}
@@ -164,7 +164,7 @@ export default function FixtureBoard({
           <p
             style={{
               fontFamily: "var(--font-body)",
-              fontSize: "11px",
+              fontSize: "22px",
               color: "var(--ink-tertiary)",
               letterSpacing: "0.04em",
             }}
@@ -230,7 +230,7 @@ function TeamBlock({
                 style={{
                   paddingLeft: "10px",
                   fontFamily: "var(--font-mono)",
-                  fontSize: "11px",
+                  fontSize: "22px",
                   letterSpacing: "0.04em",
                   color: "var(--ink-tertiary)",
                   marginTop: "2px",
@@ -278,7 +278,7 @@ function ResultBadge({
       <p
         style={{
           fontFamily: "var(--font-body)",
-          fontSize: "12px",
+          fontSize: "24px",
           fontWeight: 500,
           letterSpacing: "0.08em",
           textTransform: "uppercase",
