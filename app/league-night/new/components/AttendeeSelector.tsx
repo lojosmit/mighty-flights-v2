@@ -7,9 +7,12 @@ interface Props {
   players: Player[];
   selected: Set<string>;
   onToggle: (id: string) => void;
+  onProceed?: () => void;
+  canProceed?: boolean;
+  playerCount?: number;
 }
 
-export function AttendeeSelector({ players, selected, onToggle }: Props) {
+export function AttendeeSelector({ players, selected, onToggle, onProceed, canProceed, playerCount = 0 }: Props) {
   const [search, setSearch] = useState("");
 
   const filtered = useMemo(() => {
@@ -29,13 +32,30 @@ export function AttendeeSelector({ players, selected, onToggle }: Props) {
 
   return (
     <div>
-      <div className="flex items-baseline gap-4 mb-6">
+      <div style={{ display: "flex", alignItems: "baseline", gap: "16px", marginBottom: "24px", flexWrap: "wrap" }}>
         <h2 style={{ fontFamily: "var(--font-cormorant)", fontSize: "1.75rem", color: "var(--ink-primary)" }}>
           Who is playing?
         </h2>
         <span className="text-meta uppercase tracking-widest" style={{ color: "var(--ink-tertiary)" }}>
           {selected.size} selected
         </span>
+        {onProceed && (
+          <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: "16px" }}>
+            {playerCount > 0 && !canProceed && (
+              <span style={{ fontFamily: "var(--font-body)", fontSize: "11px", color: "var(--ink-tertiary)" }}>
+                Need at least 6 players.
+              </span>
+            )}
+            <button
+              onClick={onProceed}
+              disabled={!canProceed}
+              className="px-8 py-3 text-small uppercase tracking-widest font-medium cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+              style={{ backgroundColor: "var(--accent-primary)", color: "#FFFFFF" }}
+            >
+              Choose Boards →
+            </button>
+          </div>
+        )}
       </div>
 
       {players.length > 0 && (

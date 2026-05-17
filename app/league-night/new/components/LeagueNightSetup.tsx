@@ -378,22 +378,14 @@ export function LeagueNightSetup({ players, members, clubId, clubs }: Props) {
                     </select>
                   </div>
                 )}
-                <AttendeeSelector players={visiblePlayers} selected={selected} onToggle={togglePlayer} />
-                <div className="mt-10 flex items-center gap-6">
-                  <button
-                    onClick={() => { setBoardCount(1); setStep(1); }}
-                    disabled={!canProceed}
-                    className="px-8 py-3 text-small uppercase tracking-widest font-medium cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
-                    style={{ backgroundColor: "var(--accent-primary)", color: "#FFFFFF" }}
-                  >
-                    Choose Boards →
-                  </button>
-                  {playerCount > 0 && !canProceed && (
-                    <p className="text-small" style={{ color: "var(--ink-tertiary)" }}>
-                      Need at least 6 players.
-                    </p>
-                  )}
-                </div>
+                <AttendeeSelector
+                  players={visiblePlayers}
+                  selected={selected}
+                  onToggle={togglePlayer}
+                  onProceed={() => { setBoardCount(1); setStep(1); }}
+                  canProceed={canProceed}
+                  playerCount={playerCount}
+                />
               </>
             )
           )}
