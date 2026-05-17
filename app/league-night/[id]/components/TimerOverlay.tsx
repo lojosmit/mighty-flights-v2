@@ -59,9 +59,25 @@ export default function TimerOverlay({
   const [running, setRunning] = useState(false);
   const [confirmEnd, setConfirmEnd] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const reachedZeroRef = useRef(false);
+
+  useEffect(() => {
+    audioRef.current = new Audio("/sounds/timer-end.wav");
+    audioRef.current.preload = "auto";
+  }, []);
+
+  // Play sound when timer naturally counts down to zero
+  useEffect(() => {
+    if (remaining === 0 && reachedZeroRef.current) {
+      reachedZeroRef.current = false;
+      audioRef.current?.play().catch(() => {});
+    }
+  }, [remaining]);
 
   // Reset timer on new round
   useEffect(() => {
+    reachedZeroRef.current = false;
     setRunning(false);
     setDuration(DEFAULT_MINUTES);
     setRemaining(DEFAULT_MINUTES * 60);
@@ -72,7 +88,11 @@ export default function TimerOverlay({
     if (running) {
       intervalRef.current = setInterval(() => {
         setRemaining((prev) => {
-          if (prev <= 1) { setRunning(false); return 0; }
+          if (prev <= 1) {
+            reachedZeroRef.current = true;
+            setRunning(false);
+            return 0;
+          }
           return prev - 1;
         });
       }, 1000);
@@ -236,7 +256,7 @@ export default function TimerOverlay({
               </button>
             )}
             <button
-              onClick={() => { setRemaining(duration * 60); setRunning(false); }}
+              onClick={() => { reachedZeroRef.current = false; setRemaining(duration * 60); setRunning(false); }}
               style={{ ...metaStyle, background: "none", border: "none", cursor: "pointer", color: "var(--ink-tertiary)" }}
             >
               Reset
