@@ -95,11 +95,11 @@ export function PlayerList({ players, canEdit = false }: Props) {
                   <td style={{ textAlign: "right", fontFamily: "var(--font-mono)", fontSize: "13px", color: "var(--ink-secondary)" }}>
                     {player.losses}
                   </td>
-                  <td style={{ textAlign: "right", fontFamily: "var(--font-mono)", fontSize: "13px", color: "var(--ink-secondary)" }}>
-                    {player.doves}
+                  <td style={{ textAlign: "right", fontFamily: "var(--font-mono)", fontSize: "13px", color: "var(--ink-tertiary)" }}>
+                    —
                   </td>
-                  <td style={{ textAlign: "right", fontFamily: "var(--font-mono)", fontSize: "13px", color: "var(--ink-secondary)" }}>
-                    {player.doveWins}
+                  <td style={{ textAlign: "right", fontFamily: "var(--font-mono)", fontSize: "13px", color: "var(--ink-tertiary)" }}>
+                    —
                   </td>
                   {canEdit && (
                     <td style={{ textAlign: "right" }}>

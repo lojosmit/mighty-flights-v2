@@ -53,8 +53,8 @@ export default async function ProfilePage() {
         { label: "Wins",         value: String(player.wins) },
         { label: "Losses",       value: String(player.losses) },
         { label: "Win %",         value: (player.winRatio * 100).toFixed(1) + "%" },
-        { label: "Doves",        value: String(player.doves) },
-        { label: "Dove Wins",    value: String(player.doveWins) },
+        { label: "Doves",        value: "—" },
+        { label: "Dove Wins",    value: "—" },
       ]
     : [];
 

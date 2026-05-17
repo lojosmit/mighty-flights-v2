@@ -21,7 +21,7 @@ const COLS: { key: ColKey; label: string }[] = [
   { key: "totalPoints", label: "Pts"   },
 ];
 
-const SORTABLE = new Set<SortKey>(["gamesPlayed", "wins", "doves", "doveWins", "winRatio", "totalPoints"]);
+const SORTABLE = new Set<SortKey>(["gamesPlayed", "wins", "winRatio", "totalPoints"]);
 
 export default function LeaderboardTable({ entries }: Props) {
   const [sortKey, setSortKey] = useState<SortKey>("wins");
@@ -132,7 +132,8 @@ export default function LeaderboardTable({ entries }: Props) {
               {COLS.map(({ key }) => {
                 const val = entry[key as keyof LeaderboardEntry] as number;
                 let display: string;
-                if (key === "winRatio") display = (val * 100).toFixed(1) + "%";
+                if (key === "doves" || key === "doveWins") display = "—";
+                else if (key === "winRatio") display = (val * 100).toFixed(1) + "%";
                 else if (key === "totalPoints") display = val.toFixed(2);
                 else display = String(val);
                 return (
