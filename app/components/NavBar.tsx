@@ -1,4 +1,6 @@
 import { auth } from "@/auth";
+import { getActiveLeagueNight } from "@/lib/league-nights";
+import { getLatestRoundNumber } from "@/lib/rounds";
 import NavBarShell from "./NavBarShell";
 
 const MANAGER_LINKS = [
@@ -20,6 +22,15 @@ export default async function NavBar() {
   const isManager = role === "super_admin" || role === "club_manager" || role === "host";
   const navLinks = session ? (isManager ? MANAGER_LINKS : PLAYER_LINKS) : [];
 
+  let activeGame: { id: string; roundNumber: number } | null = null;
+  if (session) {
+    const night = await getActiveLeagueNight();
+    if (night) {
+      const roundNumber = await getLatestRoundNumber(night.id);
+      activeGame = { id: night.id, roundNumber: roundNumber ?? 0 };
+    }
+  }
+
   return (
     <NavBarShell
       navLinks={navLinks}
@@ -28,6 +39,7 @@ export default async function NavBar() {
       clubManagerClubId={session?.user.clubId ?? null}
       userName={session?.user.name ?? null}
       isLoggedIn={!!session}
+      activeGame={activeGame}
     />
   );
 }

@@ -598,6 +598,12 @@
   padding-right: 24px;
 }
 
+/* ─── Active game pulse ──────────────────────────────────────────────────── */
+@keyframes mf-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.35; }
+}
+
 /* ─── Navbar link hover ──────────────────────────────────────────────────── */
 .mf-navbar-link {
   transition: color 150ms ease;

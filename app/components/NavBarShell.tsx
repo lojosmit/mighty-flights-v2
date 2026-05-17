@@ -17,9 +17,10 @@ interface Props {
   clubManagerClubId: string | null;
   userName: string | null;
   isLoggedIn: boolean;
+  activeGame?: { id: string; roundNumber: number } | null;
 }
 
-export default function NavBarShell({ navLinks, isAdmin, isClubManager, clubManagerClubId, userName, isLoggedIn }: Props) {
+export default function NavBarShell({ navLinks, isAdmin, isClubManager, clubManagerClubId, userName, isLoggedIn, activeGame }: Props) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
   const pathname = usePathname();
@@ -103,6 +104,32 @@ export default function NavBarShell({ navLinks, isAdmin, isClubManager, clubMana
           )}
         </nav>
 
+        {/* Active game indicator — desktop only */}
+        {activeGame && (
+          <Link
+            href={`/league-night/${activeGame.id}`}
+            className="mf-navbar-desktop-only"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "8px",
+              fontFamily: "var(--font-body)",
+              fontSize: "11px",
+              fontWeight: 500,
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              color: "var(--accent-gold)",
+              textDecoration: "none",
+              border: "1px solid var(--accent-gold)",
+              padding: "6px 14px",
+              flexShrink: 0,
+            }}
+          >
+            <span style={{ width: "6px", height: "6px", borderRadius: "50%", backgroundColor: "var(--accent-gold)", flexShrink: 0, animation: "mf-pulse 2s ease-in-out infinite" }} />
+            Live · Round {activeGame.roundNumber}
+          </Link>
+        )}
+
         {/* Right */}
         <div className="mf-navbar-right">
           {userName && (
@@ -166,6 +193,17 @@ export default function NavBarShell({ navLinks, isAdmin, isClubManager, clubMana
                 style={pathname.startsWith("/admin") ? { color: "var(--accent-gold)" } : undefined}
               >
                 Admin
+              </Link>
+            )}
+            {activeGame && (
+              <Link
+                href={`/league-night/${activeGame.id}`}
+                className="mf-mobile-nav-item"
+                onClick={() => setMenuOpen(false)}
+                style={{ color: "var(--accent-gold)", display: "flex", alignItems: "center", gap: "8px" }}
+              >
+                <span style={{ width: "6px", height: "6px", borderRadius: "50%", backgroundColor: "var(--accent-gold)", flexShrink: 0, animation: "mf-pulse 2s ease-in-out infinite" }} />
+                Live · Round {activeGame.roundNumber}
               </Link>
             )}
             {!isLoggedIn && (

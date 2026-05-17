@@ -1,6 +1,6 @@
 "use server";
 
-import { eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { db } from "./db/index";
 import {
@@ -42,6 +42,16 @@ export async function getRoundWithFixtures(
   if (!round) return null;
   const fx = await db.select().from(fixtures).where(eq(fixtures.roundId, roundId));
   return { ...round, fixtures: fx };
+}
+
+export async function getLatestRoundNumber(leagueNightId: string): Promise<number | null> {
+  const [row] = await db
+    .select({ roundNumber: rounds.roundNumber })
+    .from(rounds)
+    .where(eq(rounds.leagueNightId, leagueNightId))
+    .orderBy(desc(rounds.roundNumber))
+    .limit(1);
+  return row?.roundNumber ?? null;
 }
 
 export async function getLatestRound(
