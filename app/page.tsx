@@ -35,6 +35,7 @@ export default async function HomePage() {
   const top5 = sortLeaderboard(leaderboard, "wins", "desc").slice(0, 5);
   const recentNights = allNights.slice(0, 5);
   const showClub = !clubId;
+  const canSchedule = ["super_admin", "club_manager", "host"].includes(session?.user.role ?? "");
 
   const thStyle: React.CSSProperties = {
     fontFamily: "var(--font-body)",
@@ -100,7 +101,7 @@ export default async function HomePage() {
           >
             Game in progress — view live
           </Link>
-        ) : (
+        ) : canSchedule ? (
           <Link
             href="/league-night/new"
             style={{
@@ -118,7 +119,7 @@ export default async function HomePage() {
           >
             Schedule a game
           </Link>
-        )}
+        ) : null}
       </section>
 
       {/* ── Body ─────────────────────────────────────────────────────────── */}
