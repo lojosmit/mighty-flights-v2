@@ -50,7 +50,6 @@ export default function NavBarShell({ navLinks, isAdmin, isClubManager, clubMana
   return (
     <>
       <header className="mf-navbar">
-      <div className="mf-navbar-inner">
         {/* Brand */}
         <Link href="/" className="mf-navbar-brand">
           <Image
@@ -126,7 +125,6 @@ export default function NavBarShell({ navLinks, isAdmin, isClubManager, clubMana
             <span className="mf-hamburger-line" style={menuOpen ? { transform: "translateY(-7px) rotate(-45deg)" } : undefined} />
           </button>
         </div>
-      </div>
       </header>
 
       {/* Login drawer */}
