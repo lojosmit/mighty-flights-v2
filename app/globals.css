@@ -593,6 +593,10 @@
 .mf-table-wrap tbody tr:hover {
   background-color: var(--bg-elevated);
 }
+.mf-table-wrap th:last-child,
+.mf-table-wrap td:last-child {
+  padding-right: 24px;
+}
 
 /* ─── Navbar link hover ──────────────────────────────────────────────────── */
 .mf-navbar-link {
