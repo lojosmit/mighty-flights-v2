@@ -335,6 +335,7 @@
   display: flex;
   align-items: center;
   gap: 16px;
+  margin-left: auto;
 }
 .mf-navbar-username {
   display: flex;
