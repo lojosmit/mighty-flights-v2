@@ -5,7 +5,7 @@ import type { RoundWithFixtures } from "@/lib/rounds";
 import type { LeagueNightStatus, FixtureResult } from "@/lib/db/schema";
 import FixtureBoard from "./FixtureBoard";
 
-const DURATIONS = [5, 7, 8, 10, 12, 15, 20];
+const DURATIONS = [1, 5, 7, 8, 10, 12, 15, 20];
 const DEFAULT_MINUTES = 10;
 
 function fmt(s: number): string {
@@ -156,33 +156,6 @@ export default function TimerOverlay({
           flexShrink: 0,
         }}
       >
-        {/* Duration picker */}
-        {!running && isAtStart && isActive && (
-          <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "20px", flexWrap: "wrap", justifyContent: "center" }}>
-            <span style={{ ...metaStyle, color: "var(--ink-tertiary)" }}>Duration</span>
-            {DURATIONS.map((m) => (
-              <button
-                key={m}
-                onClick={() => { setDuration(m); setRemaining(m * 60); }}
-                style={{
-                  fontFamily: "var(--font-mono)",
-                  fontSize: "13px",
-                  fontWeight: m === duration ? 600 : 400,
-                  padding: "4px 10px",
-                  background: "transparent",
-                  border: "1px solid",
-                  borderColor: m === duration ? "var(--accent-gold)" : "var(--border-hairline)",
-                  color: m === duration ? "var(--accent-gold)" : "var(--ink-tertiary)",
-                  cursor: "pointer",
-                  transition: "border-color 120ms ease, color 120ms ease",
-                }}
-              >
-                {m}m
-              </button>
-            ))}
-          </div>
-        )}
-
         {/* Clock numerals */}
         <div
           aria-live="polite"
@@ -209,6 +182,33 @@ export default function TimerOverlay({
             transition: "background-color 300ms ease",
           }}
         />
+
+        {/* Duration picker — below clock so it's never obscured */}
+        {!running && isAtStart && isActive && (
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginTop: "20px", flexWrap: "wrap", justifyContent: "center" }}>
+            <span style={{ ...metaStyle, color: "var(--ink-tertiary)", marginRight: "4px" }}>Duration</span>
+            {DURATIONS.map((m) => (
+              <button
+                key={m}
+                onClick={() => { setDuration(m); setRemaining(m * 60); }}
+                style={{
+                  fontFamily: "var(--font-mono)",
+                  fontSize: "13px",
+                  fontWeight: m === duration ? 600 : 400,
+                  padding: "4px 10px",
+                  background: "transparent",
+                  border: "1px solid",
+                  borderColor: m === duration ? "var(--accent-gold)" : "var(--border-hairline)",
+                  color: m === duration ? "var(--accent-gold)" : "var(--ink-tertiary)",
+                  cursor: "pointer",
+                  transition: "border-color 120ms ease, color 120ms ease",
+                }}
+              >
+                {m}m
+              </button>
+            ))}
+          </div>
+        )}
 
         {/* Controls */}
         {isActive && (
