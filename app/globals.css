@@ -564,6 +564,20 @@
   .mf-fixture-vs          { align-self: stretch; text-align: center; padding: 6px 0; border-top: 1px solid var(--border-hairline); border-bottom: 1px solid var(--border-hairline); margin: 8px 0; }
 }
 
+/* ─── Bench cards (round heading row) ────────────────────────────────────── */
+@media (max-width: 768px) {
+  .mf-bench-section {
+    width: 100%;
+    align-items: center;
+  }
+  .mf-bench-cards {
+    justify-content: center;
+  }
+  .mf-round-actions {
+    margin-left: 0;
+  }
+}
+
 /* ─── Stepper ─────────────────────────────────────────────────────────────── */
 .mf-stepper {
   display: flex;
