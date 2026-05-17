@@ -17,6 +17,8 @@ interface Props {
   currentBench: string[];
   currentFixtures: Fixture[];
   boardCount: number;
+  isOpen: boolean;
+  onClose: () => void;
 }
 
 type PanelState =
@@ -32,8 +34,9 @@ export default function PlayerChangesPanel({
   currentBench,
   currentFixtures,
   boardCount,
+  isOpen,
+  onClose,
 }: Props) {
-  const [expanded, setExpanded] = useState(false);
   const [panelState, setPanelState] = useState<PanelState>({ mode: "idle" });
   const [isPending, startTransition] = useTransition();
 
@@ -75,39 +78,82 @@ export default function PlayerChangesPanel({
     });
   }
 
+  function handleClose() {
+    setPanelState({ mode: "idle" });
+    onClose();
+  }
+
+  const metaStyle: React.CSSProperties = {
+    fontFamily: "var(--font-body)",
+    fontSize: "10px",
+    fontWeight: 500,
+    letterSpacing: "0.1em",
+    textTransform: "uppercase",
+    color: "var(--ink-tertiary)",
+  };
+
   return (
-    <div
-      style={{
-        marginTop: "40px",
-        borderTop: "1px solid var(--border-hairline)",
-        paddingTop: "24px",
-      }}
-    >
-      {/* Toggle */}
-      <button
-        onClick={() => { setExpanded((e) => !e); setPanelState({ mode: "idle" }); }}
+    <>
+      {/* Backdrop */}
+      <div
+        onClick={handleClose}
         style={{
+          position: "fixed",
+          inset: 0,
+          zIndex: 190,
+          backgroundColor: "rgba(0,0,0,0.4)",
+          opacity: isOpen ? 1 : 0,
+          visibility: isOpen ? "visible" : "hidden",
+          transition: "opacity 220ms ease, visibility 220ms ease",
+          pointerEvents: isOpen ? "auto" : "none",
+        }}
+      />
+
+      {/* Drawer */}
+      <div
+        style={{
+          position: "fixed",
+          top: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 195,
+          width: "min(420px, 100vw)",
+          backgroundColor: "var(--bg-secondary)",
+          borderLeft: "1px solid var(--accent-gold)",
           display: "flex",
-          alignItems: "center",
-          gap: "8px",
-          background: "none",
-          border: "none",
-          cursor: "pointer",
-          padding: 0,
-          fontFamily: "var(--font-body)",
-          fontSize: "12px",
-          fontWeight: 500,
-          letterSpacing: "0.08em",
-          textTransform: "uppercase",
-          color: "var(--ink-tertiary)",
+          flexDirection: "column",
+          transform: isOpen ? "translateX(0)" : "translateX(100%)",
+          transition: "transform 240ms ease",
+          overflowY: "auto",
         }}
       >
-        <span>{expanded ? "▲" : "▼"}</span>
-        Player Changes · {attendees.length} attending
-      </button>
+        {/* Header */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: "0 24px",
+            height: "64px",
+            borderBottom: "1px solid var(--border-hairline)",
+            flexShrink: 0,
+          }}
+        >
+          <p style={metaStyle}>Player Changes · {attendees.length} attending</p>
+          <button
+            onClick={handleClose}
+            style={{ background: "none", border: "none", cursor: "pointer", padding: "8px", color: "var(--ink-tertiary)" }}
+            aria-label="Close panel"
+          >
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <line x1="4" y1="4" x2="16" y2="16" />
+              <line x1="16" y1="4" x2="4" y2="16" />
+            </svg>
+          </button>
+        </div>
 
-      {expanded && (
-        <div style={{ marginTop: "20px" }}>
+        {/* Content */}
+        <div style={{ padding: "24px", flex: 1 }}>
           {/* Board reduction prompt */}
           {panelState.mode === "confirm_reduce" && (
             <div
@@ -118,14 +164,7 @@ export default function PlayerChangesPanel({
                 background: "var(--bg-elevated)",
               }}
             >
-              <p
-                style={{
-                  fontFamily: "var(--font-body)",
-                  fontSize: "13px",
-                  color: "var(--ink-secondary)",
-                  marginBottom: "12px",
-                }}
-              >
+              <p style={{ fontFamily: "var(--font-body)", fontSize: "13px", color: "var(--ink-secondary)", marginBottom: "12px" }}>
                 Board {panelState.boardLabel} was forfeited. Reduce board count from{" "}
                 {boardCount} to {boardCount - 1} for the next round?
               </p>
@@ -156,11 +195,7 @@ export default function PlayerChangesPanel({
                   : `Remove ${panelState.playerName} from this night?`}
               </p>
               <div style={{ display: "flex", gap: "8px" }}>
-                <button
-                  onClick={() => handleConfirmRemove(panelState.playerId)}
-                  disabled={isPending}
-                  style={primaryBtnStyle(isPending)}
-                >
+                <button onClick={() => handleConfirmRemove(panelState.playerId)} disabled={isPending} style={primaryBtnStyle(isPending)}>
                   {isPending ? "…" : "Remove"}
                 </button>
                 <button onClick={() => setPanelState({ mode: "idle" })} style={ghostBtnStyle}>
@@ -171,7 +206,8 @@ export default function PlayerChangesPanel({
           )}
 
           {/* Attendee list */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "4px", marginBottom: "20px" }}>
+          <p style={{ ...metaStyle, marginBottom: "12px" }}>Attending</p>
+          <div style={{ display: "flex", flexDirection: "column", gap: "4px", marginBottom: "28px" }}>
             {attendees.map((p) => (
               <div
                 key={p.id}
@@ -184,13 +220,7 @@ export default function PlayerChangesPanel({
                   opacity: isPending ? 0.5 : 1,
                 }}
               >
-                <span
-                  style={{
-                    fontFamily: "var(--font-cormorant)",
-                    fontSize: "18px",
-                    color: "var(--ink-primary)",
-                  }}
-                >
+                <span style={{ fontFamily: "var(--font-cormorant)", fontSize: "18px", color: "var(--ink-primary)" }}>
                   {p.name}
                 </span>
                 {panelState.mode === "idle" && (
@@ -220,19 +250,7 @@ export default function PlayerChangesPanel({
           {/* Add player */}
           {nonAttendees.length > 0 && panelState.mode === "idle" && (
             <div>
-              <p
-                style={{
-                  fontFamily: "var(--font-body)",
-                  fontSize: "12px",
-                  fontWeight: 500,
-                  letterSpacing: "0.08em",
-                  textTransform: "uppercase",
-                  color: "var(--ink-tertiary)",
-                  marginBottom: "8px",
-                }}
-              >
-                Add late arrival
-              </p>
+              <p style={{ ...metaStyle, marginBottom: "10px" }}>Add late arrival</p>
               <select
                 defaultValue=""
                 disabled={isPending}
@@ -245,7 +263,7 @@ export default function PlayerChangesPanel({
                   border: "1px solid var(--border-hairline)",
                   padding: "8px 12px",
                   cursor: "pointer",
-                  minWidth: "200px",
+                  width: "100%",
                 }}
               >
                 <option value="" disabled>Select player…</option>
@@ -256,8 +274,8 @@ export default function PlayerChangesPanel({
             </div>
           )}
         </div>
-      )}
-    </div>
+      </div>
+    </>
   );
 }
 

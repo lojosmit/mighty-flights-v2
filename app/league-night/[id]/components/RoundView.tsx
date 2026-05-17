@@ -39,6 +39,7 @@ export default function RoundView({
   const [isPending, startTransition] = useTransition();
   const [pendingFixtureId, setPendingFixtureId] = useState<string | null>(null);
   const [overlayOpen, setOverlayOpen] = useState(false);
+  const [playerPanelOpen, setPlayerPanelOpen] = useState(false);
 
   const allDone = round.fixtures.every((f) => f.result !== "in_progress");
   const doneCount = round.fixtures.filter((f) => f.result !== "in_progress").length;
@@ -191,28 +192,48 @@ export default function RoundView({
             </div>
           )}
 
-          {/* Timer button — pushed to far right */}
+          {/* Timer + Players buttons — pushed to far right */}
           {isActive && (
-            <button
-              onClick={() => setOverlayOpen(true)}
-              style={{
-                fontFamily: "var(--font-body)",
-                fontSize: "11px",
-                fontWeight: 500,
-                letterSpacing: "0.1em",
-                textTransform: "uppercase",
-                padding: "10px 20px",
-                background: "transparent",
-                color: "var(--ink-tertiary)",
-                border: "1px solid var(--border-hairline)",
-                cursor: "pointer",
-                flexShrink: 0,
-                marginLeft: "auto",
-                marginTop: "8px",
-              }}
-            >
-              ⏱ Timer
-            </button>
+            <div style={{ display: "flex", gap: "8px", marginLeft: "auto", marginTop: "8px", flexShrink: 0 }}>
+              {canEdit && (
+                <button
+                  onClick={() => setPlayerPanelOpen(true)}
+                  style={{
+                    fontFamily: "var(--font-body)",
+                    fontSize: "11px",
+                    fontWeight: 500,
+                    letterSpacing: "0.1em",
+                    textTransform: "uppercase",
+                    padding: "10px 20px",
+                    background: "transparent",
+                    color: "var(--ink-tertiary)",
+                    border: "1px solid var(--border-hairline)",
+                    cursor: "pointer",
+                    flexShrink: 0,
+                  }}
+                >
+                  Players
+                </button>
+              )}
+              <button
+                onClick={() => setOverlayOpen(true)}
+                style={{
+                  fontFamily: "var(--font-body)",
+                  fontSize: "11px",
+                  fontWeight: 500,
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase",
+                  padding: "10px 20px",
+                  background: "transparent",
+                  color: "var(--ink-tertiary)",
+                  border: "1px solid var(--border-hairline)",
+                  cursor: "pointer",
+                  flexShrink: 0,
+                }}
+              >
+                ⏱ Timer
+              </button>
+            </div>
           )}
         </div>
 
@@ -296,8 +317,8 @@ export default function RoundView({
           ))}
         </div>
 
-        {/* Player changes */}
-        {isActive && canEdit && (
+        {/* Player changes drawer — admin/host only */}
+        {canEdit && (
           <PlayerChangesPanel
             leagueNightId={leagueNightId}
             attendees={allPlayers.filter((p) => playerMap[p.id] !== undefined)}
@@ -305,6 +326,8 @@ export default function RoundView({
             currentBench={round.bench}
             currentFixtures={round.fixtures}
             boardCount={boardCount}
+            isOpen={playerPanelOpen}
+            onClose={() => setPlayerPanelOpen(false)}
           />
         )}
 
