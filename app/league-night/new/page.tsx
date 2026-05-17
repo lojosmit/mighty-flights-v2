@@ -30,7 +30,7 @@ export default async function NewLeagueNightPage() {
         <p style={{ fontFamily: "var(--font-body)", fontSize: "11px", letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--ink-tertiary)", marginBottom: "12px" }}>
           Mighty Flights
         </p>
-        <h1 style={{ fontFamily: "var(--font-cormorant)", fontSize: "clamp(48px, 6vw, 72px)", fontWeight: 400, color: "var(--ink-primary)", lineHeight: 1, marginBottom: "24px" }}>
+        <h1 style={{ fontFamily: "var(--font-cormorant)", fontSize: "5vw", fontWeight: 400, color: "var(--ink-primary)", lineHeight: 1, marginBottom: "24px" }}>
           New Game
         </h1>
         <div style={{ height: "1px", backgroundColor: "var(--border-hairline)" }} />

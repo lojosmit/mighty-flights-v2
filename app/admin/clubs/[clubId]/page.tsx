@@ -80,7 +80,7 @@ export default async function ClubPage({ params }: Props) {
         <p style={{ fontFamily: "var(--font-body)", fontSize: "11px", fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--accent-gold)", marginBottom: "12px" }}>
           Club Management
         </p>
-        <h1 style={{ fontFamily: "var(--font-cormorant)", fontSize: "clamp(48px, 6vw, 72px)", fontWeight: 400, color: "var(--ink-primary)", lineHeight: 1, marginBottom: "8px" }}>
+        <h1 style={{ fontFamily: "var(--font-cormorant)", fontSize: "5vw", fontWeight: 400, color: "var(--ink-primary)", lineHeight: 1, marginBottom: "8px" }}>
           {club.name}
         </h1>
         <p style={{ fontFamily: "var(--font-mono)", fontSize: "12px", color: "var(--ink-tertiary)", marginBottom: "24px" }}>

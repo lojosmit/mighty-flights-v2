@@ -33,7 +33,7 @@ export default async function PlayersPage({ searchParams }: Props) {
           Mighty Flights
         </p>
         <div style={{ display: "flex", alignItems: "flex-end", gap: "32px", flexWrap: "wrap", marginBottom: "24px" }}>
-          <h1 style={{ fontFamily: "var(--font-cormorant)", fontSize: "clamp(48px, 6vw, 72px)", fontWeight: 400, color: "var(--ink-primary)", lineHeight: 1 }}>
+          <h1 style={{ fontFamily: "var(--font-cormorant)", fontSize: "5vw", fontWeight: 400, color: "var(--ink-primary)", lineHeight: 1 }}>
             Player Roster
           </h1>
           {isSuperAdmin && (
