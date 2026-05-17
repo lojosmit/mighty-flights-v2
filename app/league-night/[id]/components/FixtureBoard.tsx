@@ -212,7 +212,7 @@ function TeamBlock({
         const isSelected = selectedPlayerId === id;
         const handicap = playerHandicapMap[id];
         return (
-          <div key={id}>
+          <div key={id} className="mf-fixture-player">
             <button
               onClick={() => onPlayerClick(id)}
               aria-pressed={isSelected}

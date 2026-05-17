@@ -556,10 +556,12 @@
 @media (max-width: 640px) {
   .mf-fixture-grid        { grid-template-columns: 1fr !important; max-width: 100% !important; }
   .mf-fixture-board       { padding: 20px 20px; }
-  /* Stack teams vertically so each name gets the full card width */
+  /* Stack teams vertically (Team A, VS, Team B) */
   .mf-fixture-teams       { flex-direction: column; gap: 0; align-items: stretch; }
-  .mf-fixture-team        { min-width: 0; }
-  .mf-fixture-player-btn  { font-size: 26px; white-space: normal; overflow: visible; text-overflow: clip; }
+  /* Within each team: players side-by-side, centred */
+  .mf-fixture-team        { flex-direction: row; justify-content: center; align-items: flex-start; gap: 20px; min-width: 0; }
+  .mf-fixture-player      { display: flex; flex-direction: column; align-items: center; }
+  .mf-fixture-player-btn  { font-size: 26px; white-space: normal; overflow: visible; text-overflow: clip; text-align: center; }
   /* VS becomes a centred horizontal rule between the two teams */
   .mf-fixture-vs          { align-self: stretch; text-align: center; padding: 6px 0; border-top: 1px solid var(--border-hairline); border-bottom: 1px solid var(--border-hairline); margin: 8px 0; }
 }
