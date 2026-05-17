@@ -196,28 +196,26 @@ export default function RoundView({
           )}
 
           {/* Timer + Players buttons — pushed to far right on desktop, left-aligned on mobile */}
-          {isActive && (
+          {isActive && canEdit && (
             <div className="mf-round-actions" style={{ display: "flex", gap: "8px", marginLeft: "auto", marginTop: "8px", flexShrink: 0 }}>
-              {canEdit && (
-                <button
-                  onClick={() => setPlayerPanelOpen(true)}
-                  style={{
-                    fontFamily: "var(--font-body)",
-                    fontSize: "11px",
-                    fontWeight: 500,
-                    letterSpacing: "0.1em",
-                    textTransform: "uppercase",
-                    padding: "10px 20px",
-                    background: "transparent",
-                    color: "var(--ink-tertiary)",
-                    border: "1px solid var(--border-hairline)",
-                    cursor: "pointer",
-                    flexShrink: 0,
-                  }}
-                >
-                  Players
-                </button>
-              )}
+              <button
+                onClick={() => setPlayerPanelOpen(true)}
+                style={{
+                  fontFamily: "var(--font-body)",
+                  fontSize: "11px",
+                  fontWeight: 500,
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase",
+                  padding: "10px 20px",
+                  background: "transparent",
+                  color: "var(--ink-tertiary)",
+                  border: "1px solid var(--border-hairline)",
+                  cursor: "pointer",
+                  flexShrink: 0,
+                }}
+              >
+                Players
+              </button>
               <button
                 onClick={() => setOverlayOpen(true)}
                 style={{

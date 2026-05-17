@@ -20,6 +20,21 @@ export default function RoundTimer({ roundNumber }: Props) {
   const [remaining, setRemaining] = useState(DEFAULT_MINUTES * 60);
   const [running, setRunning] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const reachedZeroRef = useRef(false);
+
+  useEffect(() => {
+    audioRef.current = new Audio("/sounds/timer-end.wav");
+    audioRef.current.preload = "auto";
+  }, []);
+
+  // Play sound when timer naturally reaches 0
+  useEffect(() => {
+    if (remaining === 0 && reachedZeroRef.current) {
+      reachedZeroRef.current = false;
+      audioRef.current?.play().catch(() => {});
+    }
+  }, [remaining]);
 
   // Reset when the round changes
   useEffect(() => {
@@ -34,6 +49,7 @@ export default function RoundTimer({ roundNumber }: Props) {
         setRemaining((prev) => {
           if (prev <= 1) {
             setRunning(false);
+            reachedZeroRef.current = true;
             return 0;
           }
           return prev - 1;
@@ -63,6 +79,7 @@ export default function RoundTimer({ roundNumber }: Props) {
   }
 
   function reset() {
+    reachedZeroRef.current = false;
     setRemaining(duration * 60);
     setRunning(false);
   }
