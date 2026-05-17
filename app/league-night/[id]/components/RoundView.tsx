@@ -114,28 +114,6 @@ export default function RoundView({
         onEnd={handleEnd}
       />
 
-      {/* Round number watermark */}
-      <span
-        aria-hidden
-        style={{
-          position: "fixed",
-          bottom: "-60px",
-          left: "50%",
-          transform: "translateX(-50%)",
-          fontFamily: "var(--font-cormorant)",
-          fontSize: "480px",
-          fontWeight: 400,
-          lineHeight: 0.85,
-          color: "var(--ink-primary)",
-          opacity: 0.04,
-          userSelect: "none",
-          pointerEvents: "none",
-          zIndex: 0,
-        }}
-      >
-        {round.roundNumber}
-      </span>
-
       <div style={{ position: "relative", zIndex: 1 }}>
         {/* Round heading row */}
         <div

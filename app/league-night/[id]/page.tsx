@@ -177,6 +177,28 @@ export default async function LeagueNightPage({
       className="mf-page"
       style={{ position: "relative", overflow: "hidden" }}
     >
+      <span
+        aria-hidden
+        style={{
+          position: "absolute",
+          bottom: 0,
+          left: "50%",
+          transform: "translateX(-50%)",
+          fontFamily: "var(--font-cormorant)",
+          fontSize: "480px",
+          fontWeight: 400,
+          lineHeight: 0.85,
+          color: "var(--ink-primary)",
+          opacity: 0.04,
+          userSelect: "none",
+          pointerEvents: "none",
+          zIndex: 0,
+          whiteSpace: "nowrap",
+        }}
+      >
+        {currentRound.roundNumber}
+      </span>
+
       <RoundView
         round={currentRound}
         playerMap={playerMap}
