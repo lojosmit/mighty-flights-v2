@@ -50,6 +50,18 @@ export default function NavBarShell({ navLinks, isAdmin, isClubManager, clubMana
   return (
     <>
       <header className="mf-navbar">
+        {/* Hamburger — left on mobile, hidden on desktop */}
+        <button
+          className="mf-hamburger"
+          onClick={() => setMenuOpen((v) => !v)}
+          aria-label={menuOpen ? "Close menu" : "Open menu"}
+          aria-expanded={menuOpen}
+        >
+          <span className="mf-hamburger-line" style={menuOpen ? { transform: "translateY(7px) rotate(45deg)" } : undefined} />
+          <span className="mf-hamburger-line" style={menuOpen ? { opacity: 0 } : undefined} />
+          <span className="mf-hamburger-line" style={menuOpen ? { transform: "translateY(-7px) rotate(-45deg)" } : undefined} />
+        </button>
+
         {/* Brand */}
         <Link href="/" className="mf-navbar-brand">
           <Image
@@ -103,18 +115,6 @@ export default function NavBarShell({ navLinks, isAdmin, isClubManager, clubMana
           <span className="mf-navbar-desktop-only">
             {isLoggedIn && <NavSignOut />}
           </span>
-
-          {/* Hamburger */}
-          <button
-            className="mf-hamburger"
-            onClick={() => setMenuOpen((v) => !v)}
-            aria-label={menuOpen ? "Close menu" : "Open menu"}
-            aria-expanded={menuOpen}
-          >
-            <span className="mf-hamburger-line" style={menuOpen ? { transform: "translateY(7px) rotate(45deg)" } : undefined} />
-            <span className="mf-hamburger-line" style={menuOpen ? { opacity: 0 } : undefined} />
-            <span className="mf-hamburger-line" style={menuOpen ? { transform: "translateY(-7px) rotate(-45deg)" } : undefined} />
-          </button>
         </div>
       </header>
 
