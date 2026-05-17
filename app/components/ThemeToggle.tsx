@@ -28,8 +28,8 @@ export default function ThemeToggle() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        width: "32px",
-        height: "32px",
+        width: "36px",
+        height: "36px",
         background: "none",
         border: "none",
         cursor: "pointer",
@@ -37,7 +37,7 @@ export default function ThemeToggle() {
         padding: 0,
       }}
     >
-      {dark ? <Sun size={16} strokeWidth={1.5} /> : <Moon size={16} strokeWidth={1.5} />}
+      {dark ? <Sun size={20} strokeWidth={1.5} /> : <Moon size={20} strokeWidth={1.5} />}
     </button>
   );
 }

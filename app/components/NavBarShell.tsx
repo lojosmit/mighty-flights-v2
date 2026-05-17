@@ -102,16 +102,7 @@ export default function NavBarShell({ navLinks, isAdmin, isClubManager, clubMana
           )}
           <ThemeToggle />
           <span className="mf-navbar-desktop-only">
-            {isLoggedIn ? (
-              <NavSignOut />
-            ) : (
-              <button
-                onClick={() => setLoginOpen(true)}
-                style={{ ...linkStyle, background: "none", border: "none", cursor: "pointer", padding: 0 }}
-              >
-                Sign in
-              </button>
-            )}
+            {isLoggedIn && <NavSignOut />}
           </span>
 
           {/* Hamburger */}
