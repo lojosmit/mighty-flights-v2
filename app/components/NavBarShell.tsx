@@ -185,9 +185,12 @@ export default function NavBarShell({ navLinks, isAdmin, isClubManager, clubMana
                 <Link
                   href="/profile"
                   onClick={() => setMenuOpen(false)}
-                  style={{ display: "block", fontFamily: "var(--font-body)", fontSize: "14px", fontWeight: 500, color: "var(--ink-primary)", textDecoration: "none" }}
+                  style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none" }}
                 >
-                  {userName}
+                  <span className="mf-navbar-avatar">{avatarInitials}</span>
+                  <span style={{ fontFamily: "var(--font-body)", fontSize: "14px", fontWeight: 500, color: "var(--ink-primary)" }}>
+                    {userName}
+                  </span>
                 </Link>
               )}
               {isLoggedIn && <NavSignOut />}

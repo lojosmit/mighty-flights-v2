@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { createPlayer } from "@/lib/players";
 
-export function AddPlayerForm() {
+export function AddPlayerForm({ clubId }: { clubId?: string | null }) {
   const [name, setName] = useState("");
   const [isPending, startTransition] = useTransition();
 
@@ -12,41 +12,60 @@ export function AddPlayerForm() {
     const trimmed = name.trim();
     if (!trimmed) return;
     startTransition(async () => {
-      await createPlayer({ name: trimmed });
+      await createPlayer({ name: trimmed }, clubId);
       setName("");
     });
   }
 
+  const labelStyle: React.CSSProperties = {
+    fontFamily: "var(--font-body)",
+    fontSize: "10px",
+    fontWeight: 500,
+    letterSpacing: "0.1em",
+    textTransform: "uppercase",
+    color: "var(--ink-tertiary)",
+    display: "block",
+    marginBottom: "8px",
+  };
+
   return (
-    <form onSubmit={handleSubmit} className="flex items-end gap-4">
-      <div className="flex flex-col gap-1.5">
-        <label
-          className="text-meta uppercase tracking-widest"
-          style={{ color: "var(--ink-tertiary)" }}
-        >
-          Name
-        </label>
+    <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px", maxWidth: "360px" }}>
+      <div>
+        <label style={labelStyle}>Player name</label>
         <input
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="Player name"
+          placeholder="Full name"
           required
-          className="border-b bg-transparent pb-1.5 text-body outline-none focus:border-b-2 w-64"
           style={{
-            borderColor: "var(--border-hairline)",
+            width: "100%",
+            padding: "10px 14px",
+            fontFamily: "var(--font-body)",
+            fontSize: "14px",
             color: "var(--ink-primary)",
+            backgroundColor: "var(--bg-secondary)",
+            border: "1px solid var(--border-hairline)",
+            outline: "none",
+            boxSizing: "border-box",
           }}
         />
       </div>
-
       <button
         type="submit"
         disabled={isPending}
-        className="px-7 py-3 text-small uppercase tracking-widest font-medium cursor-pointer disabled:opacity-50"
         style={{
-          backgroundColor: "var(--accent-primary)",
-          color: "#FFFFFF",
+          padding: "12px 24px",
+          backgroundColor: isPending ? "var(--ink-tertiary)" : "var(--accent-primary)",
+          color: "#fff",
+          fontFamily: "var(--font-body)",
+          fontSize: "11px",
+          fontWeight: 500,
+          letterSpacing: "0.1em",
+          textTransform: "uppercase",
+          border: "none",
+          cursor: isPending ? "not-allowed" : "pointer",
+          alignSelf: "flex-start",
         }}
       >
         {isPending ? "Adding…" : "Add Player"}

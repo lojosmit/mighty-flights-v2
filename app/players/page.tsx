@@ -42,7 +42,7 @@ export default async function PlayersPage({ searchParams }: Props) {
         <ClubFilter clubs={clubs} selected={effectiveClubId} />
       )}
 
-      <PlayerList players={players} canEdit={isManager} />
+      <PlayerList players={players} canEdit={isManager} clubId={effectiveClubId} />
     </main>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
 import type { Player } from "@/lib/db/schema";
 import { AddPlayerForm } from "./AddPlayerForm";
@@ -10,11 +10,18 @@ import { DeletePlayerDialog } from "./DeletePlayerDialog";
 interface Props {
   players: Player[];
   canEdit?: boolean;
+  clubId?: string | null;
 }
 
-export function PlayerList({ players, canEdit = false }: Props) {
+export function PlayerList({ players, canEdit = false, clubId }: Props) {
   const [editing, setEditing] = useState<Player | null>(null);
   const [deleting, setDeleting] = useState<Player | null>(null);
+  const [search, setSearch] = useState("");
+
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    return q ? players.filter((p) => p.name.toLowerCase().includes(q)) : players;
+  }, [players, search]);
 
   const thStyle: React.CSSProperties = {
     fontFamily: "var(--font-body)",
@@ -31,7 +38,29 @@ export function PlayerList({ players, canEdit = false }: Props) {
     <div>
       {canEdit && (
         <div style={{ marginBottom: "48px" }}>
-          <AddPlayerForm />
+          <AddPlayerForm clubId={clubId} />
+        </div>
+      )}
+
+      {players.length > 6 && (
+        <div style={{ marginBottom: "24px", maxWidth: "360px" }}>
+          <input
+            type="text"
+            placeholder="Search players…"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            style={{
+              width: "100%",
+              padding: "10px 14px",
+              fontFamily: "var(--font-body)",
+              fontSize: "14px",
+              color: "var(--ink-primary)",
+              backgroundColor: "var(--bg-secondary)",
+              border: "1px solid var(--border-hairline)",
+              outline: "none",
+              boxSizing: "border-box",
+            }}
+          />
         </div>
       )}
 
@@ -64,7 +93,7 @@ export function PlayerList({ players, canEdit = false }: Props) {
               </tr>
             </thead>
             <tbody>
-              {players.map((player) => (
+              {filtered.map((player) => (
                 <tr
                   key={player.id}
                   style={{
