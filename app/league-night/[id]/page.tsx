@@ -6,6 +6,8 @@ import { getRoundsForNight } from "@/lib/rounds";
 import { getPlayers } from "@/lib/players";
 import { getUsersByClub } from "@/lib/users";
 import { getFixturePredictions } from "@/lib/predictions";
+import { getHandicapTable } from "@/lib/handicap";
+import { computeMultiplier } from "@/lib/handicap-utils";
 import { appUrl } from "@/lib/app-url";
 import RoundView from "./components/RoundView";
 import RoundHistory from "./components/RoundHistory";
@@ -170,7 +172,16 @@ export default async function LeagueNightPage({
   const pastRounds = allRounds.slice(0, -1);
 
   const allPlayersList = allPlayers.map((p) => ({ id: p.id, name: p.name }));
-  const predictions = await getFixturePredictions(currentRound.fixtures);
+  const [predictions, handicapTable] = await Promise.all([
+    getFixturePredictions(currentRound.fixtures),
+    getHandicapTable(),
+  ]);
+
+  const playerHandicapMap: Record<string, number> = {};
+  for (const p of allPlayers) {
+    const row = handicapTable.find((r) => r.rankFrom <= p.seasonRank && r.rankTo >= p.seasonRank);
+    playerHandicapMap[p.id] = row ? parseFloat(row.multiplier) : computeMultiplier(p.seasonRank);
+  }
 
   return (
     <main
@@ -207,6 +218,7 @@ export default async function LeagueNightPage({
         allPlayers={allPlayersList}
         boardCount={night.boardCount}
         predictions={predictions}
+        playerHandicapMap={playerHandicapMap}
         canEdit={canEdit}
       />
 

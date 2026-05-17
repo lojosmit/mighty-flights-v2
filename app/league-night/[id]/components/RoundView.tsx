@@ -21,6 +21,7 @@ interface Props {
   allPlayers: { id: string; name: string }[];
   boardCount: number;
   predictions: Record<string, { probA: number; probB: number } | null>;
+  playerHandicapMap: Record<string, number>;
   canEdit: boolean;
 }
 
@@ -32,6 +33,7 @@ export default function RoundView({
   allPlayers,
   boardCount,
   predictions,
+  playerHandicapMap,
   canEdit,
 }: Props) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -108,6 +110,7 @@ export default function RoundView({
         selectedPlayerId={selectedId}
         pendingFixtureId={pendingFixtureId}
         predictions={predictions}
+        playerHandicapMap={playerHandicapMap}
         onPlayerClick={handlePlayerClick}
         onRecordResult={handleResult}
         onNextRound={handleGenerate}
@@ -313,6 +316,7 @@ export default function RoundView({
               onRecordResult={isActive && canEdit ? (r) => handleResult(fixture.id, r) : undefined}
               isPendingResult={pendingFixtureId === fixture.id}
               prediction={predictions[fixture.id]}
+              playerHandicapMap={playerHandicapMap}
             />
           ))}
         </div>

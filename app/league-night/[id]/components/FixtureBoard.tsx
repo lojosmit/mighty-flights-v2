@@ -12,6 +12,7 @@ interface Props {
   onRecordResult?: (result: FixtureResult) => void;
   isPendingResult?: boolean;
   prediction?: { probA: number; probB: number } | null;
+  playerHandicapMap?: Record<string, number>;
 }
 
 export default function FixtureBoard({
@@ -23,6 +24,7 @@ export default function FixtureBoard({
   onRecordResult,
   isPendingResult = false,
   prediction,
+  playerHandicapMap = {},
 }: Props) {
   const teamALabel = fixture.teamA.playerIds
     .map((id) => playerMap[id] ?? "—")
@@ -73,10 +75,10 @@ export default function FixtureBoard({
       <div className="mf-fixture-teams" style={{ position: "relative" }}>
         <TeamBlock
           playerIds={fixture.teamA.playerIds}
-          handicap={fixture.teamA.handicapApplied}
           playerMap={playerMap}
           selectedPlayerId={isActive && fixture.result === "in_progress" ? selectedPlayerId : null}
           onPlayerClick={isActive && fixture.result === "in_progress" ? onPlayerClick : () => {}}
+          playerHandicapMap={playerHandicapMap}
         />
 
         <div
@@ -97,81 +99,80 @@ export default function FixtureBoard({
 
         <TeamBlock
           playerIds={fixture.teamB.playerIds}
-          handicap={fixture.teamB.handicapApplied}
           playerMap={playerMap}
           selectedPlayerId={isActive && fixture.result === "in_progress" ? selectedPlayerId : null}
           onPlayerClick={isActive && fixture.result === "in_progress" ? onPlayerClick : () => {}}
+          playerHandicapMap={playerHandicapMap}
         />
       </div>
 
-      {/* Prediction odds — shown only while fixture is in progress */}
-      {fixture.result === "in_progress" && (
-        <div
+      {/* Prediction odds — always rendered to keep all cards the same height */}
+      <div
+        style={{
+          marginTop: "24px",
+          paddingTop: "16px",
+          borderTop: "1px solid var(--border-hairline)",
+          display: "flex",
+          alignItems: "center",
+          gap: "16px",
+          visibility: fixture.result === "in_progress" ? "visible" : "hidden",
+        }}
+      >
+        <p
           style={{
-            marginTop: "24px",
-            paddingTop: "16px",
-            borderTop: "1px solid var(--border-hairline)",
-            display: "flex",
-            alignItems: "center",
-            gap: "16px",
+            fontFamily: "var(--font-body)",
+            fontSize: "10px",
+            fontWeight: 500,
+            letterSpacing: "0.1em",
+            textTransform: "uppercase",
+            color: "var(--ink-tertiary)",
+            flexShrink: 0,
           }}
         >
+          Odds
+        </p>
+        {prediction ? (
+          <p
+            style={{
+              fontFamily: "var(--font-mono)",
+              fontSize: "12px",
+              color: "var(--ink-secondary)",
+              letterSpacing: "0.04em",
+            }}
+          >
+            <span
+              style={{
+                color: prediction.probA >= prediction.probB
+                  ? "var(--accent-gold)"
+                  : "var(--ink-secondary)",
+              }}
+            >
+              A {Math.round(prediction.probA * 100)}%
+            </span>
+            <span style={{ color: "var(--ink-tertiary)", margin: "0 8px" }}>·</span>
+            <span
+              style={{
+                color: prediction.probB > prediction.probA
+                  ? "var(--accent-gold)"
+                  : "var(--ink-secondary)",
+              }}
+            >
+              B {Math.round(prediction.probB * 100)}%
+            </span>
+          </p>
+        ) : (
           <p
             style={{
               fontFamily: "var(--font-body)",
-              fontSize: "10px",
-              fontWeight: 500,
-              letterSpacing: "0.1em",
-              textTransform: "uppercase",
+              fontSize: "11px",
               color: "var(--ink-tertiary)",
-              flexShrink: 0,
+              letterSpacing: "0.04em",
             }}
           >
-            Odds
+            No history
           </p>
-          {prediction ? (
-            <p
-              style={{
-                fontFamily: "var(--font-mono)",
-                fontSize: "12px",
-                color: "var(--ink-secondary)",
-                letterSpacing: "0.04em",
-              }}
-            >
-              <span
-                style={{
-                  color: prediction.probA >= prediction.probB
-                    ? "var(--accent-gold)"
-                    : "var(--ink-secondary)",
-                }}
-              >
-                A {Math.round(prediction.probA * 100)}%
-              </span>
-              <span style={{ color: "var(--ink-tertiary)", margin: "0 8px" }}>·</span>
-              <span
-                style={{
-                  color: prediction.probB > prediction.probA
-                    ? "var(--accent-gold)"
-                    : "var(--ink-secondary)",
-                }}
-              >
-                B {Math.round(prediction.probB * 100)}%
-              </span>
-            </p>
-          ) : (
-            <p
-              style={{
-                fontFamily: "var(--font-body)",
-                fontSize: "11px",
-                color: "var(--ink-tertiary)",
-                letterSpacing: "0.04em",
-              }}
-            >
-              No history
-            </p>
-          )}
-        </div>
-      )}
+        )}
+      </div>
 
       {/* Result section — pushed to bottom so buttons align across cards */}
       <div style={{ marginTop: "auto" }}>
@@ -194,49 +195,54 @@ export default function FixtureBoard({
 
 function TeamBlock({
   playerIds,
-  handicap,
   playerMap,
   selectedPlayerId,
   onPlayerClick,
+  playerHandicapMap,
 }: {
   playerIds: string[];
-  handicap: number;
   playerMap: Record<string, string>;
   selectedPlayerId: string | null;
   onPlayerClick: (id: string) => void;
+  playerHandicapMap: Record<string, number>;
 }) {
   return (
     <div className="mf-fixture-team">
       {playerIds.map((id) => {
         const isSelected = selectedPlayerId === id;
+        const handicap = playerHandicapMap[id];
         return (
-          <button
-            key={id}
-            onClick={() => onPlayerClick(id)}
-            aria-pressed={isSelected}
-            className="mf-fixture-player-btn"
-            style={{
-              border: `2px solid ${isSelected ? "var(--accent-gold)" : "transparent"}`,
-              color: isSelected ? "var(--accent-gold)" : "var(--ink-primary)",
-              transition: "color 150ms ease, border-color 150ms ease",
-            }}
-          >
-            {playerMap[id] ?? "—"}
-          </button>
+          <div key={id}>
+            <button
+              onClick={() => onPlayerClick(id)}
+              aria-pressed={isSelected}
+              className="mf-fixture-player-btn"
+              style={{
+                border: `2px solid ${isSelected ? "var(--accent-gold)" : "transparent"}`,
+                color: isSelected ? "var(--accent-gold)" : "var(--ink-primary)",
+                transition: "color 150ms ease, border-color 150ms ease",
+              }}
+            >
+              {playerMap[id] ?? "—"}
+            </button>
+            {handicap !== undefined && (
+              <p
+                style={{
+                  paddingLeft: "10px",
+                  fontFamily: "var(--font-mono)",
+                  fontSize: "11px",
+                  letterSpacing: "0.04em",
+                  color: "var(--ink-tertiary)",
+                  marginTop: "2px",
+                  marginBottom: "6px",
+                }}
+              >
+                ×{handicap}
+              </p>
+            )}
+          </div>
         );
       })}
-      <p
-        style={{
-          paddingLeft: "10px",
-          fontFamily: "var(--font-mono)",
-          fontSize: "11px",
-          letterSpacing: "0.04em",
-          color: "var(--ink-tertiary)",
-          marginTop: "8px",
-        }}
-      >
-        ×{handicap}
-      </p>
     </div>
   );
 }

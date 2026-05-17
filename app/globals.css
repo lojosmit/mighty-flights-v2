@@ -198,7 +198,11 @@
   * {
     @apply border-border outline-ring/50;
   }
-  html, body {
+  html {
+    overflow-x: hidden;
+    scrollbar-gutter: stable;
+  }
+  body {
     overflow-x: hidden;
   }
   body {

@@ -54,10 +54,38 @@ export default function FixtureResultButtons({
         display: "flex",
         flexDirection: "column",
         gap: "12px",
+        position: "relative",
       }}
     >
+      {/* Overlay — floats on top of buttons, adds no layout height */}
       {isPending && (
-        <p style={{ ...rowLabel, color: "var(--ink-tertiary)" }}>Saving…</p>
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            zIndex: 2,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            pointerEvents: "none",
+          }}
+        >
+          <p
+            style={{
+              fontFamily: "var(--font-body)",
+              fontSize: "11px",
+              fontWeight: 500,
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+              color: "var(--ink-tertiary)",
+              background: "var(--bg-elevated)",
+              padding: "10px 20px",
+              border: "1px solid var(--border-hairline)",
+            }}
+          >
+            Saving…
+          </p>
+        </div>
       )}
 
       {/* ── Win row ── */}

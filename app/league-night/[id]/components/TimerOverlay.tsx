@@ -28,6 +28,7 @@ interface Props {
   selectedPlayerId: string | null;
   pendingFixtureId: string | null;
   predictions: Record<string, { probA: number; probB: number } | null>;
+  playerHandicapMap: Record<string, number>;
   onPlayerClick: (id: string) => void;
   onRecordResult: (fixtureId: string, result: FixtureResult) => void;
   onNextRound: () => void;
@@ -47,6 +48,7 @@ export default function TimerOverlay({
   selectedPlayerId,
   pendingFixtureId,
   predictions,
+  playerHandicapMap,
   onPlayerClick,
   onRecordResult,
   onNextRound,
@@ -270,6 +272,7 @@ export default function TimerOverlay({
               onRecordResult={isActive && canEdit ? (r) => onRecordResult(fixture.id, r) : undefined}
               isPendingResult={pendingFixtureId === fixture.id}
               prediction={predictions[fixture.id]}
+              playerHandicapMap={playerHandicapMap}
             />
           ))}
         </div>
