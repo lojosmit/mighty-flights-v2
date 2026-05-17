@@ -67,11 +67,20 @@ export default function TimerOverlay({
     audioRef.current.preload = "auto";
   }, []);
 
-  // Play sound when timer naturally counts down to zero
+  // Play sound twice when timer naturally counts down to zero
   useEffect(() => {
     if (remaining === 0 && reachedZeroRef.current) {
       reachedZeroRef.current = false;
-      audioRef.current?.play().catch(() => {});
+      const audio = audioRef.current;
+      if (!audio) return;
+      const playSecond = () => {
+        audio.removeEventListener("ended", playSecond);
+        audio.currentTime = 0;
+        audio.play().catch(() => {});
+      };
+      audio.addEventListener("ended", playSecond);
+      audio.currentTime = 0;
+      audio.play().catch(() => {});
     }
   }, [remaining]);
 
