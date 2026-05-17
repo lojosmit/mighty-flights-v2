@@ -7,6 +7,8 @@ import CreateClubForm from "./CreateClubForm";
 import ResetPasswordForm from "./ResetPasswordForm";
 import QuickInvite from "./QuickInvite";
 import RejectRequestButton from "./RejectRequestButton";
+import HandicapConfigPanel from "./HandicapConfigPanel";
+import { getHandicapTable } from "@/lib/handicap";
 import Link from "next/link";
 
 export default async function AdminPage() {
@@ -18,9 +20,10 @@ export default async function AdminPage() {
   }
   if (session.user.role !== "super_admin") redirect("/");
 
-  const [clubs, pendingRequests] = await Promise.all([
+  const [clubs, pendingRequests, handicapTable] = await Promise.all([
     getAllClubs(),
     getPendingRegistrationRequests(),
+    getHandicapTable(),
   ]);
 
   const sectionLabel: React.CSSProperties = {
@@ -152,6 +155,13 @@ export default async function AdminPage() {
         <p style={sectionLabel}>New Club</p>
         <div style={{ height: "1px", backgroundColor: "var(--accent-gold)", marginBottom: "24px" }} />
         <CreateClubForm />
+      </section>
+
+      {/* Handicap settings */}
+      <section>
+        <p style={sectionLabel}>Handicap Settings</p>
+        <div style={{ height: "1px", backgroundColor: "var(--accent-gold)", marginBottom: "32px" }} />
+        <HandicapConfigPanel current={handicapTable} />
       </section>
     </main>
   );

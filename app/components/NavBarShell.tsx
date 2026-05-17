@@ -23,6 +23,7 @@ export default function NavBarShell({ navLinks, isAdmin, isClubManager, clubMana
   const [menuOpen, setMenuOpen] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
   const pathname = usePathname();
+  const hideBrand = pathname === "/" || pathname === "/login";
 
   useEffect(() => { setMenuOpen(false); setLoginOpen(false); }, [pathname]);
 
@@ -50,8 +51,8 @@ export default function NavBarShell({ navLinks, isAdmin, isClubManager, clubMana
   return (
     <>
       <header className="mf-navbar">
-        {/* Brand */}
-        <Link href="/" className="mf-navbar-brand">
+        {/* Brand — hidden on home and login where a standalone logo is shown */}
+        <Link href="/" className="mf-navbar-brand" style={hideBrand ? { visibility: "hidden", pointerEvents: "none" } : undefined}>
           <Image
             src="/logo.png"
             alt=""

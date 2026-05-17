@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense } from "react";
+import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import LoginForm from "./LoginForm";
 
@@ -20,6 +21,14 @@ function LoginPageInner() {
         background: "var(--bg-secondary)",
       }}
     >
+      <Image
+        src="/logo.png"
+        alt="Mighty Flights"
+        width={220}
+        height={220}
+        priority
+        style={{ display: "block", width: "min(220px, 50vw)", height: "auto", marginBottom: "40px" }}
+      />
       <LoginForm callbackUrl={callbackUrl} />
     </main>
   );
