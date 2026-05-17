@@ -215,7 +215,7 @@
 .mf-page {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 64px clamp(24px, 5vw, 80px);
+  padding: 48px clamp(20px, 2.5vw, 40px);
 }
 
 /* Strip trailing margin so the last section never creates a blank gap */
@@ -462,7 +462,7 @@
 
 /* ─── Tablet breakpoint (≤900px) ─────────────────────────────────────────── */
 @media (max-width: 900px) {
-  .mf-page   { padding: 40px clamp(20px, 4vw, 48px); }
+  .mf-page   { padding: 36px clamp(16px, 3vw, 32px); }
   .mf-grid-2 { gap: clamp(24px, 3vw, 48px); }
 }
 
