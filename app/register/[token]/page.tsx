@@ -87,7 +87,7 @@ export default async function RegisterPage({ params }: Props) {
           <h1
             style={{
               fontFamily: "var(--font-cormorant)",
-              fontSize: "clamp(32px, 5vw, 48px)",
+              fontSize: "clamp(48px, 6vw, 72px)",
               fontWeight: 400,
               color: "var(--ink-primary)",
               lineHeight: 1,

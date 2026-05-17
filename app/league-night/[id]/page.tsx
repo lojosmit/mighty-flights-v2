@@ -82,7 +82,7 @@ export default async function LeagueNightPage({
           <h1
             style={{
               fontFamily: "var(--font-cormorant)",
-              fontSize: "clamp(36px, 5vw, 56px)",
+              fontSize: "clamp(48px, 6vw, 72px)",
               fontWeight: 400,
               lineHeight: 1.05,
               color: "var(--ink-primary)",

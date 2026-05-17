@@ -27,7 +27,7 @@ export default async function AccountSetupPage() {
           </p>
           <h1 style={{
             fontFamily: "var(--font-cormorant)",
-            fontSize: "clamp(36px, 5vw, 52px)",
+            fontSize: "clamp(48px, 6vw, 72px)",
             fontWeight: 400,
             color: "var(--ink-primary)",
             lineHeight: 1.1,
