@@ -52,7 +52,7 @@ export default async function ProfilePage() {
         { label: "Games Played", value: String(player.gamesPlayed) },
         { label: "Wins",         value: String(player.wins) },
         { label: "Losses",       value: String(player.losses) },
-        { label: "Win Ratio",    value: player.winRatio.toFixed(3) },
+        { label: "Win %",         value: (player.winRatio * 100).toFixed(1) + "%" },
         { label: "Doves",        value: String(player.doves) },
         { label: "Dove Wins",    value: String(player.doveWins) },
       ]
@@ -116,25 +116,90 @@ export default async function ProfilePage() {
         <div style={{ height: "1px", backgroundColor: "var(--border-hairline)" }} />
       </header>
 
-      {/* ── Season stats ─────────────────────────────────────────────────── */}
-      {player && (
-        <section style={{ marginBottom: "72px" }}>
-          <p style={sectionLabelStyle}>Season Stats</p>
-          <div style={{ height: "1px", backgroundColor: "var(--accent-gold)", marginBottom: "32px" }} />
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))", gap: "32px" }}>
-            {statBlocks.map(({ label, value }) => (
-              <div key={label}>
-                <p style={{ fontFamily: "var(--font-mono)", fontSize: "clamp(28px, 4vw, 44px)", fontWeight: 400, color: "var(--ink-primary)", lineHeight: 1, marginBottom: "8px" }}>
-                  {value}
-                </p>
-                <p style={{ fontFamily: "var(--font-body)", fontSize: "10px", letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--ink-tertiary)" }}>
-                  {label}
-                </p>
+      {/* ── Season stats + Achievements side by side ─────────────────────── */}
+      <section style={{ marginBottom: "72px" }}>
+        {player ? (
+          <div className="mf-grid-2" style={{ alignItems: "stretch" }}>
+
+            {/* Left: Season Stats */}
+            <div>
+              <p style={sectionLabelStyle}>Season Stats</p>
+              <div style={{ height: "1px", backgroundColor: "var(--accent-gold)", marginBottom: "32px" }} />
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))", gap: "32px" }}>
+                {statBlocks.map(({ label, value }) => (
+                  <div key={label}>
+                    <p style={{ fontFamily: "var(--font-mono)", fontSize: "clamp(28px, 4vw, 44px)", fontWeight: 400, color: "var(--ink-primary)", lineHeight: 1, marginBottom: "8px" }}>
+                      {value}
+                    </p>
+                    <p style={{ fontFamily: "var(--font-body)", fontSize: "10px", letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--ink-tertiary)" }}>
+                      {label}
+                    </p>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
+
+            {/* Right: Achievements — cards flex to match column height */}
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <p style={sectionLabelStyle}>Achievements</p>
+              <div style={{ height: "1px", backgroundColor: "var(--accent-gold)", marginBottom: "16px" }} />
+              <div style={{ display: "flex", flexDirection: "column", gap: "12px", flex: 1 }}>
+                {[
+                  { label: "3 in a Box", desc: "Three consecutive wins in a night" },
+                  { label: "Shanghai",   desc: "Win on singles, doubles & triples" },
+                  { label: "Max Score",  desc: "Highest single-game score on record" },
+                ].map(({ label, desc }) => (
+                  <div
+                    key={label}
+                    style={{
+                      flex: 1,
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "center",
+                      padding: "16px 20px",
+                      border: "1px solid var(--border-hairline)",
+                      background: "var(--bg-elevated)",
+                      position: "relative",
+                      opacity: 0.55,
+                    }}
+                  >
+                    <span style={{ position: "absolute", top: "10px", right: "10px", fontFamily: "var(--font-body)", fontSize: "8px", fontWeight: 500, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--accent-gold)", border: "1px solid var(--accent-gold)", padding: "2px 5px" }}>
+                      Coming Soon
+                    </span>
+                    <p style={{ fontFamily: "var(--font-cormorant)", fontSize: "20px", color: "var(--ink-primary)", marginBottom: "4px" }}>{label}</p>
+                    <p style={{ fontFamily: "var(--font-body)", fontSize: "12px", color: "var(--ink-tertiary)", lineHeight: 1.5 }}>{desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
           </div>
-        </section>
-      )}
+        ) : (
+          /* No player linked — achievements full-width */
+          <>
+            <p style={sectionLabelStyle}>Achievements</p>
+            <div style={{ height: "1px", backgroundColor: "var(--accent-gold)", marginBottom: "28px" }} />
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: "16px" }}>
+              {[
+                { label: "3 in a Box", desc: "Three consecutive wins in a night" },
+                { label: "Shanghai",   desc: "Win on singles, doubles & triples" },
+                { label: "Max Score",  desc: "Highest single-game score on record" },
+              ].map(({ label, desc }) => (
+                <div
+                  key={label}
+                  style={{ padding: "20px", border: "1px solid var(--border-hairline)", background: "var(--bg-elevated)", position: "relative", opacity: 0.55 }}
+                >
+                  <span style={{ position: "absolute", top: "10px", right: "10px", fontFamily: "var(--font-body)", fontSize: "8px", fontWeight: 500, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--accent-gold)", border: "1px solid var(--accent-gold)", padding: "2px 5px" }}>
+                    Coming Soon
+                  </span>
+                  <p style={{ fontFamily: "var(--font-cormorant)", fontSize: "20px", color: "var(--ink-primary)", marginBottom: "4px" }}>{label}</p>
+                  <p style={{ fontFamily: "var(--font-body)", fontSize: "12px", color: "var(--ink-tertiary)", lineHeight: 1.5 }}>{desc}</p>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+      </section>
 
       {/* ── Career history link ───────────────────────────────────────────── */}
       {player && userRow?.playerId && (
@@ -162,30 +227,6 @@ export default async function ProfilePage() {
           </Link>
         </section>
       )}
-
-      {/* ── Achievements ─────────────────────────────────────────────────── */}
-      <section style={{ marginBottom: "72px" }}>
-        <p style={sectionLabelStyle}>Achievements</p>
-        <div style={{ height: "1px", backgroundColor: "var(--accent-gold)", marginBottom: "28px" }} />
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: "16px" }}>
-          {[
-            { label: "3 in a Box", desc: "Three consecutive wins in a night" },
-            { label: "Shanghai",   desc: "Win on singles, doubles & triples" },
-            { label: "Max Score",  desc: "Highest single-game score on record" },
-          ].map(({ label, desc }) => (
-            <div
-              key={label}
-              style={{ padding: "20px", border: "1px solid var(--border-hairline)", background: "var(--bg-elevated)", position: "relative", opacity: 0.55 }}
-            >
-              <span style={{ position: "absolute", top: "10px", right: "10px", fontFamily: "var(--font-body)", fontSize: "8px", fontWeight: 500, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--accent-gold)", border: "1px solid var(--accent-gold)", padding: "2px 5px" }}>
-                Coming Soon
-              </span>
-              <p style={{ fontFamily: "var(--font-cormorant)", fontSize: "20px", color: "var(--ink-primary)", marginBottom: "4px" }}>{label}</p>
-              <p style={{ fontFamily: "var(--font-body)", fontSize: "12px", color: "var(--ink-tertiary)", lineHeight: 1.5 }}>{desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
 
       {/* ── Account / change password ─────────────────────────────────────── */}
       <section>

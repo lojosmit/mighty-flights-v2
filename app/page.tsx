@@ -161,7 +161,7 @@ export default async function HomePage() {
                   <th style={{ ...thStyle, textAlign: "left" }}>Player</th>
                   <th style={thStyle}>W</th>
                   <th style={thStyle}>L</th>
-                  <th style={thStyle}>Ratio</th>
+                  <th style={thStyle}>Win %</th>
                 </tr>
               </thead>
               <tbody>
@@ -230,7 +230,7 @@ export default async function HomePage() {
                           color: "var(--ink-secondary)",
                         }}
                       >
-                        {player.winRatio.toFixed(3)}
+                        {(player.winRatio * 100).toFixed(1)}%
                       </td>
                     </tr>
                   );

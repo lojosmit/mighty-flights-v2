@@ -34,7 +34,7 @@ export default async function PlayerProfilePage({ params, searchParams }: Props)
     { label: "Games Played", value: String(player.gamesPlayed) },
     { label: "Wins",         value: String(player.wins) },
     { label: "Losses",       value: String(player.losses) },
-    { label: "Win Ratio",    value: player.winRatio.toFixed(3) },
+    { label: "Win %",         value: (player.winRatio * 100).toFixed(1) + "%" },
     { label: "Doves",        value: String(player.doves) },
     { label: "Dove Wins",    value: String(player.doveWins) },
   ];
@@ -246,7 +246,7 @@ export default async function PlayerProfilePage({ params, searchParams }: Props)
                 <th style={{ ...thStyle, textAlign: "left" }}>Partner</th>
                 <th style={{ ...thStyle, textAlign: "right" }}>GP</th>
                 <th style={{ ...thStyle, textAlign: "right" }}>W</th>
-                <th style={{ ...thStyle, textAlign: "right" }}>Ratio</th>
+                <th style={{ ...thStyle, textAlign: "right" }}>Win %</th>
               </tr>
             </thead>
             <tbody>
@@ -279,7 +279,7 @@ export default async function PlayerProfilePage({ params, searchParams }: Props)
                     {row.wins}
                   </td>
                   <td style={{ textAlign: "right", fontFamily: "var(--font-mono)", fontSize: "13px", color: "var(--ink-secondary)" }}>
-                    {row.winRatio.toFixed(3)}
+                    {(row.winRatio * 100).toFixed(1)}%
                   </td>
                 </tr>
               ))}
@@ -303,7 +303,7 @@ export default async function PlayerProfilePage({ params, searchParams }: Props)
                 <th style={{ ...thStyle, textAlign: "left" }}>Opponents</th>
                 <th style={{ ...thStyle, textAlign: "right" }}>GP</th>
                 <th style={{ ...thStyle, textAlign: "right" }}>W</th>
-                <th style={{ ...thStyle, textAlign: "right" }}>Ratio</th>
+                <th style={{ ...thStyle, textAlign: "right" }}>Win %</th>
               </tr>
             </thead>
             <tbody>
@@ -332,7 +332,7 @@ export default async function PlayerProfilePage({ params, searchParams }: Props)
                     {row.playerWins}
                   </td>
                   <td style={{ textAlign: "right", fontFamily: "var(--font-mono)", fontSize: "13px", color: "var(--ink-secondary)" }}>
-                    {row.winRatio.toFixed(3)}
+                    {(row.winRatio * 100).toFixed(1)}%
                   </td>
                 </tr>
               ))}
