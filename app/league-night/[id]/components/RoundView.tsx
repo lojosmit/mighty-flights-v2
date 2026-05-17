@@ -159,26 +159,34 @@ export default function RoundView({
                 Bench
               </p>
               <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-                {round.bench.map((id) => (
-                  <button
-                    key={id}
-                    onClick={() => handlePlayerClick(id)}
-                    style={{
-                      fontFamily: "var(--font-cormorant)",
-                      fontSize: "22px",
-                      fontWeight: 400,
-                      color: selectedId === id ? "var(--accent-gold)" : "var(--ink-secondary)",
-                      background: "none",
-                      border: "none",
-                      cursor: canEdit && isActive && !allDone ? "pointer" : "default",
-                      padding: 0,
-                      lineHeight: 1.2,
-                      transition: "color 150ms ease",
-                    }}
-                  >
-                    {playerMap[id] ?? "—"}
-                  </button>
-                ))}
+                {round.bench.map((id) => {
+                  const isSelected = selectedId === id;
+                  return (
+                    <button
+                      key={id}
+                      onClick={() => handlePlayerClick(id)}
+                      aria-pressed={isSelected}
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "flex-start",
+                        background: "var(--bg-elevated)",
+                        border: `1px solid ${isSelected ? "var(--accent-gold)" : "var(--border-hairline)"}`,
+                        padding: "10px 16px",
+                        cursor: canEdit && isActive && !allDone ? "pointer" : "default",
+                        transition: "border-color 150ms ease",
+                        outline: "none",
+                      }}
+                    >
+                      <span style={{ fontFamily: "var(--font-cormorant)", fontSize: "20px", fontWeight: 400, lineHeight: 1.2, color: isSelected ? "var(--accent-gold)" : "var(--ink-primary)", transition: "color 150ms ease" }}>
+                        {playerMap[id] ?? "—"}
+                      </span>
+                      <span style={{ fontFamily: "var(--font-body)", fontSize: "10px", fontWeight: 500, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--ink-tertiary)", marginTop: "2px" }}>
+                        plays next round
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
           )}
