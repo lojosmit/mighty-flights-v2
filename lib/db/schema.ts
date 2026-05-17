@@ -41,6 +41,8 @@ export type User = typeof users.$inferSelect;
 
 // ── Players ───────────────────────────────────────────────────────────────────
 
+export type MembershipType = "annual" | "per_game";
+
 export const players = pgTable("players", {
   id: uuid("id").primaryKey().defaultRandom(),
   name: text("name").notNull(),
@@ -54,6 +56,7 @@ export const players = pgTable("players", {
   doveWins: integer("dove_wins").notNull().default(0),
   forfeits: integer("forfeits").notNull().default(0),
   totalPoints: numeric("total_points", { precision: 8, scale: 2 }).notNull().default("0"),
+  membershipType: text("membership_type").$type<MembershipType>().notNull().default("per_game"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -229,3 +232,19 @@ export const registrationRequests = pgTable("registration_requests", {
 });
 
 export type RegistrationRequest = typeof registrationRequests.$inferSelect;
+
+// ── Payments ──────────────────────────────────────────────────────────────────
+
+export const payments = pgTable("payments", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  playerId: uuid("player_id").notNull().references(() => players.id),
+  amountRands: integer("amount_rands").notNull(),
+  paidDate: timestamp("paid_date").notNull().defaultNow(),
+  season: text("season").notNull(), // e.g. "2026"
+  notes: text("notes"),
+  recordedByUserId: uuid("recorded_by_user_id").references(() => users.id),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export type Payment = typeof payments.$inferSelect;
+export type NewPayment = typeof payments.$inferInsert;

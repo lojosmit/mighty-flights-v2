@@ -95,9 +95,31 @@ export default async function LeagueNightPage({
           >
             {nightDateLabel}
           </h1>
-          <p style={{ fontFamily: "var(--font-body)", fontSize: "15px", color: "var(--ink-secondary)", marginBottom: "8px" }}>
+          <p style={{ fontFamily: "var(--font-body)", fontSize: "15px", color: "var(--ink-secondary)", marginBottom: "12px" }}>
             {nightTimeLabel} · {night.attendingPlayerIds.length} attending
           </p>
+          {night.attendingPlayerIds.length > 0 && (
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "8px" }}>
+              {night.attendingPlayerIds.map((pid) => {
+                const name = allPlayers.find((p) => p.id === pid)?.name ?? "—";
+                return (
+                  <span
+                    key={pid}
+                    style={{
+                      fontFamily: "var(--font-body)",
+                      fontSize: "12px",
+                      color: "var(--ink-secondary)",
+                      background: "var(--bg-elevated)",
+                      border: "1px solid var(--border-hairline)",
+                      padding: "3px 10px",
+                    }}
+                  >
+                    {name}
+                  </span>
+                );
+              })}
+            </div>
+          )}
           {night.hostUserId && (
             <p style={{ fontFamily: "var(--font-body)", fontSize: "12px", color: "var(--ink-tertiary)" }}>
               Host assigned

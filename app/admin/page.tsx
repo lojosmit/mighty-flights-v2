@@ -46,6 +46,24 @@ export default async function AdminPage() {
           Administration
         </h1>
         <div style={{ height: "1px", backgroundColor: "var(--border-hairline)" }} />
+        <div style={{ marginTop: "20px" }}>
+          <Link
+            href="/admin/payments"
+            style={{
+              fontFamily: "var(--font-body)",
+              fontSize: "11px",
+              fontWeight: 500,
+              letterSpacing: "0.1em",
+              textTransform: "uppercase",
+              color: "var(--accent-gold)",
+              textDecoration: "none",
+              border: "1px solid var(--accent-gold)",
+              padding: "8px 16px",
+            }}
+          >
+            Finances →
+          </Link>
+        </div>
       </header>
 
       {/* My Account */}
