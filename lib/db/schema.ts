@@ -33,6 +33,7 @@ export const users = pgTable("users", {
   role: text("role").$type<UserRole>().notNull().default("player"),
   clubId: uuid("club_id").references(() => clubs.id),
   playerId: uuid("player_id"), // linked to players.id after player table exists
+  mustResetPassword: boolean("must_reset_password").notNull().default(false),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

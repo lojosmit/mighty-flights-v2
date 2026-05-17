@@ -14,11 +14,13 @@ declare module "next-auth" {
       name: string;
       role: UserRole;
       clubId: string | null;
+      mustResetPassword: boolean;
     };
   }
   interface User {
     role: UserRole;
     clubId: string | null;
+    mustResetPassword: boolean;
   }
 }
 
@@ -51,6 +53,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           name: user.name,
           role: user.role,
           clubId: user.clubId ?? null,
+          mustResetPassword: user.mustResetPassword,
         };
       },
     }),
@@ -60,6 +63,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (user) {
         token.role = user.role;
         token.clubId = user.clubId;
+        token.mustResetPassword = user.mustResetPassword;
       }
       return token;
     },
@@ -67,6 +71,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       session.user.id = token.sub!;
       session.user.role = token.role as UserRole;
       session.user.clubId = (token.clubId as string | null) ?? null;
+      session.user.mustResetPassword = (token.mustResetPassword as boolean) ?? false;
       return session;
     },
   },

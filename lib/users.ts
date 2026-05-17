@@ -32,6 +32,7 @@ export async function createUser({
       role,
       clubId: clubId ?? undefined,
       playerId: playerId ?? undefined,
+      mustResetPassword: true,
     })
     .returning();
   return user;
@@ -71,6 +72,34 @@ export async function getUsersByClub(clubId: string) {
 export async function updateUserRole(id: string, role: UserRole): Promise<void> {
   await db.update(users).set({ role }).where(eq(users.id, id));
   revalidatePath("/admin");
+}
+
+export async function completeAccountSetup(
+  newEmail: string,
+  newPassword: string,
+): Promise<{ error?: string }> {
+  const session = await auth();
+  if (!session) return { error: "Not authenticated" };
+
+  const userId = session.user.id;
+  const trimmedEmail = newEmail.trim().toLowerCase();
+
+  // Check email not taken by another user
+  const [existing] = await db
+    .select({ id: users.id })
+    .from(users)
+    .where(eq(users.email, trimmedEmail));
+  if (existing && existing.id !== userId) {
+    return { error: "That email address is already in use." };
+  }
+
+  const passwordHash = await bcrypt.hash(newPassword, 12);
+  await db
+    .update(users)
+    .set({ email: trimmedEmail, passwordHash, mustResetPassword: false })
+    .where(eq(users.id, userId));
+
+  return {};
 }
 
 export async function deleteUser(id: string): Promise<void> {
