@@ -96,7 +96,6 @@ export default async function ProfilePage() {
           <div>
             <p style={{ fontFamily: "var(--font-body)", fontSize: "11px", fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--accent-gold)", marginBottom: "6px" }}>
               {ROLE_LABEL[session.user.role] ?? session.user.role}
-              {player && <span style={{ color: "var(--ink-tertiary)", marginLeft: "10px" }}>· Rank {player.seasonRank}</span>}
             </p>
             <h1
               style={{

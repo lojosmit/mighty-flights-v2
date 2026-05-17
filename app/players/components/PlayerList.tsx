@@ -54,7 +54,6 @@ export function PlayerList({ players, canEdit = false }: Props) {
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
               <tr style={{ borderBottom: "1px solid var(--border-hairline)" }}>
-                <th style={{ ...thStyle, textAlign: "left", width: "48px" }}>Rank</th>
                 <th style={{ ...thStyle, textAlign: "left" }}>Name</th>
                 <th style={{ ...thStyle, textAlign: "right" }}>GP</th>
                 <th style={{ ...thStyle, textAlign: "right" }}>W</th>
@@ -73,16 +72,6 @@ export function PlayerList({ players, canEdit = false }: Props) {
                     borderBottom: "1px solid var(--border-hairline)",
                   }}
                 >
-                  <td
-                    style={{
-                      fontFamily: "var(--font-mono)",
-                      fontSize: "12px",
-                      color: "var(--accent-gold)",
-                      width: "48px",
-                    }}
-                  >
-                    {player.seasonRank}
-                  </td>
                   <td>
                     <Link
                       href={`/players/${player.id}`}

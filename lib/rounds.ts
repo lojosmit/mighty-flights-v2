@@ -4,7 +4,7 @@ import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { db } from "./db/index";
 import {
-  rounds, fixtures, leagueNights,
+  rounds, fixtures, leagueNights, players,
   type Round, type Fixture, type OverrideLog, type FixtureResult,
 } from "./db/schema";
 import { allocateFixtures, swapPlayers, type AllocationResult } from "./fixture-utils";
@@ -235,12 +235,50 @@ export async function generateNextRound(
   return { ...newRound, fixtures: fx };
 }
 
+async function recomputeSeasonRanks(clubId: string): Promise<void> {
+  const clubPlayers = await db
+    .select()
+    .from(players)
+    .where(eq(players.clubId, clubId));
+
+  if (clubPlayers.length === 0) return;
+
+  const sorted = [...clubPlayers].sort((a, b) => {
+    const aGP = a.wins + a.losses;
+    const bGP = b.wins + b.losses;
+    if (b.wins !== a.wins) return b.wins - a.wins;
+    const aTP = parseFloat(a.totalPoints);
+    const bTP = parseFloat(b.totalPoints);
+    if (bTP !== aTP) return bTP - aTP;
+    const aWR = aGP > 0 ? a.wins / aGP : 0;
+    const bWR = bGP > 0 ? b.wins / bGP : 0;
+    if (bWR !== aWR) return bWR - aWR;
+    if (b.doveWins !== a.doveWins) return b.doveWins - a.doveWins;
+    return bGP - aGP;
+  });
+
+  await Promise.all(
+    sorted.map((p, i) =>
+      db.update(players).set({ seasonRank: i + 1 }).where(eq(players.id, p.id))
+    )
+  );
+}
+
 export async function endLeagueNight(leagueNightId: string): Promise<void> {
   await requireGameRole(leagueNightId);
+
+  const [night] = await db
+    .select({ clubId: leagueNights.clubId })
+    .from(leagueNights)
+    .where(eq(leagueNights.id, leagueNightId));
+
   await db
     .update(leagueNights)
     .set({ status: "completed" })
     .where(eq(leagueNights.id, leagueNightId));
+
+  if (night?.clubId) await recomputeSeasonRanks(night.clubId);
+
   revalidatePath(`/league-night/${leagueNightId}`);
 }
 

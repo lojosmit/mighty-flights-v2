@@ -72,18 +72,6 @@ export default async function PlayerProfilePage({ params, searchParams }: Props)
 
       {/* Hero block */}
       <header style={{ marginBottom: "48px" }}>
-        <p
-          style={{
-            fontFamily: "var(--font-body)",
-            fontSize: "11px",
-            letterSpacing: "0.12em",
-            textTransform: "uppercase",
-            color: "var(--accent-gold)",
-            marginBottom: "8px",
-          }}
-        >
-          Rank {player.seasonRank}
-        </p>
         <h1
           style={{
             fontFamily: "var(--font-cormorant)",

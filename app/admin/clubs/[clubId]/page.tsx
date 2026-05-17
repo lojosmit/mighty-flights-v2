@@ -8,7 +8,7 @@ import { getUsersByClub } from "@/lib/users";
 import { getPlayers } from "@/lib/players";
 import { getPendingRegistrationRequests } from "@/lib/registration-requests";
 import InviteForm from "@/app/admin/InviteForm";
-import SearchableMembers from "./SearchableMembers";
+import CombinedRoster, { type RosterEntry } from "./CombinedRoster";
 
 interface Props {
   params: Promise<{ clubId: string }>;
@@ -31,6 +31,19 @@ export default async function ClubPage({ params }: Props) {
   ]);
 
   if (!club) notFound();
+
+  // Build combined roster: players first (with their linked user), then any
+  // users who aren't linked to a player in this club (e.g. standalone managers).
+  const userById = new Map(members.map((m) => [m.id, m]));
+  const linkedUserIds = new Set(players.filter((p) => p.userId).map((p) => p.userId!));
+  const playerEntries: RosterEntry[] = players.map((p) => {
+    const user = p.userId ? (userById.get(p.userId) ?? null) : null;
+    return { name: p.name, email: user?.email ?? p.email, player: p, user };
+  });
+  const standaloneEntries: RosterEntry[] = members
+    .filter((m) => !linkedUserIds.has(m.id))
+    .map((u) => ({ name: u.name, email: u.email, player: null, user: u }));
+  const rosterEntries = [...playerEntries, ...standaloneEntries];
 
   const sectionLabel: React.CSSProperties = {
     fontFamily: "var(--font-body)",
@@ -108,95 +121,50 @@ export default async function ClubPage({ params }: Props) {
         </section>
       )}
 
-      {/* Player Roster */}
-      {players.length > 0 && (
-        <section style={{ marginBottom: "64px" }}>
-          <p style={sectionLabel}>Player Roster ({players.length})</p>
-          <div style={{ height: "1px", backgroundColor: "var(--accent-gold)", marginBottom: "24px" }} />
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            {players.map((p) => (
-              <div
-                key={p.id}
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  padding: "12px 0",
-                  borderBottom: "1px solid var(--border-hairline)",
-                }}
-              >
-                <div>
-                  <span style={{ fontFamily: "var(--font-cormorant)", fontSize: "20px", color: "var(--ink-primary)" }}>
-                    {p.name}
+      {/* Combined player roster + account controls */}
+      <section style={{ marginBottom: "64px" }}>
+        <p style={sectionLabel}>Players &amp; Accounts ({rosterEntries.length})</p>
+        <div style={{ height: "1px", backgroundColor: "var(--accent-gold)", marginBottom: "24px" }} />
+        <CombinedRoster entries={rosterEntries} viewerIsSuperAdmin={isSuperAdmin} />
+      </section>
+
+      {/* Invite links */}
+      <section>
+        <p style={sectionLabel}>Generate Invite Link</p>
+        <div style={{ height: "1px", backgroundColor: "var(--accent-gold)", marginBottom: "24px" }} />
+        <InviteForm clubId={club.id} />
+
+        {invites.length > 0 && (
+          <div style={{ marginTop: "32px" }}>
+            <p style={{ ...sectionLabel, marginBottom: "12px" }}>Recent Invites</p>
+            {invites.slice(-8).reverse().map((inv) => {
+              const expired = new Date(inv.expiresAt) < new Date();
+              const used = !!inv.usedAt;
+              return (
+                <div
+                  key={inv.id}
+                  style={{
+                    padding: "10px 0",
+                    borderBottom: "1px solid var(--border-hairline)",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    gap: "12px",
+                    maxWidth: "480px",
+                  }}
+                >
+                  <span style={{ fontFamily: "var(--font-mono)", fontSize: "11px", color: "var(--ink-tertiary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    {inv.role} · {inv.token.slice(0, 8)}…
                   </span>
-                  {p.email && (
-                    <span style={{ fontFamily: "var(--font-body)", fontSize: "11px", color: "var(--ink-tertiary)", marginLeft: "12px" }}>
-                      {p.email}
-                    </span>
-                  )}
-                </div>
-                <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-                  <span style={{ fontFamily: "var(--font-mono)", fontSize: "11px", color: "var(--ink-tertiary)" }}>
-                    Rank {p.seasonRank}
+                  <span style={{ fontFamily: "var(--font-body)", fontSize: "10px", fontWeight: 500, letterSpacing: "0.08em", textTransform: "uppercase", color: used ? "var(--ink-tertiary)" : expired ? "var(--loss)" : "var(--accent-gold)", flexShrink: 0 }}>
+                    {used ? "Used" : expired ? "Expired" : "Active"}
                   </span>
-                  {!p.userId && (
-                    <span style={{ fontFamily: "var(--font-body)", fontSize: "10px", fontWeight: 500, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--accent-gold)" }}>
-                      No account
-                    </span>
-                  )}
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
-        </section>
-      )}
-
-      {/* Two-column layout: Members + Invites */}
-      <div className="mf-grid-2">
-        {/* Members */}
-        <section>
-          <p style={sectionLabel}>Members ({members.length})</p>
-          <div style={{ height: "1px", backgroundColor: "var(--accent-gold)", marginBottom: "24px" }} />
-          <SearchableMembers members={members} viewerIsSuperAdmin={isSuperAdmin} />
-        </section>
-
-        {/* Invite links */}
-        <section>
-          <p style={sectionLabel}>Generate Invite Link</p>
-          <div style={{ height: "1px", backgroundColor: "var(--accent-gold)", marginBottom: "24px" }} />
-          <InviteForm clubId={club.id} />
-
-          {invites.length > 0 && (
-            <div style={{ marginTop: "32px" }}>
-              <p style={{ ...sectionLabel, marginBottom: "12px" }}>Recent Invites</p>
-              {invites.slice(-8).reverse().map((inv) => {
-                const expired = new Date(inv.expiresAt) < new Date();
-                const used = !!inv.usedAt;
-                return (
-                  <div
-                    key={inv.id}
-                    style={{
-                      padding: "10px 0",
-                      borderBottom: "1px solid var(--border-hairline)",
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      gap: "12px",
-                    }}
-                  >
-                    <span style={{ fontFamily: "var(--font-mono)", fontSize: "11px", color: "var(--ink-tertiary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                      {inv.role} · {inv.token.slice(0, 8)}…
-                    </span>
-                    <span style={{ fontFamily: "var(--font-body)", fontSize: "10px", fontWeight: 500, letterSpacing: "0.08em", textTransform: "uppercase", color: used ? "var(--ink-tertiary)" : expired ? "var(--loss)" : "var(--accent-gold)", flexShrink: 0 }}>
-                      {used ? "Used" : expired ? "Expired" : "Active"}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </section>
-      </div>
+        )}
+      </section>
     </main>
   );
 }
