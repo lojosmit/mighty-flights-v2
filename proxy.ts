@@ -28,6 +28,11 @@ export default auth((req) => {
     return NextResponse.redirect(loginUrl);
   }
 
+  // First-login account setup required
+  if (req.auth.user.mustResetPassword && pathname !== "/account-setup") {
+    return NextResponse.redirect(new URL("/account-setup", req.nextUrl));
+  }
+
   const role = req.auth.user.role;
 
   // /admin routes
