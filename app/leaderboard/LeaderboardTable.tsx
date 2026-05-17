@@ -133,8 +133,7 @@ export default function LeaderboardTable({ entries }: Props) {
               {COLS.map(({ key, mobileHide }) => {
                 const val = entry[key as keyof LeaderboardEntry] as number;
                 let display: string;
-                if (key === "doves" || key === "doveWins") display = "—";
-                else if (key === "winRatio") display = (val * 100).toFixed(1) + "%";
+                if (key === "winRatio") display = (val * 100).toFixed(1) + "%";
                 else if (key === "totalPoints") display = val.toFixed(2);
                 else display = String(val);
                 return (

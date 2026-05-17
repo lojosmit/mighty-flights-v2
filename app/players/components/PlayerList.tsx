@@ -126,7 +126,7 @@ export function PlayerList({ players, canEdit = false, clubId }: Props) {
                     {player.doves}
                   </td>
                   <td className="mf-hide-mobile" style={{ textAlign: "right", fontFamily: "var(--font-mono)", fontSize: "13px", color: "var(--ink-secondary)" }}>
-                    —
+                    {player.doveWins}
                   </td>
                   {canEdit && (
                     <td style={{ textAlign: "right" }}>
