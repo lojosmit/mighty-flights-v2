@@ -29,7 +29,7 @@ export function AddPlayerForm({ clubId }: { clubId?: string | null }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ maxWidth: "520px" }}>
+    <form onSubmit={handleSubmit} style={{ flex: "2 1 320px", minWidth: 0 }}>
       <label style={labelStyle}>Player name</label>
       <div className="mf-add-player-row">
         <input

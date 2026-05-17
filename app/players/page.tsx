@@ -32,15 +32,16 @@ export default async function PlayersPage({ searchParams }: Props) {
         <p style={{ fontFamily: "var(--font-body)", fontSize: "11px", letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--ink-tertiary)", marginBottom: "12px" }}>
           Mighty Flights
         </p>
-        <h1 style={{ fontFamily: "var(--font-cormorant)", fontSize: "clamp(48px, 6vw, 72px)", fontWeight: 400, color: "var(--ink-primary)", lineHeight: 1, marginBottom: "24px" }}>
-          Player Roster
-        </h1>
+        <div style={{ display: "flex", alignItems: "flex-end", gap: "32px", flexWrap: "wrap", marginBottom: "24px" }}>
+          <h1 style={{ fontFamily: "var(--font-cormorant)", fontSize: "clamp(48px, 6vw, 72px)", fontWeight: 400, color: "var(--ink-primary)", lineHeight: 1 }}>
+            Player Roster
+          </h1>
+          {isSuperAdmin && (
+            <ClubFilter clubs={clubs} selected={effectiveClubId} />
+          )}
+        </div>
         <div style={{ height: "1px", backgroundColor: "var(--border-hairline)" }} />
       </header>
-
-      {isSuperAdmin && (
-        <ClubFilter clubs={clubs} selected={effectiveClubId} />
-      )}
 
       <PlayerList players={players} canEdit={isManager} clubId={effectiveClubId} />
     </main>

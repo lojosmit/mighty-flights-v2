@@ -36,31 +36,29 @@ export function PlayerList({ players, canEdit = false, clubId }: Props) {
 
   return (
     <div>
-      {canEdit && (
-        <div style={{ marginBottom: "48px" }}>
-          <AddPlayerForm clubId={clubId} />
-        </div>
-      )}
-
-      {players.length > 6 && (
-        <div style={{ marginBottom: "24px", maxWidth: "360px" }}>
-          <input
-            type="text"
-            placeholder="Search players…"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            style={{
-              width: "100%",
-              padding: "10px 14px",
-              fontFamily: "var(--font-body)",
-              fontSize: "14px",
-              color: "var(--ink-primary)",
-              backgroundColor: "var(--bg-secondary)",
-              border: "1px solid var(--border-hairline)",
-              outline: "none",
-              boxSizing: "border-box",
-            }}
-          />
+      {(canEdit || players.length > 6) && (
+        <div style={{ display: "flex", alignItems: "flex-end", gap: "16px", flexWrap: "wrap", marginBottom: "32px" }}>
+          {players.length > 6 && (
+            <input
+              type="text"
+              placeholder="Search players…"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              style={{
+                flex: "1 1 200px",
+                maxWidth: "360px",
+                padding: "10px 14px",
+                fontFamily: "var(--font-body)",
+                fontSize: "14px",
+                color: "var(--ink-primary)",
+                backgroundColor: "var(--bg-secondary)",
+                border: "1px solid var(--border-hairline)",
+                outline: "none",
+                boxSizing: "border-box" as const,
+              }}
+            />
+          )}
+          {canEdit && <AddPlayerForm clubId={clubId} />}
         </div>
       )}
 
@@ -124,10 +122,10 @@ export function PlayerList({ players, canEdit = false, clubId }: Props) {
                   <td style={{ textAlign: "right", fontFamily: "var(--font-mono)", fontSize: "13px", color: "var(--ink-secondary)" }}>
                     {player.losses}
                   </td>
-                  <td style={{ textAlign: "right", fontFamily: "var(--font-mono)", fontSize: "13px", color: "var(--ink-tertiary)" }}>
-                    —
+                  <td style={{ textAlign: "right", fontFamily: "var(--font-mono)", fontSize: "13px", color: "var(--ink-secondary)" }}>
+                    {player.doves}
                   </td>
-                  <td style={{ textAlign: "right", fontFamily: "var(--font-mono)", fontSize: "13px", color: "var(--ink-tertiary)" }}>
+                  <td style={{ textAlign: "right", fontFamily: "var(--font-mono)", fontSize: "13px", color: "var(--ink-secondary)" }}>
                     —
                   </td>
                   {canEdit && (

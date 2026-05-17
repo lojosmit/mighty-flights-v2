@@ -68,8 +68,10 @@ export default function NavBarShell({ navLinks, isAdmin, isClubManager, clubMana
           <Image
             src="/logo.png"
             alt=""
-            width={56}
-            height={56}
+            width={200}
+            height={112}
+            quality={95}
+            priority
             style={{ display: "block", flexShrink: 0, width: "auto", height: "clamp(36px, 5vw, 56px)" }}
           />
           <span className="mf-navbar-title">Mighty Flights</span>
@@ -155,7 +157,7 @@ export default function NavBarShell({ navLinks, isAdmin, isClubManager, clubMana
         <div className="mf-mobile-menu" role="dialog" aria-label="Navigation menu">
           <div className="mf-mobile-menu-header">
             <Link href="/" className="mf-navbar-brand" onClick={() => setMenuOpen(false)}>
-              <Image src="/logo.png" alt="" width={40} height={40} style={{ display: "block" }} />
+              <Image src="/logo.png" alt="" width={200} height={112} quality={95} style={{ display: "block", width: "auto", height: "40px" }} />
               <span style={{ fontFamily: "var(--font-cormorant)", fontSize: "22px", fontWeight: 400, color: "var(--ink-primary)", letterSpacing: "0.02em" }}>
                 Mighty Flights
               </span>

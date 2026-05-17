@@ -24,7 +24,7 @@ export default function ClubFilter({ clubs, selected }: Props) {
   }
 
   return (
-    <div style={{ marginBottom: "40px" }}>
+    <div>
       <select
         value={selected ?? ""}
         onChange={(e) => onChange(e.target.value)}
