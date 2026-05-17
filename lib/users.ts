@@ -3,6 +3,7 @@
 import bcrypt from "bcryptjs";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { auth } from "@/auth";
 import { db } from "./db";
 import { players, users, type UserRole } from "./db/schema";
 
@@ -50,6 +51,12 @@ export async function getUserById(id: string) {
 }
 
 export async function updateUserPassword(userId: string, newPassword: string) {
+  const session = await auth();
+  if (!session) throw new Error("Not authenticated");
+  // Allow only the account owner or a super_admin
+  if (session.user.id !== userId && session.user.role !== "super_admin") {
+    throw new Error("Forbidden");
+  }
   const passwordHash = await bcrypt.hash(newPassword, 12);
   await db
     .update(users)
