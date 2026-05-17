@@ -63,55 +63,74 @@ export default async function ProfilePage() {
 
       {/* ── Hero header with avatar ───────────────────────────────────────── */}
       <header style={{ marginBottom: "64px" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "24px", marginBottom: "20px" }}>
-          {/* Avatar */}
-          <div
-            style={{
-              width: "64px",
-              height: "64px",
-              borderRadius: "50%",
-              backgroundColor: "var(--accent-primary)",
-              border: "2px solid var(--accent-gold)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexShrink: 0,
-            }}
-          >
-            <span
+        <div className="mf-grid-2" style={{ alignItems: "start", gap: "40px", marginBottom: "20px" }}>
+
+          {/* Left: avatar + name */}
+          <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
+            <div
               style={{
-                fontFamily: "var(--font-cormorant)",
-                fontSize: "26px",
-                fontWeight: 500,
-                color: "#fff",
-                lineHeight: 1,
-                letterSpacing: "0.02em",
+                width: "64px",
+                height: "64px",
+                borderRadius: "50%",
+                backgroundColor: "var(--accent-primary)",
+                border: "2px solid var(--accent-gold)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
               }}
             >
-              {initials(session.user.name ?? "?")}
-            </span>
+              <span
+                style={{
+                  fontFamily: "var(--font-cormorant)",
+                  fontSize: "26px",
+                  fontWeight: 500,
+                  color: "#fff",
+                  lineHeight: 1,
+                  letterSpacing: "0.02em",
+                }}
+              >
+                {initials(session.user.name ?? "?")}
+              </span>
+            </div>
+            <div>
+              <p style={{ fontFamily: "var(--font-body)", fontSize: "11px", fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--accent-gold)", marginBottom: "6px" }}>
+                {ROLE_LABEL[session.user.role] ?? session.user.role}
+              </p>
+              <h1
+                style={{
+                  fontFamily: "var(--font-cormorant)",
+                  fontSize: "clamp(36px, 5vw, 60px)",
+                  fontWeight: 400,
+                  color: "var(--ink-primary)",
+                  lineHeight: 1,
+                }}
+              >
+                {session.user.name}
+              </h1>
+              <p style={{ fontFamily: "var(--font-body)", fontSize: "12px", color: "var(--ink-tertiary)", marginTop: "6px" }}>
+                {session.user.email}
+              </p>
+            </div>
           </div>
 
-          {/* Name + role */}
-          <div>
-            <p style={{ fontFamily: "var(--font-body)", fontSize: "11px", fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--accent-gold)", marginBottom: "6px" }}>
-              {ROLE_LABEL[session.user.role] ?? session.user.role}
+          {/* Right: change password */}
+          <div
+            style={{
+              padding: "24px",
+              border: "1px solid var(--border-hairline)",
+              background: "var(--bg-elevated)",
+            }}
+          >
+            <p style={{ fontFamily: "var(--font-cormorant)", fontSize: "20px", color: "var(--ink-primary)", marginBottom: "4px" }}>
+              Change Password
             </p>
-            <h1
-              style={{
-                fontFamily: "var(--font-cormorant)",
-                fontSize: "clamp(36px, 5vw, 60px)",
-                fontWeight: 400,
-                color: "var(--ink-primary)",
-                lineHeight: 1,
-              }}
-            >
-              {session.user.name}
-            </h1>
-            <p style={{ fontFamily: "var(--font-body)", fontSize: "12px", color: "var(--ink-tertiary)", marginTop: "6px" }}>
-              {session.user.email}
+            <p style={{ fontFamily: "var(--font-body)", fontSize: "12px", color: "var(--ink-tertiary)", marginBottom: "20px" }}>
+              Choose a strong password — minimum 8 characters.
             </p>
+            <ResetPasswordForm userId={session.user.id} />
           </div>
+
         </div>
         <div style={{ height: "1px", backgroundColor: "var(--border-hairline)" }} />
       </header>
@@ -228,27 +247,6 @@ export default async function ProfilePage() {
         </section>
       )}
 
-      {/* ── Account / change password ─────────────────────────────────────── */}
-      <section>
-        <p style={sectionLabelStyle}>Account</p>
-        <div style={{ height: "1px", backgroundColor: "var(--accent-gold)", marginBottom: "24px" }} />
-        <div
-          style={{
-            padding: "24px",
-            border: "1px solid var(--border-hairline)",
-            background: "var(--bg-elevated)",
-            maxWidth: "480px",
-          }}
-        >
-          <p style={{ fontFamily: "var(--font-cormorant)", fontSize: "20px", color: "var(--ink-primary)", marginBottom: "4px" }}>
-            Change Password
-          </p>
-          <p style={{ fontFamily: "var(--font-body)", fontSize: "12px", color: "var(--ink-tertiary)", marginBottom: "20px" }}>
-            Choose a strong password — minimum 8 characters.
-          </p>
-          <ResetPasswordForm userId={session.user.id} />
-        </div>
-      </section>
 
     </main>
   );
