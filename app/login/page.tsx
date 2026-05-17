@@ -21,17 +21,20 @@ function LoginPageInner() {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          padding: "clamp(48px, 8vh, 96px) clamp(20px, 6vw, 48px)",
+          paddingTop: "clamp(24px, 4vh, 48px)",
+        paddingBottom: "clamp(80px, 16vh, 160px)",
+        paddingLeft: "clamp(20px, 6vw, 48px)",
+        paddingRight: "clamp(20px, 6vw, 48px)",
           background: "var(--bg-secondary)",
         }}
       >
         <Image
           src="/logo.png"
           alt="Mighty Flights"
-          width={600}
-          height={600}
+          width={1200}
+          height={1200}
           priority
-          style={{ display: "block", width: "min(480px, 80vw)", height: "auto", marginBottom: "48px" }}
+          style={{ display: "block", width: "min(960px, 85vw)", height: "auto", marginBottom: "48px" }}
         />
 
         <button
